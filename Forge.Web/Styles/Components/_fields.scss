@@ -1,0 +1,81 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+// MOBILE ( < 720px  )
+// ================================
+.field{
+    width: 100%;
+    margin: 20px 0;
+
+    .field__label{
+        display: block;
+        margin: 3px 0;
+        font-weight: 600;
+        vertical-align: middle;
+        word-break: break-word;
+        font-size: 14px;
+    }
+
+    .field__value{ 
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    input, select { 
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+@mixin field-glow($color) {
+    box-shadow: $color 0 0 8px 0;
+}
+
+input,
+select { 
+    height: 30px;
+    line-height: 30px;
+    padding-left: 5px;
+    border: none;
+    border-radius: 3px;
+    background: white;
+    border: 1px solid $color-primary-70;
+    &:focus { 
+        border-color: $color-action-50;
+        @include field-glow($color-action-40);
+        outline: none;
+    }
+}
+
+
+// DESKTOP ( >= 420px  )
+// ================================
+@media (min-width: 420px) {
+    .field { 
+        display: table;
+        width: 100%;
+
+        .field__label { 
+            padding: 10px; 
+            //text-align: right;
+            min-width: 100px;
+        }
+
+        .field__value{
+            padding-left: 10px;
+        }
+
+        .field__label,
+        .field__value{
+            display: table-cell;
+            margin: 0;
+        }
+    }
+
+    .field-group{
+        display: table;
+        width: 100%;
+        .field{ display: table-row; }
+    }
+}

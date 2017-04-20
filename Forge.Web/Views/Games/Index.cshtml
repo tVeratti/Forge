@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Forge.Data.Models.GameModel>
+@{ 
+    ViewBag.Title = "Games Library";
+    var UserProps = User == null ? null : new
+    {
+        Id = User.Id,
+        UserName = User.UserName
+    };
+}
+
+<div id="library"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        ReactDOM.render(
+            React.createElement(Library.Provider),
+            document.getElementById('library')
+        );
+    </script>
+}

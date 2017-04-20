@@ -1,0 +1,74 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+// Colors
+// --------------------------------
+$nav-font-color:            $color-primary-80;
+$nav-hover-font-color:      $color-tertiary-50;
+$nav-slide-background:      $color-primary-10;
+
+// Units
+// --------------------------------
+$nav-arrow-size: 10px;
+
+
+// MOBILE ( < 720px  )
+// ================================
+button,
+.button{
+    display: inline-block;
+    padding: 5px 10px;
+    cursor: pointer;
+    background: $color-secondary-70;
+    color: $color-primary-10;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    line-height: 14px;
+    border-radius: 3px;
+
+    &:hover{ background-color: $color-secondary-50; }
+
+    &:active{ background-color: $color-secondary-70; }
+        
+    &+ button{ margin-left: 5px; }
+
+    // Color Variations
+    // ---------------------------
+
+    &.button--primary{
+        background-color: $color-primary-70;
+        &:hover{ background-color: mix($color-primary-80, $color-primary-70, 50%); }
+    }
+
+    &.button--tertiary{
+        background-color: $color-tertiary-30;
+        &:hover{ background-color: $color-tertiary-50; }
+    }
+
+    &.button--action{
+        background-color: $color-action-30;
+        &:hover{ background-color: $color-action-40; }
+    }
+
+    &.button--transparent {
+        //border: 2px solid $color-primary-80;
+        color: $color-primary-80;
+        background-color: transparent;
+        &:hover{ color: $color-primary-90; border-color: $color-primary-90; }
+    }
+
+    &:disabled,
+    &[disabled]{
+        cursor: default;
+        opacity: 0.25;
+        pointer-events: none;
+    }
+}
+
+// DESKTOP ( >= 720px  )
+// ================================
+@media (min-width: 720px) {
+    
+}

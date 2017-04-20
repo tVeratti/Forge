@@ -1,0 +1,14 @@
+﻿@import '../_colors.scss';
+
+.message{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    &.warning{
+        background-color: $color-secondary-20;
+    }
+    &.information{
+        background-color: $color-primary-10;
+    }
+}

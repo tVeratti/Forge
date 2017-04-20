@@ -1,0 +1,181 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+// Colors
+// --------------------------------
+$nav-font-color:            $color-primary-20;
+$nav-hover-font-color:      $color-primary-10;
+$nav-slide-background:      $color-primary-10;
+
+// Units
+// --------------------------------
+$nav-arrow-size: 10px;
+
+// MOBILE ( < 720px  )
+// ================================
+#nav {
+    position:fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $size-nav-height;
+    z-index: 1000;
+    font-size: $font-size-medium;
+    background-color: $color-secondary-50;
+    border-bottom: 2px solid $color-secondary-50;
+    @include linear-gradient-vertical-2($color-secondary-60, 0, mix($color-secondary-50, $color-secondary-60, 50%), 100%);
+    @include soft-shadow();
+
+    &.sticky{
+        background-color: $color-primary-80;
+    }
+
+    // Content Wrapper
+    & > .container {
+        height: $size-nav-height;
+    }
+
+    .nav-group {
+        position: relative;
+
+        // Left-Side Site Nav
+        &#nav-site {
+            text-align: left;
+
+            .arrow {
+                left: 16px;
+            }
+        }
+
+        // Right-Side Account Nav
+        &#nav-account {
+            text-align: right;
+
+            .arrow {
+                right: 14px;
+            }
+        }
+
+        // Mobile-ONLY
+        .toggle {
+            display: inline-block;
+            color: $nav-font-color;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 0 15px;
+            vertical-align: middle;
+            line-height: $size-nav-height;
+            height: $size-nav-height;
+            text-shadow: 2px 2px rgba(black, 0.2);
+
+            &:hover, &.t-open {
+                color: $nav-hover-font-color;
+            }
+            // Toggle Site Menu
+            &.fa-navicon {
+                float: left;
+            }
+            // Toggle Account Menu
+            &.fa-user {
+                float: right;
+            }
+        }
+
+        // Lists of Nav anchors
+        ul {
+            position: absolute;
+            display: none;
+            width: 100%;
+            white-space: nowrap;
+            background-color: $nav-slide-background;
+            top: $size-nav-height - 5px;
+            //border-bottom: 1px solid $color-secondary-60;
+            //box-shadow: 0 1px 5px rgba(black, 0.4);
+
+            &.open {
+                display: block;
+            }
+
+            // Arrow decoration for drop-down
+            .arrow {
+                position: absolute;
+                top: ($nav-arrow-size * -1);
+                width: 0;
+                height: 0;
+                border-left: $nav-arrow-size solid transparent;
+                border-right: $nav-arrow-size solid transparent;
+                border-bottom: $nav-arrow-size solid $nav-slide-background;
+            }
+
+            li {
+                display: block;
+                height: 40px;
+                line-height: 40px;
+                width: 100%;
+                border-bottom: 1px solid $color-primary-30;
+                //&:last-child{ border: none; }
+
+                a {
+                    display: inline-block;
+                    height: 100%;
+                    width: 100%;
+                    line-height: 1;
+                    padding: 0 15px;
+                    color: $color-secondary-50;
+                    font-weight: 600;
+
+                    &:hover {
+                        color: $color-secondary-60;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// DESKTOP ( >= 720px  )
+// ================================
+@media (min-width: 720px) {
+    nav {
+        display: block;
+        font-size: $font-size-medium;
+
+        .nav-group {
+            &#nav-site {
+                float: left;
+            }
+
+            &#nav-account {
+                float: right;
+            }
+            // Hide Toggles
+            .toggle {
+                display: none;
+            }
+            // Lists of Nav anchors
+            ul {
+                position: static;
+                display: inline-block;
+                width: auto;
+                background:none;
+                border:none;
+
+                .arrow {
+                    display: none;
+                }
+
+                li {
+                    display: inline-block;
+                    height: 100%;
+                    line-height: $size-nav-height;
+                    width: auto;
+                    border: none;
+                    a { color: $color-primary-10 !important; }
+                }
+            }
+        }
+    }
+}

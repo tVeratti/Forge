@@ -1,0 +1,15 @@
+﻿@import '../mixins';
+
+@mixin icon($content){ &:after{ @include button-icon($content); }}
+
+.icon{
+    &:after{
+        /*display: inline-block;
+        width: 44px;
+        height: 44px;*/
+    }
+
+    &.icon--list{       @include icon("\f00b"); }
+    &.icon--settings{   @include icon("\f013"); }
+    &.icon--search{     @include icon("\f002"); }
+}

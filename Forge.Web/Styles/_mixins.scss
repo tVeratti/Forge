@@ -1,0 +1,88 @@
+﻿// LINEAR GRADIENTS
+// ====================================
+// Two-color gradient
+@mixin linear-gradient-vertical-2($top-color, $top-start, $bottom-color, $bottom-start) {
+    //background-color: $top-color;
+    background-image: -moz-linear-gradient(top, $top-color $top-start, $bottom-color $bottom-start);
+    background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop($top-start,$top-color), color-stop($bottom-start,$bottom-color));
+    background-image: -webkit-linear-gradient(top, $top-color $top-start,$bottom-color $bottom-start);
+    background-image: -o-linear-gradient(top, $top-color $top-start,$bottom-color $bottom-start);
+    background-image: -ms-linear-gradient(top, $top-color $top-start,$bottom-color $bottom-start);
+    background-image: linear-gradient(to bottombottom, $top-color $top-start,$bottom-color $bottom-start);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$top-color}', endColorstr='#{$bottom-color}',GradientType=0 );
+}
+
+// Three-color gradient
+// NOTE: Middle color is generated based on a percentage mix of the top and bottom colors.
+@mixin linear-gradient-vertical-3($top-color, $top-start, $bottom-color, $bottom-start, $mid-start) {
+    $mid-color: mix($top-color, $bottom-color, 50%);
+    background-color: $top-color;
+    background-image: -moz-linear-gradient(top, $top-color $top-start, $mid-color $mid-start, $bottom-color $bottom-start);
+    background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop($top-start,$top-color), color-stop($mid-start, $mid-color), color-stop($bottom-start,$bottom-color));
+    background-image: -webkit-linear-gradient(top, $top-color $top-start,$mid-color $mid-start, $bottom-color $bottom-start);
+    background-image: -o-linear-gradient(top, $top-color $top-start,$mid-color $mid-start, $bottom-color $bottom-start);
+    background-image: -ms-linear-gradient(top, $top-color $top-start,$mid-color $mid-start, $bottom-color $bottom-start);
+    background-image: linear-gradient(to bottombottom, $top-color $top-start, $mid-color $mid-start, $bottom-color $bottom-start);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$top-color}', endColorstr='#{$bottom-color}',GradientType=0 );
+}
+
+@mixin dark-overlay(){
+    @include linear-gradient-vertical-2(transparent, 0, rgba(black, .15), 100%);
+}
+
+// Vendor Prefixes
+// -----------------------------------------
+@mixin transition($property, $duration) {
+    -moz-transition: $property $duration ease-in-out;
+    -o-transition: $property $duration ease-in-out;
+    -webkit-transition: opacity $duration ease-in-out;
+    transition: $property $duration ease-in-out;
+}
+
+@mixin translateX($x) {
+    -moz-transform: translateX($x);
+    -ms-transform: translateX($x);
+    -o-transform: translateX($x);
+    -webkit-transform: translateX($x);
+    transform: translateX($x);
+}
+
+@mixin rotate($deg) {
+    -moz-transform: rotate($deg);
+    -ms-transform: rotate($deg);
+    -o-transform: rotate($deg);
+    -webkit-transform: rotate($deg);
+    transform: rotate($deg);
+}
+
+// Common Styles
+// -----------------------------------------
+@mixin button-icon($content){
+    font-family: FontAwesome;
+    content: $content;
+    font-size: 22px;
+    //color: white;
+    text-shadow: 2px 2px rgba(black, 0.2);
+}
+
+@mixin arrow-up($size, $color){
+    width: 0; 
+    height: 0; 
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-bottom: $size solid $color;
+}
+
+@mixin arrow-right($size, $color){
+    width: 0; 
+    height: 0; 
+    border-top: $size solid transparent;
+    border-bottom: $size solid transparent;
+    border-left: $size solid $color;
+}
+
+@mixin soft-shadow() {
+    -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
+}

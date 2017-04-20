@@ -1,0 +1,43 @@
+﻿@import '../colors';
+@import '../units';
+@import '../mixins';
+
+.sortable{
+    border-left: 10px solid $color-primary-60;
+    border-radius: 5px 0 0 5px;
+    .sortable__item{
+        border: 1px solid $color-primary-60;
+        user-select: none;
+        background:$color-primary-30;
+
+        &:not(:last-child){ border-bottom: none; }
+        &:not(.sortable__item--disabled){
+            cursor: move;
+            &:hover{ background: $color-primary-50; }
+            label{ cursor: move !important; }
+        }
+
+        &.sortable__item--disabled{ cursor: default; }
+    }
+
+    .sortable__slot{
+        display: block;
+        &:last-child{border-bottom: 1px solid $color-primary-60;}
+    }
+
+    &.sortable--dragging{
+        .sortable__item--dragging { opacity: 0.5; }
+
+        .sortable__slot{ 
+            &:hover,
+            &.sortable__slot--active { 
+                background: $color-action-10;
+                height: 35px;
+                border: 1px solid $color-action-30;
+                &+.sortable__item{ border-top: none; }
+            }
+        }
+    }
+
+    .field { margin: 0; }
+}

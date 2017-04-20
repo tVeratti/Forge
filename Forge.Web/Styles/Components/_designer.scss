@@ -1,0 +1,250 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+@import 'designer__stage';
+
+$bg-list-item--active: $color-primary-80;
+
+// Measure the margin offset for the
+// list toggle area (sliding panel).
+$width-toggle: 10px;
+$width-settings: 200px;
+$width-toggle-total: ($width-settings - ($width-toggle + 10px));
+
+
+// __Summary
+// ---------------------------
+.designer__summary{
+    padding: 10px;
+}
+
+// __Views
+// ---------------------------
+.designer__views{
+    position: relative;
+    h3 { padding: 0 0 10px 20px; }
+
+}
+
+.designer__list,
+.designer__stage {
+    background-color: $color-primary-30;
+   // min-height: 800px;
+}
+
+// __List
+// ---------------------------
+.designer__list{
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid $color-primary-60;
+    background: $color-primary-10;
+    border-top-left-radius: 3px;
+    min-height: 400px;
+    @include translateX(0);
+    
+    @include transition(transform, 0.3s);
+
+    @media screen and (min-width: 721px){
+        // Stage padding so this does not overlap.
+        &~.stage:not(.stage--menu) {
+            .stage__workspace,
+            h3 { padding-right: $width-settings + 50px; }
+        }
+    }
+    
+    h3 { border-top-left-radius: 3px; }
+
+    // --Empty
+    &.designer__list--empty{ display: none; }
+
+    // --Closed
+    &.designer__list--closed{
+        @media screen and (max-width: 720px){
+            @include translateX($width-toggle-total);
+
+            .designer__list-items{ @include translateX(80px); visibility: hidden; }
+
+            // Stage padding so this does not overlap.
+            &~.stage:not(.stage--menu){ padding-right: $width-toggle + 10px; }
+        }
+    }
+
+    .designer__list-actions{
+        position: relative;
+        button {
+            height: 40px;
+            width: 100%;
+            margin: 0;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .designer__mini-buttons{
+            position:absolute;
+            left: -10px;
+            text-align: right;
+            @include translateX(-100%);
+
+            button{
+                display: block;
+                text-align: center;
+                width: 44px;
+                border-radius: 3px 0 0 3px;
+                background: $color-primary-60;
+                border: 1px solid $color-primary-70;
+                border-right: none;
+                &:after { float: none; }
+                &:hover{ background: mix($color-primary-70, $color-primary-60, 50%); }
+                &.button--active{
+                    border-color:$color-primary-60;
+                    background: $color-primary-10;
+                    color: $color-primary-70;
+                    &:after { text-shadow: none; }
+                    
+                }
+            }
+        }
+    }
+
+    
+
+    // __Toggle
+    // ---------------------------
+    .designer__undo:after{ @include button-icon("\f112"); }
+    .designer__redo:after{ @include button-icon("\f064"); }
+
+    .designer__toggle {
+        padding: 0;
+        
+        &:before{ 
+            @include button-icon("\f0c9"); 
+            text-shadow: none; 
+            font-size: 32px;
+            vertical-align: top;
+        }
+    }
+
+    // __Add
+    // ---------------------------
+    .designer__add {
+        &:before{  @include button-icon("\f067"); margin-right: 10px; }  
+    }
+
+    // __List-Items
+    // ---------------------------
+    .designer__list-items{
+        @include transition(transform, 0.6s);
+    }
+
+    // __List-Item
+    // ---------------------------
+    .designer__list-item{
+        position: relative;
+        margin: 5px 0;
+
+        &:first-child{ 
+            button { border-radius: 3px 3px 0 0; }
+        }
+
+        &:last-child{ 
+            border: none;
+            button { border-radius: 0 0 3px 3px; }
+        }
+
+        button {
+            position: relative;
+            display: block;
+            width: 100%;
+            text-align: left;
+            height: 40px;
+            border-radius: 0;
+        }
+
+        .setting--active{ opacity: 0.6; }
+
+        &.designer__list-item--selected{
+            button{
+                background-color: $color-primary-80;
+                //border-color: $color-primary-60;
+                /*&:after{
+                    position: absolute;
+                    top: 0;
+                    right: -19px;
+                    content: "";
+                    @include arrow-right(20px, $bg-list-item--active);
+                }*/
+            }
+        }
+    }
+}
+
+// __Menu
+// ---------------------------
+.designer__menu{
+    display: flex;
+    .designer__tile{
+        height: 100px;
+        width: 100px;
+    }
+}
+
+.definition__tags {
+    .field__label{ vertical-align: top !important; }
+
+    #add-tag{ 
+        width: 70px;
+        min-width: 0;
+    }
+
+    .definition__tag {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 5px;
+        background-color: $color-primary-20;
+        border-radius: 3px;
+        min-height: 30px;
+        cursor: pointer;
+
+        .fa-remove {
+            margin-left: 5px;
+            cursor: pointer;
+
+            &:hover {
+                color: $color-secondary-50;
+            }
+        }
+    }
+}
+
+.edit {
+
+    .edit__information{
+        padding: 10px;
+        background: rgba(white, 0.4);
+        border-radius: 5px;
+        border: 1px dashed $color-primary-60;
+        border-right: none;
+        border-left: none;
+    }
+
+    .list__item a { 
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        padding: 10px;
+    }
+}
+
+@mixin tile-size {
+    max-height: 100px;
+    min-height: 100px;
+    width: 90%;
+}
+
+

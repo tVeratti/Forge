@@ -1,0 +1,69 @@
+﻿@import 'Fonts/font-awesome.min.css';
+
+@import 'reset';
+@import 'units';
+@import 'colors';
+@import 'helpers';
+
+*, *:before, *:after {
+    -moz-box-sizing: inherit;
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+html {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    min-height: 100%;
+    height: 100%;
+
+    font-family: Arial;
+    color: $color-primary-80;
+    overflow-x: hidden;
+
+    body {
+        position: relative;
+        padding-top: $size-nav-height;
+        min-height: 100%;
+        height: 100%;
+        background-color: mix($color-primary-30, $color-primary-20, 80%);
+        overflow-x: hidden;
+    }
+}
+
+a {
+    padding: 5px 10px;
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    color: $color-secondary-50;
+
+    &:visited,
+    &:active,
+    &:link{
+        color: $color-secondary-50;
+    }
+
+    &:hover{
+        color: $color-secondary-60;
+    }
+}
+
+b { font-weight: 600; }
+
+@import 'Components/icons';
+@import 'Components/nav';
+@import 'Components/footer';
+@import 'Components/games';
+@import 'Components/warning';
+@import 'Components/buttons';
+@import 'Components/headings';
+@import 'Components/tabs';
+@import 'Components/designer';
+@import 'Components/fields';
+@import 'Components/banners';
+@import 'Components/sortables';
+@import 'Components/expandables';

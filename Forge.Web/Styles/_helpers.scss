@@ -1,0 +1,50 @@
+﻿@import 'colors';
+@import 'units';
+@import 'mixins';
+
+
+.separator{
+    display: block;
+    height: 10px;
+
+    &.separator--small      { height: 20px; }
+    &.separator--medium     { height: 40px; }
+    &.separator--large      { height: 80px; }
+}
+
+.note{ 
+    color: rgba(black, .4);
+    font-style: italic;
+    font-size: 14px;
+}
+
+.summary { 
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.emphasis { 
+    font-weight: 500;
+    color: $color-secondary-50;
+}
+
+.list{
+    .list__item{
+        border-bottom: 1px solid rgba(black, 0.1);
+        &:last-child{ border-bottom: none; }
+        //&:nth-child(even){ background: rgba(black, 0.05); }
+        //&:hover { background: rgba(white, 0.7); }
+    }
+}
+
+.section--summary{
+    background-color: $color-secondary-70;
+    color: $color-primary-10;
+    h1{ text-shadow: 2px 2px rgba(black, 0.2); }
+}
+
+// DESKTOP ( >= 720px  )
+// ================================
+@media (min-width: 720px) {
+    
+}

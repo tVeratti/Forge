@@ -1,0 +1,35 @@
+﻿@import '../colors';
+@import '../units';
+@import '../mixins';
+
+.expandable {
+    .expandable__header {
+        display: table;
+        width: 100%;
+    }
+
+    .expandable__button,
+    .expandable__label {
+        display: table-cell;
+        vertical-align: middle;
+
+        .expandable__icon {
+            font-family: FontAwesome;
+
+            &:after {
+                display: inline-block;
+                content: "\f0d7";
+                transform: rotate(0deg);
+                transition: transform 0.3s ease-in-out;
+            }
+        }
+    }
+
+    .expandable__button { border: 1px solid $color-primary-10; }
+
+    &.expandable--closed {
+        .expandable__button .expandable__icon:after {
+            transform: rotate(-90deg);
+        }
+    }
+}

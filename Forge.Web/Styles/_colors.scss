@@ -1,0 +1,64 @@
+﻿// Grays ----------------------------------------------
+$temp-gray-90: mix(black, white, 90%); // DARKER
+$temp-gray-80: mix(black, white, 80%); //   |
+$temp-gray-70: mix(black, white, 70%); //   |
+$temp-gray-60: mix(black, white, 60%); //   |
+$temp-gray-50: mix(black, white, 50%); //   |
+$temp-gray-40: mix(black, white, 40%); //   |
+$temp-gray-30: mix(black, white, 30%); //   |
+$temp-gray-20: mix(black, white, 20%); //   V
+$temp-gray-10: mix(black, white, 10%); // LIGHTER
+
+// Primary -------------------------------------------
+$color-primary: #DDD;
+$color-primary-90: mix($color-primary, black, 30%);
+$color-primary-80: mix($color-primary, black, 50%);
+$color-primary-70: mix($color-primary, black, 80%);
+$color-primary-60: mix($color-primary, black, 90%);
+$color-primary-50: $color-primary;
+$color-primary-40: mix($color-primary, white, 90%);
+$color-primary-30: mix($color-primary, white, 80%);
+$color-primary-20: mix($color-primary, white, 50%);
+$color-primary-10: mix($color-primary, white, 30%);
+
+// Secondary -------------------------------------------
+$color-secondary: #1088b6;//#bd4635;
+$color-secondary-90: mix($color-secondary, black, 30%);
+$color-secondary-80: mix($color-secondary, black, 50%);
+$color-secondary-70: mix($color-secondary, black, 80%);
+$color-secondary-60: mix($color-secondary, black, 90%);
+$color-secondary-50: $color-secondary;
+$color-secondary-40: mix($color-secondary, white, 90%);
+$color-secondary-30: mix($color-secondary, white, 80%);
+$color-secondary-20: mix($color-secondary, white, 50%);
+$color-secondary-10: mix($color-secondary, white, 30%);
+
+// Tertiary -------------------------------------------
+$color-tertiary: #7DAE31;
+$color-tertiary-90: mix($color-tertiary, black, 30%);
+$color-tertiary-80: mix($color-tertiary, black, 50%);
+$color-tertiary-70: mix($color-tertiary, black, 80%);
+$color-tertiary-60: mix($color-tertiary, black, 90%);
+$color-tertiary-50: $color-tertiary;
+$color-tertiary-40: mix($color-tertiary, white, 90%);
+$color-tertiary-30: mix($color-tertiary, white, 80%);
+$color-tertiary-20: mix($color-tertiary, white, 50%);
+$color-tertiary-10: mix($color-tertiary, white, 30%);
+
+// Action -------------------------------------------
+$color-action: $color-secondary;
+$color-action-90: mix($color-action, black, 45%);
+$color-action-80: mix($color-action, black, 50%);
+$color-action-70: mix($color-action, black, 80%);
+$color-action-60: mix($color-action, black, 90%);
+$color-action-50: $color-action;
+$color-action-40: mix($color-action, white, 90%);
+$color-action-30: mix($color-action, white, 80%);
+$color-action-20: mix($color-action, white, 50%);
+$color-action-10: mix($color-action, white, 30%);
+
+
+// Font Colors --------------------------------------
+$font-color-body: $color-primary-20;
+$font-color-header: $color-primary-80;
+$font-color-placeholder: $color-primary-20;

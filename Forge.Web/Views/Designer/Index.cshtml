@@ -1,0 +1,16 @@
+﻿@model long
+@{
+    ViewBag.Title = "Game Designer";
+}
+
+<div id="designer"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        ReactDOM.render(
+            React.createElement(Designer.Provider, { id: @Model }),
+            document.getElementById('designer')
+        );
+    </script>
+}
+

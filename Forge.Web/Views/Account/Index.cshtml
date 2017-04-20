@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Account Index</h2>
+
+@if (User == null || !User.Identity.IsAuthenticated) {
+    <form action="/Account/ExternalLogin" method="post">
+        <button type="submit" name="Provider" value="Google">Google+</button>
+    </form>
+}
+else
+{
+    <form action="/Account/LogOut" method="post">
+        <button type="submit">Log Out</button>
+    </form>
+}
+
+

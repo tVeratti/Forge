@@ -1,0 +1,50 @@
+﻿@using Newtonsoft.Json
+@{ 
+    var user = JsonConvert.SerializeObject(User == null ? null : new
+    {
+        Id = User.Id,
+        UserName = User.UserName
+    });
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Color Bar -->
+    <meta name="theme-color" content="#bd4635">
+    <meta name="msapplication-navbutton-color" content="#bd4635">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#bd4635">
+
+    @Scripts.Render("~/Scripts/vendor-js")    
+    @Styles.Render("~/Styles/main-css")
+</head>
+<body>
+
+<div id="nav"></div>
+
+    <div id="content">
+        @RenderBody()
+    </div>
+
+<div id="footer"></div>
+
+@Scripts.Render("~/Scripts/app-js")
+@RenderSection("scripts", required: false)
+
+<script type="text/javascript">
+    ReactDOM.render(
+        React.createElement(Nav, @Html.Raw(user)),
+        document.getElementById('nav')
+    );
+
+    //ReactDOM.render(
+    //    React.createElement(Footer),
+    //    document.getElementById('footer')
+    //);
+</script>
+</body>
+</html>

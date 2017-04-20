@@ -1,0 +1,63 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+// Colors
+// --------------------------------
+$nav-font-color:            $color-primary-80;
+$nav-hover-font-color:      $color-primary-50;
+$nav-slide-background:      $color-primary-10;
+
+// Units
+// --------------------------------
+$nav-arrow-size: 10px;
+$border-color: $color-primary-10;
+
+// MOBILE ( < 720px  )
+// ================================
+.tab{
+    display: inline-block;
+    margin-right: 1px;
+    background: none;
+    color: $color-primary-50;
+    border: none;
+    outline: none;
+    user-select: none;
+    //text-shadow: 1px 1px rgba(black, 0.2);
+
+    label {
+        font-weight: bold;
+        position: relative;
+        display: inline-block;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 3px 3px 0 0;
+    }
+
+    input {
+        position: absolute;
+        left: -99999px;
+
+        // Active Tab
+        &:checked + label {
+            color: $color-primary-80;
+            background: $border-color;
+            
+        }
+    }
+
+    &:hover label{  color: white; }
+}
+
+.tab-group{
+    text-align: left;
+    padding: 0 10px;
+    background-color: $color-secondary-70;
+    border-bottom: 10px solid $border-color;
+}
+
+// DESKTOP ( >= 720px  )
+// ================================
+@media (min-width: 720px) {
+    
+}

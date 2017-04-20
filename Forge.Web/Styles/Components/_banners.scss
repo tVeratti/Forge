@@ -1,0 +1,41 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+
+@mixin icon($icon){ .banner__icon:after{ content: $icon; }}
+
+.banner {
+    display: table;
+    width: 100%;
+    background: rgba(white, .2);
+
+    .banner__content {
+        display: table-cell;
+        padding: 10px;
+        vertical-align: middle;
+    }
+
+    .banner__icon {
+        display: table-cell;
+        width: 1%;
+        padding: 10px;
+
+        &:after {
+            font-family: FontAwesome; 
+            vertical-align: top;
+            font-size: 32px;
+        }
+    }
+
+    &.banner--info      { @include icon("\f05a"); }
+    &.banner--warning   { @include icon("\f071"); }
+    &.banner--linked    { @include icon("\f0c1"); }
+}
+
+
+// DESKTOP ( >= 720px  )
+// ================================
+@media (min-width: 720px) {
+    
+}
