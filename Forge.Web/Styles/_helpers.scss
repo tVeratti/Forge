@@ -43,6 +43,14 @@
     h1{ text-shadow: 2px 2px rgba(black, 0.2); }
 }
 
+.panel {
+    background: rgba(white, 0.5);
+    padding: 10px;
+    border-radius: 3px;
+    margin: 10px 0;
+    @include soft-shadow();
+}
+
 // DESKTOP ( >= 720px  )
 // ================================
 @media (min-width: 720px) {

@@ -81,6 +81,15 @@ table {
   .section--summary h1 {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.2); }
 
+.panel {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 3px;
+  margin: 10px 0;
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); }
+
 *, *:before, *:after {
   -moz-box-sizing: inherit;
   -webkit-box-sizing: inherit;
@@ -534,7 +543,7 @@ h5 {
 
 .designer__list,
 .designer__stage {
-  background-color: #e4e4e4; }
+  background-color: #eeeeee; }
 
 .designer__list {
   position: absolute;

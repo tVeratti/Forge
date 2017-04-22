@@ -2520,39 +2520,47 @@ Designer.__EditDefinition = React.createClass({
             'div',
             { className: 'edit edit--definition' },
             React.createElement(
-                'h4',
-                null,
-                'General'
+                'div',
+                { className: 'panel' },
+                React.createElement(
+                    'h4',
+                    null,
+                    'General'
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'field-group' },
+                    React.createElement(Field, { label: 'Name',
+                        id: 'name',
+                        defaultValue: selectedItem.Name,
+                        onChange: update('Name') }),
+                    React.createElement(Field, { label: 'Group',
+                        id: 'group',
+                        defaultValue: selectedItem.GroupId,
+                        onChange: update('GroupId'),
+                        options: core.Groups }),
+                    React.createElement(Field, { label: 'Control',
+                        id: 'control',
+                        defaultValue: selectedItem.ControlId,
+                        onChange: update('ControlId'),
+                        options: core.Controls })
+                )
             ),
             React.createElement(
                 'div',
-                { className: 'field-group' },
-                React.createElement(Field, { label: 'Name',
-                    id: 'name',
-                    defaultValue: selectedItem.Name,
-                    onChange: update('Name') }),
-                React.createElement(Field, { label: 'Group',
-                    id: 'group',
-                    defaultValue: selectedItem.GroupId,
-                    onChange: update('GroupId'),
-                    options: core.Groups }),
-                React.createElement(Field, { label: 'Control',
-                    id: 'control',
-                    defaultValue: selectedItem.ControlId,
-                    onChange: update('ControlId'),
-                    options: core.Controls })
+                { className: 'panel' },
+                React.createElement(
+                    'h4',
+                    null,
+                    'Tags'
+                ),
+                React.createElement(
+                    'p',
+                    { className: 'summary' },
+                    'Tags can be used to apply global rules, which will add settings with predfined values.'
+                ),
+                React.createElement(Definition__Tags, null)
             ),
-            React.createElement(
-                'h4',
-                null,
-                'Tags'
-            ),
-            React.createElement(
-                'p',
-                { className: 'summary' },
-                'Tags can be used to apply global rules, which will add settings with predfined values.'
-            ),
-            React.createElement(Definition__Tags, null),
             React.createElement(
                 'h4',
                 null,
