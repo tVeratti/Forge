@@ -65,19 +65,18 @@
         position: relative; 
         .field__label { padding-left: 15px !important; }
     }
+
     .expandable__button { 
         display: inline-block;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         left: -20px;
-        
     }
 
     .expandable__content{
         font-size: 10px;
         padding: 10px;
-       
     }
 
     .definition__overrides{

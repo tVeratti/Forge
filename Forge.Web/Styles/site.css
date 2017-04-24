@@ -601,25 +601,29 @@ h5 {
       margin-bottom: 5px;
       text-align: left; }
     .designer__list .designer__list-actions .designer__mini-buttons {
-      position: absolute;
-      left: calc(100% + 10px);
-      text-align: right; }
+      display: flex;
+      border-bottom: 2px solid #DDD; }
       .designer__list .designer__list-actions .designer__mini-buttons button {
-        display: block;
+        flex-grow: 1;
         text-align: center;
         width: 44px;
-        border-radius: 0 3px 3px 0;
-        background: #c7c7c7;
-        border: 1px solid #b1b1b1;
-        border-left: none; }
+        background: transparent;
+        transition: flex-grow 0.3s ease-in-out;
+        border-bottom: 2px solid #DDD;
+        border-radius: 3px 3px 0 0;
+        margin-bottom: -2px;
+        color: #DDD; }
+        .designer__list .designer__list-actions .designer__mini-buttons button + button {
+          margin-left: 5px; }
         .designer__list .designer__list-actions .designer__mini-buttons button:after {
-          float: none; }
+          float: none;
+          text-shadow: none; }
         .designer__list .designer__list-actions .designer__mini-buttons button:hover {
-          background: #bcbcbc; }
+          color: #2894bd;
+          flex-grow: 1.5; }
         .designer__list .designer__list-actions .designer__mini-buttons button.button--active {
-          border-color: #c7c7c7;
-          background: whitesmoke;
-          color: #b1b1b1; }
+          color: #1088b6;
+          border-color: #1088b6; }
           .designer__list .designer__list-actions .designer__mini-buttons button.button--active:after {
             text-shadow: none; }
   .designer__list .designer__undo:after {

@@ -95,24 +95,31 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         }
 
         .designer__mini-buttons{
-            position:absolute;
-            left: calc(100% + 10px);
-            text-align: right;
+            display: flex;
+            border-bottom: 2px solid $color-primary-50;
 
             button{
-                display: block;
+                flex-grow: 1;
                 text-align: center;
                 width: 44px;
-                border-radius: 0 3px 3px 0;
-                background: $color-primary-60;
-                border: 1px solid $color-primary-70;
-                border-left: none;
-                &:after { float: none; }
-                &:hover{ background: mix($color-primary-70, $color-primary-60, 50%); }
+                background: transparent;
+                transition: flex-grow 0.3s ease-in-out;
+                border-bottom: 2px solid $color-primary-50;
+                border-radius: 3px 3px 0 0;
+                margin-bottom: -2px;
+                color: $color-primary-50;
+
+                +button{ margin-left: 5px; }
+
+                &:after { float: none; text-shadow: none; }
+                &:hover{ 
+                    color: $color-secondary-40;
+                    flex-grow: 1.5;
+                }
+
                 &.button--active{
-                    border-color:$color-primary-60;
-                    background: $color-primary-10;
-                    color: $color-primary-70;
+                    color: $color-secondary-50;
+                    border-color: $color-secondary-50;
                     &:after { text-shadow: none; }
                 }
             }
