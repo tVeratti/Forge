@@ -38,22 +38,24 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 .designer__list{
     position: absolute;
     top: 0;
-    right: -1px;
+    bottom: 0;
+    left: 0;
     width: 200px;
     padding: 10px;
     border: 1px solid $color-primary-60;
     background: $color-primary-10;
     border-top-left-radius: 3px;
     min-height: 400px;
-    @include translateX(0);
-    
+    z-index: 10;
+
+    @include translateX(0);    
     @include transition(transform, 0.3s);
 
     @media screen and (min-width: 721px){
         // Stage padding so this does not overlap.
         &~.stage:not(.stage--menu) {
             .stage__workspace,
-            h3 { padding-right: $width-settings + 50px; }
+            h3 { padding-left: $width-settings + 50px; }
         }
     }
     
@@ -64,18 +66,26 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
     // --Closed
     &.designer__list--closed{
+        // MOBILE
         @media screen and (max-width: 720px){
-            @include translateX($width-toggle-total);
+            @include translateX(-90%);
 
-            .designer__list-items{ @include translateX(80px); visibility: hidden; }
+            .designer__list-items{ 
+                @include translateX(-80px);
+                visibility: hidden;
+            }
 
             // Stage padding so this does not overlap.
-            &~.stage:not(.stage--menu){ padding-right: $width-toggle + 10px; }
+            &~.stage:not(.stage--menu){ 
+                padding-left: $width-toggle + 10px;
+                .stage__menu{ padding-left: 10px; }
+            }
         }
     }
 
     .designer__list-actions{
         position: relative;
+
         button {
             height: 40px;
             width: 100%;
@@ -86,18 +96,17 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
         .designer__mini-buttons{
             position:absolute;
-            left: -10px;
+            left: calc(100% + 10px);
             text-align: right;
-            @include translateX(-100%);
 
             button{
                 display: block;
                 text-align: center;
                 width: 44px;
-                border-radius: 3px 0 0 3px;
+                border-radius: 0 3px 3px 0;
                 background: $color-primary-60;
                 border: 1px solid $color-primary-70;
-                border-right: none;
+                border-left: none;
                 &:after { float: none; }
                 &:hover{ background: mix($color-primary-70, $color-primary-60, 50%); }
                 &.button--active{
@@ -105,7 +114,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                     background: $color-primary-10;
                     color: $color-primary-70;
                     &:after { text-shadow: none; }
-                    
                 }
             }
         }

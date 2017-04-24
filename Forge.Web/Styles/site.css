@@ -82,13 +82,13 @@ table {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.2); }
 
 .panel {
-  background: rgba(255, 255, 255, 0.5);
+  background: #fcfcfc;
   padding: 10px;
   border-radius: 3px;
   margin: 10px 0;
-  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); }
+  -webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
 
 *, *:before, *:after {
   -moz-box-sizing: inherit;
@@ -169,9 +169,9 @@ b {
   background-image: -ms-linear-gradient(top, #0e7aa4 0, #0f81ad 100%);
   background-image: linear-gradient(to bottombottom, #0e7aa4 0, #0f81ad 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0e7aa4', endColorstr='#0f81ad',GradientType=0 );
-  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); }
+  -webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
   #nav.sticky {
     background-color: #6f6f6f; }
   #nav > .container {
@@ -518,7 +518,7 @@ h5 {
 
 .stage__menu {
   background-color: #eeeeee;
-  padding-left: 10px; }
+  padding-left: 240px; }
   .stage__menu .button {
     line-height: 1.2;
     padding: 10px 15px; }
@@ -548,13 +548,15 @@ h5 {
 .designer__list {
   position: absolute;
   top: 0;
-  right: -1px;
+  bottom: 0;
+  left: 0;
   width: 200px;
   padding: 10px;
   border: 1px solid #c7c7c7;
   background: whitesmoke;
   border-top-left-radius: 3px;
   min-height: 400px;
+  z-index: 10;
   -moz-transform: translateX(0);
   -ms-transform: translateX(0);
   -o-transform: translateX(0);
@@ -567,27 +569,29 @@ h5 {
   @media screen and (min-width: 721px) {
     .designer__list ~ .stage:not(.stage--menu) .stage__workspace,
     .designer__list ~ .stage:not(.stage--menu) h3 {
-      padding-right: 250px; } }
+      padding-left: 250px; } }
   .designer__list h3 {
     border-top-left-radius: 3px; }
   .designer__list.designer__list--empty {
     display: none; }
   @media screen and (max-width: 720px) {
     .designer__list.designer__list--closed {
-      -moz-transform: translateX(180px);
-      -ms-transform: translateX(180px);
-      -o-transform: translateX(180px);
-      -webkit-transform: translateX(180px);
-      transform: translateX(180px); }
+      -moz-transform: translateX(-90%);
+      -ms-transform: translateX(-90%);
+      -o-transform: translateX(-90%);
+      -webkit-transform: translateX(-90%);
+      transform: translateX(-90%); }
       .designer__list.designer__list--closed .designer__list-items {
-        -moz-transform: translateX(80px);
-        -ms-transform: translateX(80px);
-        -o-transform: translateX(80px);
-        -webkit-transform: translateX(80px);
-        transform: translateX(80px);
+        -moz-transform: translateX(-80px);
+        -ms-transform: translateX(-80px);
+        -o-transform: translateX(-80px);
+        -webkit-transform: translateX(-80px);
+        transform: translateX(-80px);
         visibility: hidden; }
       .designer__list.designer__list--closed ~ .stage:not(.stage--menu) {
-        padding-right: 20px; } }
+        padding-left: 20px; }
+        .designer__list.designer__list--closed ~ .stage:not(.stage--menu) .stage__menu {
+          padding-left: 10px; } }
   .designer__list .designer__list-actions {
     position: relative; }
     .designer__list .designer__list-actions button {
@@ -598,21 +602,16 @@ h5 {
       text-align: left; }
     .designer__list .designer__list-actions .designer__mini-buttons {
       position: absolute;
-      left: -10px;
-      text-align: right;
-      -moz-transform: translateX(-100%);
-      -ms-transform: translateX(-100%);
-      -o-transform: translateX(-100%);
-      -webkit-transform: translateX(-100%);
-      transform: translateX(-100%); }
+      left: calc(100% + 10px);
+      text-align: right; }
       .designer__list .designer__list-actions .designer__mini-buttons button {
         display: block;
         text-align: center;
         width: 44px;
-        border-radius: 3px 0 0 3px;
+        border-radius: 0 3px 3px 0;
         background: #c7c7c7;
         border: 1px solid #b1b1b1;
-        border-right: none; }
+        border-left: none; }
         .designer__list .designer__list-actions .designer__mini-buttons button:after {
           float: none; }
         .designer__list .designer__list-actions .designer__mini-buttons button:hover {
