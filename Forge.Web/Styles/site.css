@@ -82,13 +82,10 @@ table {
     text-shadow: 2px 2px rgba(0, 0, 0, 0.2); }
 
 .panel {
-  background: #fcfcfc;
+  background: whitesmoke;
   padding: 10px;
   border-radius: 3px;
-  margin: 10px 0;
-  -webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
+  margin: 10px 0; }
 
 *, *:before, *:after {
   -moz-box-sizing: inherit;
@@ -357,10 +354,10 @@ button,
       background-color: #7DAE31; }
   button.button--action,
   .button.button--action {
-    background-color: #40a0c5; }
+    background-color: #e5c066; }
     button.button--action:hover,
     .button.button--action:hover {
-      background-color: #2894bd; }
+      background-color: #e1b853; }
   button.button--transparent,
   .button.button--transparent {
     color: #6f6f6f;
@@ -477,8 +474,8 @@ h5 {
   .stage__workspace .definition__tag--active,
   .stage__workspace .definition__setting--active,
   .stage__workspace .definition__nested-rule--active {
-    background-color: #88c4db !important;
-    color: #0d6d92 !important;
+    background-color: #efd8a0 !important;
+    color: #b28d33 !important;
     transition: background-color 0.3s ease-in-out; }
   .stage__workspace .definition__rule .expandable__label > .field .field__value {
     opacity: 0.6; }
@@ -543,7 +540,7 @@ h5 {
 
 .designer__list,
 .designer__stage {
-  background-color: #eeeeee; }
+  background-color: #e4e4e4; }
 
 .designer__list {
   position: absolute;
@@ -554,7 +551,7 @@ h5 {
   padding: 10px;
   border: 1px solid #c7c7c7;
   background: whitesmoke;
-  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   min-height: 400px;
   z-index: 10;
   -moz-transform: translateX(0);
@@ -593,7 +590,8 @@ h5 {
         .designer__list.designer__list--closed ~ .stage:not(.stage--menu) .stage__menu {
           padding-left: 10px; } }
   .designer__list .designer__list-actions {
-    position: relative; }
+    position: relative;
+    margin-bottom: 10px; }
     .designer__list .designer__list-actions button {
       height: 40px;
       width: 100%;
@@ -602,24 +600,23 @@ h5 {
       text-align: left; }
     .designer__list .designer__list-actions .designer__mini-buttons {
       display: flex;
-      border-bottom: 2px solid #DDD; }
+      border-bottom: 2px solid #c7c7c7; }
       .designer__list .designer__list-actions .designer__mini-buttons button {
         flex-grow: 1;
         text-align: center;
         width: 44px;
         background: transparent;
         transition: flex-grow 0.3s ease-in-out;
-        border-bottom: 2px solid #DDD;
+        border-bottom: 2px solid #c7c7c7;
         border-radius: 3px 3px 0 0;
         margin-bottom: -2px;
-        color: #DDD; }
-        .designer__list .designer__list-actions .designer__mini-buttons button + button {
-          margin-left: 5px; }
+        color: #b1b1b1; }
         .designer__list .designer__list-actions .designer__mini-buttons button:after {
           float: none;
           text-shadow: none; }
         .designer__list .designer__list-actions .designer__mini-buttons button:hover {
-          color: #2894bd;
+          color: #6f6f6f;
+          border-color: #b1b1b1;
           flex-grow: 1.5; }
         .designer__list .designer__list-actions .designer__mini-buttons button.button--active {
           color: #1088b6;
@@ -755,8 +752,8 @@ select {
   border: 1px solid #b1b1b1; }
   input:focus,
   select:focus {
-    border-color: #1088b6;
-    box-shadow: #2894bd 0 0 8px 0;
+    border-color: #deb040;
+    box-shadow: #e1b853 0 0 8px 0;
     outline: none; }
 
 @media (min-width: 420px) {
@@ -781,7 +778,7 @@ select {
 .banner {
   display: table;
   width: 100%;
-  background: rgba(255, 255, 255, 0.2); }
+  background: whitesmoke; }
   .banner .banner__content {
     display: table-cell;
     padding: 10px;
@@ -789,7 +786,8 @@ select {
   .banner .banner__icon {
     display: table-cell;
     width: 1%;
-    padding: 10px; }
+    padding: 10px;
+    color: #1088b6; }
     .banner .banner__icon:after {
       font-family: FontAwesome;
       vertical-align: top;
@@ -825,9 +823,9 @@ select {
   .sortable.sortable--dragging .sortable__item--dragging {
     opacity: 0.5; }
   .sortable.sortable--dragging .sortable__slot:hover, .sortable.sortable--dragging .sortable__slot.sortable__slot--active {
-    background: #b7dbe9;
+    background: #f5e7c6;
     height: 35px;
-    border: 1px solid #40a0c5; }
+    border: 1px solid #e5c066; }
     .sortable.sortable--dragging .sortable__slot:hover + .sortable__item, .sortable.sortable--dragging .sortable__slot.sortable__slot--active + .sortable__item {
       border-top: none; }
   .sortable .field {

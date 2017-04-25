@@ -29,7 +29,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
 .designer__list,
 .designer__stage {
-    background-color: $color-primary-20;
+    background-color: $color-primary-30;
    // min-height: 800px;
 }
 
@@ -44,7 +44,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     padding: 10px;
     border: 1px solid $color-primary-60;
     background: $color-primary-10;
-    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     min-height: 400px;
     z-index: 10;
 
@@ -85,6 +85,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
     .designer__list-actions{
         position: relative;
+        margin-bottom: 10px;
 
         button {
             height: 40px;
@@ -96,7 +97,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
         .designer__mini-buttons{
             display: flex;
-            border-bottom: 2px solid $color-primary-50;
+            border-bottom: 2px solid $color-primary-60;
 
             button{
                 flex-grow: 1;
@@ -104,16 +105,16 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 width: 44px;
                 background: transparent;
                 transition: flex-grow 0.3s ease-in-out;
-                border-bottom: 2px solid $color-primary-50;
+                border-bottom: 2px solid $color-primary-60;
                 border-radius: 3px 3px 0 0;
                 margin-bottom: -2px;
-                color: $color-primary-50;
+                color: $color-primary-70;
 
-                +button{ margin-left: 5px; }
 
                 &:after { float: none; text-shadow: none; }
                 &:hover{ 
-                    color: $color-secondary-40;
+                    color: $color-primary-80;
+                    border-color: $color-primary-70;
                     flex-grow: 1.5;
                 }
 

@@ -44,11 +44,11 @@
 }
 
 .panel {
-    background: darken(white, 1%);
+    background: $color-primary-10;
     padding: 10px;
     border-radius: 3px;
     margin: 10px 0;
-    @include soft-shadow();
+    //@include soft-shadow();
 }
 
 // DESKTOP ( >= 720px  )
