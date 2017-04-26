@@ -45,9 +45,10 @@ function designerReducer(state = initialDesignerState, action){
 
         // --------------------------------
         case SELECT_LIST_ITEM:
+        case CREATE_ITEM:
             if (state.saving) return;
 
-            nextState.tab = action.tab || state.tab;
+            nextState.tab = action.tab || action.category || state.tab;
             nextState.index = action.index;
             nextState.activeTagId = null;
             break;

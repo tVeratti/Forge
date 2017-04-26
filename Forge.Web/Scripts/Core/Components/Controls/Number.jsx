@@ -8,9 +8,19 @@ Forge.components.controls.Number = React.createClass({
 
 	// -----------------------------
 	render: function(){
+		const { Model, Value } = this.props;
+
+		let value = Model.Value || Value;
+		if (isNaN(value)) value = 0;
+
 		return (
-			<input type='number' value={this.props.Value || ''} onChange={this.change} />
+			<input type='number' value={value} onChange={this.change} />
 		);
+	},
+
+	// -----------------------------
+	getDefaultProps: function(){
+		return { Model: {} };
 	},
 
 	// -----------------------------

@@ -8,7 +8,8 @@
 .banner {
     display: table;
     width: 100%;
-    background: $color-primary-10;
+    background: $color-background-menu-2;
+    border-left: 1px dashed $color-primary-60;
 
     .banner__content {
         display: table-cell;

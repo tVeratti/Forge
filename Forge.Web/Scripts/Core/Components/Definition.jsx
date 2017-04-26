@@ -5,19 +5,14 @@
 // - ControlName
 // - Value
 // --------------------------------------------------
-Forge.Definition = class Forge_Definition extends React.Component {
-    constructor(){
-        super();
-
-        const {...state} = this.props;
-        this.state = state;
-    }
-    
+Forge.__Definition = React.createClass({    
     // -----------------------------
-    render() {
-        const controlName = this.state.ControlName || this.state.Control || 'Number';
+    render: function() {
+        const { model } = this.props;
+        const { ControlName, Control } = model;
+        const controlName = ControlName || Control || 'Number';
         const controlProps = {
-            Model: this.state,
+            Model: model,
             onChange: this.valueChange
         };
 
@@ -29,57 +24,68 @@ Forge.Definition = class Forge_Definition extends React.Component {
 
         return (
             <div className='definition'>
-                <p className='definition__name'>{this.state.Name}</p>
+                <p className='definition__name'>{model.Name}</p>
                 <p className='definition__control'>{controlNode}</p>
             </div>
         );
-    }
-
+    },
     // -----------------------------
-    componentWillMount(){
+    componentWillMount: function(){
         // Trigger Lifecycle: Initialize
-        this.valueChange(this.state, Forge.stages.init);
-    }
+        this.valueChange(this.props.model.Value, null, Forge.stages.init);
+    },
 
     // -----------------------------
-    componentWillReceiveProps(nextProps){
-        const {...nextModel} = nextProps;
-        nextModel.Value = this.state.Value;
-
-        // Trigger Lifecycle: Update
-        this.valueChange(nextModel, Forge.stages.update);
-    }
+    componentWillReceiveProps: function(nextProps){
+        if (this.props.model.Value == nextProps.model.Value){
+            // Trigger Lifecycle: Update.Only do this when something other
+            // than the internal value has changed (ie: Settings).
+            this.valueChange(nextProps.model.Value, null, Forge.stages.update, nextProps);
+        }
+    },
 
     // -----------------------------
-    valueChange(previousModel, lifecycle){
-        const { Settings, Tags } = this.props;
-        const {...nextModel} = previousModel;
+    computeSettings: function(props){
+        const { model, core } = props;
 
-        // Get the current lifecycle stage
-        lifecycle = lifecycle || Forge.stages.init;
-
-        let value = nextModel.Value;
-
-        // Merge DefinitionSettings with Rules
-        let modelSettings = [
-            ...Settings,
-            ...Forge.functions.getRules(Tags)
+        return [
+            ...model.Settings,
+            ...Forge.functions.getRules(model.Tags, core.Rules)
         ];
+    },
+
+    // -----------------------------
+    valueChange: function(
+        value,
+        evt,
+        lifecycle = Forge.stages.update,
+        props = this.props) {
+
+        const { model, core, dispatch } = props;
 
         // Only include settings that match the current lifecycle
-        modelSettings = modelSettings
+        const computedSettings = this.computeSettings(props || this.props)
             .filter(s => Forge.functions.isSettingAlive(s.LifeCycle, lifecycle));
 
-        // Order by Priority / IsRule
-        Forge.functions.sortSettings(modelSettings)
-            // Apply all settings
-            .forEach(setting => {
-                value = Forge.settings[setting.Name](value, setting.Value);
-            });
-        
-        // Update the model's value
-        nextModel.Value = value;
+            console.log(computedSettings)
 
-        this.setState(nextModel);
+        // Order by Priority / IsRule
+        Forge.functions.sortSettings(computedSettings)
+            // Apply all settings
+            .forEach(s => value = Forge.settings[s.Name](value, s.Value));
+        
+        if (value !== props.model.Value){
+            dispatch(coreActions.updateDefinition({
+                ...model,
+                Value: value
+            }));
+        };
     }
-}
+});
+
+// =====================================
+// Container
+// =====================================
+Forge.Definition = connect(
+    state => { return { core: state.core }}
+)(Forge.__Definition);

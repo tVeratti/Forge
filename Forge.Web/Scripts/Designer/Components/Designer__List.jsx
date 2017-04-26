@@ -55,7 +55,7 @@ Designer.__List = React.createClass({
 		// Map list items from the store model into nodes.
 		const nodes = list.map((item, i) => {
 
-			// Unique identifier for the DOM.
+			// Unique identifier for the VDOM.
 			var key = `${tab}-${i}-${item.Id || item.Name || item.TempId}`;
 
 			// ClassName modifiers.
@@ -106,8 +106,8 @@ Designer.__List = React.createClass({
 
 		return (
 			<div className='designer__list-actions'>
+				<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} />
 				<div className='designer__mini-buttons'>
-					{/*<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} />*/}
 					{miniButtons}
 				</div>
 				

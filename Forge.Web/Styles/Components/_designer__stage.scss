@@ -5,7 +5,7 @@
 
 .stage{ 
     flex-grow: 3;
-    border-top: 1px solid $color-primary-10;
+    border-top: 1px solid $color-background-menu;
     padding-bottom: 100px;
     .designer__add{ margin: 0 10px; }
 }
@@ -97,7 +97,8 @@
 }
 
 .stage__menu{
-    background-color: $color-primary-20;
+    background-color: $color-background-menu-2;
+    //border-top: 1px solid $color-primary-60;
     padding-left: 240px;
     .button{
         line-height: 1.2;

@@ -7,11 +7,11 @@ Designer._Menu = React.createClass({
 
         return (
             <div className='designer__menu'>
-                <div>
-                    <Checkbox id='show-info' label='Show Tips' />
+
+                <div className='designer__tiles'>
+                    <button className='designer__tile'>Help</button>
+                    <button className='designer__tile'>Preview</button>
                 </div>
-                <button className='designer__tile'>Help</button>
-                <button className='designer__tile'>Preview</button>
             </div>
         );
     }

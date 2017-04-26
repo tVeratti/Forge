@@ -48,14 +48,12 @@ function coreReducer(state = initialCoreState, action){
             const newItem = {
                 Name: `New ${action.category.slice(0, -1)}`,
                 TempId: `t-${Math.random()}`
-            }
+            };
 
             nextState[action.category] = [ 
                 ...nextState[action.category],
                 newItem
             ];
-
-            nextState.index = nextState[action.category].length - 1;
 
             break;
 

@@ -49,13 +49,15 @@ Designer.__EditDefinition = React.createClass({
                 </div>
 
                 {/* Settings */}
+                <div className='panel'>
                     <h4>Settings</h4>
                     <p className='summary'>These settings change the behavior of this definition on the character builder. These will be applied to the definition in order from top to bottom (priority). <b>Drag a setting to re-order its priority level.</b></p>
                     <div className='separator  separator--small' />
                     <Definition__Settings />
+                </div>
 
-                {/* Preview 
-                <Forge.Definition {...selectedItem} />*/}
+                {/* Preview */}
+                <Forge.Definition model={selectedItem} />
             </div>
         )
     },

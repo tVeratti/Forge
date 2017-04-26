@@ -49,8 +49,12 @@ const coreActions = {
     // --------------------------------
     createItem: function() {
         return (dispatch, getState) => {
-            const category = getState().designer.tab;
-            dispatch({ type: CREATE_ITEM, category});
+            const { designer, core } = getState();
+            dispatch({ 
+                type: CREATE_ITEM,
+                category: designer.tab,
+                index: core[designer.tab].length
+            });
         }
     },
 
@@ -77,7 +81,13 @@ const coreActions = {
     // --------------------------------
     updateItem: function(model, category){
         return (dispatch, getState) => {
-            const { index } = getState().designer;
+            const { designer, core } = getState();
+            let index = designer.index;
+
+            if (index == -1){
+                index = core[category].indexOf(model);
+            }
+
             dispatch({ type: UPDATE_ITEM, category, index, model });
         }
     }
