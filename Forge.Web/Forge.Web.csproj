@@ -324,6 +324,7 @@
     <Content Include="Styles\Components\_sortables.scss" />
     <Content Include="Styles\Components\_expandables.scss" />
     <Content Include="Views\Tests\Index.cshtml" />
+    <Content Include="Styles\Components\_spec-runner.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
