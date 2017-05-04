@@ -49,7 +49,7 @@ Forge.__Definition = React.createClass({
         const { model, core } = props;
 
         return [
-            ...model.Settings,
+            ...(model.Settings || []),
             ...Forge.functions.getRules(model.Tags, core.Rules)
         ];
     },
@@ -66,8 +66,6 @@ Forge.__Definition = React.createClass({
         // Only include settings that match the current lifecycle
         const computedSettings = this.computeSettings(props || this.props)
             .filter(s => Forge.functions.isSettingAlive(s.LifeCycle, lifecycle));
-
-            console.log(computedSettings)
 
         // Order by Priority / IsRule
         Forge.functions.sortSettings(computedSettings)

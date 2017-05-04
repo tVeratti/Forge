@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="spec-runner"></div>
+
+@section scripts{
+    @Scripts.Render("~/scripts/tests-js")
+    <script type="text/javascript">
+        ReactDOM.render(
+            React.createElement(SpecRunner.Provider),
+            document.getElementById('spec-runner')
+        );
+    </script>
+}
+

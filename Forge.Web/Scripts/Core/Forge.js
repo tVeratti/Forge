@@ -21,10 +21,10 @@ Forge.components = {
 Forge.functions = {
 	// -----------------------------
 	getRules: function(tags, rules){
-		const tagIds = tags.map(t => t.Id);
+		const tagIds = (tags || []).map(t => t.Id);
 
 		// Merge rules into this list, adding the property IsRule = true.
-		const definitionRules = rules.filter(r => tagIds.indexOf(+r.TagId) > -1);
+		const definitionRules = (rules || []).filter(r => tagIds.indexOf(+r.TagId) > -1);
 
 		return definitionRules.map(rule => {
 			// Return as a new DefinitionSettingModel
@@ -37,7 +37,7 @@ Forge.functions = {
 
 	// -----------------------------
 	sortSettings: function(settings){
-		return settings.sort(function(settingA, settingB){
+		return (settings || []).sort(function(settingA, settingB){
 			if (settingA.Priority > settingB.Priority) return 1;
 			if (settingA.Priority < settingB.Priority) return -1;
 			if (!!settingA.TagId && !settingB.TagId) return -1;

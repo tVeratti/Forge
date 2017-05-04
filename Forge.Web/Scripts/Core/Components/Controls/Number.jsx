@@ -1,11 +1,4 @@
 Forge.components.controls.Number = React.createClass({
-	// propTypes: {
-	// 	Value: React.PropTypes.oneOf([
-	// 		React.PropTypes.string,
-	// 		React.PropTypes.number
-	// 	])
-	// },
-
 	// -----------------------------
 	render: function(){
 		const { Model, Value } = this.props;

@@ -326,12 +326,12 @@ Forge.components = {
 Forge.functions = {
     // -----------------------------
     getRules: function getRules(tags, rules) {
-        var tagIds = tags.map(function (t) {
+        var tagIds = (tags || []).map(function (t) {
             return t.Id;
         });
 
         // Merge rules into this list, adding the property IsRule = true.
-        var definitionRules = rules.filter(function (r) {
+        var definitionRules = (rules || []).filter(function (r) {
             return tagIds.indexOf(+r.TagId) > -1;
         });
 
@@ -345,7 +345,7 @@ Forge.functions = {
 
     // -----------------------------
     sortSettings: function sortSettings(settings) {
-        return settings.sort(function (settingA, settingB) {
+        return (settings || []).sort(function (settingA, settingB) {
             if (settingA.Priority > settingB.Priority) return 1;
             if (settingA.Priority < settingB.Priority) return -1;
             if (!!settingA.TagId && !settingB.TagId) return -1;
@@ -764,862 +764,6 @@ function UserPreferenceStore() {
 
     return self;
 }
-// --------------------------------------------------
-// <Forge.Definition />
-
-// - Settings
-// - ControlName
-// - Value
-// --------------------------------------------------
-Forge.__Definition = React.createClass({
-    displayName: '__Definition',
-
-    // -----------------------------
-    render: function render() {
-        var model = this.props.model;
-        var ControlName = model.ControlName,
-            Control = model.Control;
-
-        var controlName = ControlName || Control || 'Number';
-        var controlProps = {
-            Model: model,
-            onChange: this.valueChange
-        };
-
-        // Dynamically create the component based on Control name.
-        var controlNode = React.createElement(Forge.components.controls[controlName], controlProps);
-
-        return React.createElement(
-            'div',
-            { className: 'definition' },
-            React.createElement(
-                'p',
-                { className: 'definition__name' },
-                model.Name
-            ),
-            React.createElement(
-                'p',
-                { className: 'definition__control' },
-                controlNode
-            )
-        );
-    },
-    // -----------------------------
-    componentWillMount: function componentWillMount() {
-        // Trigger Lifecycle: Initialize
-        this.valueChange(this.props.model.Value, null, Forge.stages.init);
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        if (this.props.model.Value == nextProps.model.Value) {
-            // Trigger Lifecycle: Update.Only do this when something other
-            // than the internal value has changed (ie: Settings).
-            this.valueChange(nextProps.model.Value, null, Forge.stages.update, nextProps);
-        }
-    },
-
-    // -----------------------------
-    computeSettings: function computeSettings(props) {
-        var model = props.model,
-            core = props.core;
-
-
-        return [].concat(_toConsumableArray(model.Settings), _toConsumableArray(Forge.functions.getRules(model.Tags, core.Rules)));
-    },
-
-    // -----------------------------
-    valueChange: function valueChange(value, evt) {
-        var lifecycle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Forge.stages.update;
-        var props = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.props;
-        var model = props.model,
-            core = props.core,
-            dispatch = props.dispatch;
-
-        // Only include settings that match the current lifecycle
-
-        var computedSettings = this.computeSettings(props || this.props).filter(function (s) {
-            return Forge.functions.isSettingAlive(s.LifeCycle, lifecycle);
-        });
-
-        console.log(computedSettings);
-
-        // Order by Priority / IsRule
-        Forge.functions.sortSettings(computedSettings)
-        // Apply all settings
-        .forEach(function (s) {
-            return value = Forge.settings[s.Name](value, s.Value);
-        });
-
-        if (value !== props.model.Value) {
-            dispatch(coreActions.updateDefinition(_extends({}, model, {
-                Value: value
-            })));
-        };
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Forge.Definition = connect(function (state) {
-    return { core: state.core };
-})(Forge.__Definition);
-// -------------------------------------------------
-// <Designer />
-// 
-// =====================
-// |       a   b       |
-// =====================
-// | 1 |     2     | 3 |
-// |   |           |   |
-// |   |           |   |
-// =====================
-// a: Designer.Summary
-// b: Designer.Tabs
-// 1: Designer.Definitions
-// 2: Designer.Stage
-// 3: Designer.Settings
-//
-// --------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-var __Designer = React.createClass({
-    displayName: '__Designer',
-
-    // -----------------------------
-    render: function render() {
-
-        return React.createElement(
-            'div',
-            { className: 'designer' },
-            React.createElement(Designer.Summary, null),
-            React.createElement(Designer.Tabs, null),
-            React.createElement(
-                'div',
-                { className: 'designer__views' },
-                React.createElement(Designer.List, null),
-                React.createElement(Designer.Stage, null)
-            )
-        );
-    },
-
-    // -----------------------------
-    componentWillMount: function componentWillMount() {
-        // Model comes from C# -
-        // Set data into store with dispatch.
-        var _props = this.props,
-            dispatch = _props.dispatch,
-            id = _props.id;
-
-        dispatch(coreActions.fetchGame(id));
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        var game = nextProps.Game;
-        if (game && game.Name) document.title = game.Name + ' - Forge | Designer';
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-var Designer = connect(function (state) {
-    return _extends({}, state.core);
-})(__Designer);
-
-// =====================================
-// Root
-// =====================================
-Designer.Provider = function (props) {
-    return React.createElement(
-        Provider,
-        { store: store },
-        React.createElement(Designer, props)
-    );
-};
-
-// =====================================
-// Presentation
-// =====================================
-Designer.__List = React.createClass({
-    displayName: '__List',
-
-    // -----------------------------
-    render: function render() {
-        var listNodes = this.renderList();
-        var actionNodes = this.renderActions();
-
-        var className = ' designer__list';
-        if (!listNodes) className += ' designer__list--empty';
-        if (this.state.open) className += ' designer__list--open';else className += ' designer__list--closed';
-
-        return React.createElement(
-            'div',
-            { className: className },
-            actionNodes,
-            React.createElement(
-                'ul',
-                { className: 'designer__list-items' },
-                listNodes
-            )
-        );
-    },
-
-    // -----------------------------
-    getInitialState: function getInitialState() {
-        return { open: true, listTab: 'List' };
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        if (nextProps.tab !== this.props.tab && nextProps.selectedItem == null) {
-            this.setState({ open: true, listTab: 'List' });
-        }
-    },
-
-    // -----------------------------
-    renderList: function renderList() {
-        var _this8 = this;
-
-        var _props$designer = this.props.designer,
-            tab = _props$designer.tab,
-            index = _props$designer.index;
-        var listTab = this.state.listTab;
-
-
-        switch (listTab) {
-            case 'Settings':
-                return React.createElement(Designer.Settings, null);
-            case 'Search':
-                return React.createElement(Designer.Search, null);
-        }
-
-        var list = this.props.core[tab];
-        if (!Array.isArray(list)) return;
-
-        // Map list items from the store model into nodes.
-        var nodes = list.map(function (item, i) {
-
-            // Unique identifier for the VDOM.
-            var key = tab + '-' + i + '-' + (item.Id || item.Name || item.TempId);
-
-            // ClassName modifiers.
-            var className = 'designer__list-item';
-            if (i === index) className += ' designer__list-item--selected';
-
-            // Click Handler.
-            var onClick = function onClick() {
-                _this8.setState({ open: false });
-                _this8.props.dispatch(designerActions.selectListItem(i));
-            };
-
-            return React.createElement(
-                'li',
-                { key: key, className: className },
-                React.createElement(
-                    'button',
-                    { className: 'button button--primary', onClick: onClick },
-                    item.Name
-                )
-            );
-        });
-
-        // Unshift the ADD button to the top of the list.
-        nodes.unshift(React.createElement(
-            'li',
-            { key: 'add', className: 'designer__list-item' },
-            React.createElement(
-                'button',
-                { className: 'button button--tertiary designer__add', onClick: this.new, title: 'New' },
-                'New'
-            )
-        ));
-
-        return nodes;
-    },
-
-    // -----------------------------
-    renderActions: function renderActions() {
-        var _this9 = this;
-
-        var tab = this.props.designer.tab;
-        var _state = this.state,
-            open = _state.open,
-            listTab = _state.listTab;
-
-
-        var toggleText = open ? 'Hide' : 'Show';
-        var toggle = function toggle() {
-            return _this9.setState({ open: !open });
-        };
-
-        var buttons = ['List', 'Search'];
-        if (tab === 'Definitions') buttons.push('Settings');
-
-        var miniButtons = buttons.map(function (b) {
-            var onClick = _this9.changeList.bind(_this9, b);
-            var className = 'button icon icon--' + b.toLowerCase();
-            if (b === listTab) className += ' button--active';
-
-            return React.createElement('button', { key: b, className: className, title: b, onClick: onClick });
-        });
-
-        return React.createElement(
-            'div',
-            { className: 'designer__list-actions' },
-            React.createElement('button', { className: 'button button--transparent designer__toggle', onClick: toggle, title: toggleText }),
-            React.createElement(
-                'div',
-                { className: 'designer__mini-buttons' },
-                miniButtons
-            )
-        );
-    },
-
-    // -----------------------------
-    changeList: function changeList(tab) {
-        var open = this.state.open;
-        if (!open) open = true;else if (tab === this.state.listTab) open = !open;
-
-        this.setState({ listTab: tab, open: open });
-    },
-
-    // -----------------------------
-    new: function _new() {
-        this.props.dispatch(coreActions.createItem());
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.List = connect(function (state) {
-    return _extends({}, state);
-})(Designer.__List);
-// =====================================
-// Presentation
-// =====================================
-Designer._Menu = React.createClass({
-    displayName: '_Menu',
-
-    // -----------------------------
-    render: function render() {
-
-        return React.createElement(
-            'div',
-            { className: 'designer__menu' },
-            React.createElement(
-                'div',
-                { className: 'designer__tiles' },
-                React.createElement(
-                    'button',
-                    { className: 'designer__tile' },
-                    'Help'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'designer__tile' },
-                    'Preview'
-                )
-            )
-        );
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Menu = connect(function (state) {
-    return _extends({}, state.designer);
-})(Designer._Menu);
-
-// -------------------------------------------------
-// <Designer.__Search />
-// -------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-Designer.__Search = React.createClass({
-    displayName: '__Search',
-
-
-    // -----------------------------
-    render: function render() {
-        var _state2 = this.state,
-            all = _state2.all,
-            filter = _state2.filter;
-
-        var filterLower = filter.toLowerCase();
-
-        var listNodes = filter ? all.filter(function (x) {
-            return contains((x.Name || '').toLowerCase(), filterLower);
-        }) : [];
-
-        listNodes = sortBy(listNodes, 'Name').map(this.renderItem);
-
-        return React.createElement(
-            'div',
-            null,
-            React.createElement('input', { value: filter, onInput: this.inputHandler }),
-            React.createElement(
-                'ul',
-                null,
-                listNodes
-            )
-        );
-    },
-
-    // -----------------------------
-    getInitialState: function getInitialState() {
-        var all = this.concatCoreArrays();
-
-        return { all: all, filter: '' };
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        var all = this.concatCoreArrays();
-        this.setState({ all: all });
-    },
-
-    // -----------------------------
-    concatCoreArrays: function concatCoreArrays() {
-        var core = this.props.core;
-
-
-        return [].concat(_toConsumableArray(this.mapTabItems(core.Rules, CATEGORIES.RULES)), _toConsumableArray(this.mapTabItems(core.Tags, CATEGORIES.TAGS)), _toConsumableArray(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS)));
-    },
-
-    // -----------------------------
-    mapTabItems: function mapTabItems(items, tab) {
-        return items.map(function (item, index) {
-            return _extends({}, item, { index: index, tab: tab });
-        });
-    },
-
-    // -----------------------------
-    renderItem: function renderItem(item) {
-        var _props2 = this.props,
-            dispatch = _props2.dispatch,
-            designer = _props2.designer;
-
-        var key = item.tab + '-' + (item.Id || item.TempId || item.Name);
-
-        // ClassName modifiers.
-        var className = 'designer__list-item';
-        if (item.index === designer.index) className += ' designer__list-item--selected';
-
-        // Click Handler.
-        var onClick = function onClick() {
-            return dispatch(designerActions.navigate(item.tab, item.index));
-        };
-
-        return React.createElement(
-            'li',
-            { key: key, className: className },
-            React.createElement(
-                'button',
-                { className: 'button button--primary', onClick: onClick },
-                item.Name
-            )
-        );
-    },
-
-    // -----------------------------
-    inputHandler: function inputHandler(evt) {
-        var value = evt.target.value;
-
-        this.setState({ filter: value });
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Search = connect(function (state) {
-    return _extends({}, state);
-})(Designer.__Search);
-
-// -------------------------------------------------
-// <Designer.__Settings />
-// -------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-Designer.__Settings = React.createClass({
-    displayName: '__Settings',
-
-
-    // -----------------------------
-    render: function render() {
-        var settingNodes = this.renderSettingsList();
-
-        return React.createElement(
-            'ul',
-            null,
-            settingNodes
-        );
-    },
-
-    // -----------------------------
-    renderSettingsList: function renderSettingsList() {
-        var _this10 = this;
-
-        var _props3 = this.props,
-            settings = _props3.settings,
-            core = _props3.core,
-            designer = _props3.designer;
-
-        var activeItem = core.Definitions[designer.index];
-        if (!activeItem) return;
-
-        var activeSettings = (activeItem.Settings || []).map(function (s) {
-            return s.Name;
-        });
-
-        return settings.map(function (s) {
-
-            var clickHandler = _this10.addSetting.bind(_this10, s);
-            var className = 'setting';
-            var disabled = false;
-            if (contains(activeSettings, s.Name)) {
-                className += ' setting--active';
-                disabled = true;
-            }
-
-            return React.createElement(
-                'li',
-                { key: s.Name, className: className },
-                React.createElement(
-                    'button',
-                    { onClick: clickHandler, disabled: disabled },
-                    React.createElement('span', { className: 'setting__icon' }),
-                    React.createElement(
-                        'span',
-                        null,
-                        s.Name
-                    )
-                )
-            );
-        });
-    },
-
-    // -----------------------------
-    addSetting: function addSetting(setting) {
-        var _props4 = this.props,
-            dispatch = _props4.dispatch,
-            index = _props4.index;
-
-        dispatch(coreActions.addSetting(index, setting));
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Settings = connect(function (state) {
-    return _extends({
-        settings: state.core.Settings || [],
-        index: state.designer.index
-    }, state);
-})(Designer.__Settings);
-
-// -------------------------------------------------
-// <Designer.Stage />
-// -------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-Designer.__Stage = React.createClass({
-    displayName: '__Stage',
-
-    instructions: {
-        Tags: 'A Tag can be used to logically group Settings and Definitions. Tags can be used to apply Rules to many Definitions at once (ie: Give all Definitions with the Tag of "Attribute" a Minimum value of 1).',
-        Rules: 'Rules are pre-defined Settings that can be applied to many definitions using Tags.',
-        Definitions: 'Definitions are all of the small bits of information that describe a character. These are the building blocks of a charater builder and how it behaves.'
-    },
-
-    // -----------------------------
-    render: function render() {
-        var _props$designer2 = this.props.designer,
-            tab = _props$designer2.tab,
-            index = _props$designer2.index,
-            itemHistory = _props$designer2.itemHistory;
-
-        var list = this.props.core[tab] || [];
-        var selectedItem = list[index];
-        var isMenu = tab === 'Menu';
-
-        var editView = isMenu ? React.createElement(Designer.Menu, null) : this.renderStage();
-
-        var headerNode = '\xA0';
-        if (!isMenu && selectedItem) headerNode = this.renderSelectedHeader();
-
-        var uniqueId = selectedItem ? selectedItem.Id || selectedItem.TempId || selectedItem.Name : '';
-
-        var className = 'designer__stage stage stage--' + tab.toLowerCase();
-        var stageKey = tab + '-' + index + '-' + uniqueId;
-
-        var menuDisabled = !selectedItem;
-        var instructions = this.instructions[tab];
-
-        return React.createElement(
-            'div',
-            { className: className, key: stageKey },
-            React.createElement(
-                'h3',
-                null,
-                headerNode
-            ),
-            React.createElement(
-                'div',
-                { className: 'stage__menu' },
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length },
-                    'Back'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled },
-                    'Save'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__delete', disabled: menuDisabled },
-                    'Delete'
-                )
-            ),
-            React.createElement(
-                'div',
-                { className: 'stage__workspace' },
-                instructions && React.createElement(
-                    Banner,
-                    null,
-                    instructions
-                ),
-                React.createElement('div', { className: 'separator separator--small' }),
-                editView
-            )
-        );
-    },
-
-    // -----------------------------
-    renderStage: function renderStage() {
-        var _props5 = this.props,
-            designer = _props5.designer,
-            dispatch = _props5.dispatch,
-            core = _props5.core;
-
-        var selectedItem = this.getSelectedItem();
-
-        if (!selectedItem) {
-
-            var createItem = function createItem() {
-                return dispatch(coreActions.createItem());
-            };
-            var createButton = React.createElement(
-                'button',
-                { className: 'button button--tertiary designer__add', onClick: createItem },
-                'Create one'
-            );
-
-            if (!core[designer.tab] || !core[designer.tab].length) {
-                // No items exist in this list, prompt the user to create one...
-                return React.createElement(
-                    'div',
-                    null,
-                    React.createElement(
-                        'p',
-                        null,
-                        'No ',
-                        designer.tab,
-                        ' exist for this game yet!'
-                    ),
-                    createButton
-                );
-            } else {
-                // Nothing selected yet
-                return React.createElement(
-                    'div',
-                    null,
-                    'Select an item to edit or',
-                    createButton
-                );
-            }
-        }
-
-        // Return a specific editing stage component.
-        switch (designer.tab) {
-            case CATEGORIES.TAGS:
-                return React.createElement(Designer.EditTag, null);
-            case CATEGORIES.RULES:
-                return React.createElement(Designer.EditRule, null);
-            case CATEGORIES.DEFINITIONS:
-                return React.createElement(Designer.EditDefinition, null);
-            default:
-                return React.createElement(Designer.Menu, null);
-        }
-    },
-
-    // -----------------------------
-    renderSelectedHeader: function renderSelectedHeader() {
-        var designer = this.props.designer;
-
-        var selectedItem = this.getSelectedItem();
-
-        return React.createElement(
-            'div',
-            null,
-            React.createElement(
-                'span',
-                { className: 'breadcrumb' },
-                designer.tab
-            ),
-            React.createElement(
-                'span',
-                { className: 'emphasis' },
-                selectedItem && selectedItem.Name
-            )
-        );
-    },
-
-    // -----------------------------
-    save: function save() {
-        this.props.dispatch(designerActions.saveModel());
-    },
-
-    // -----------------------------
-    back: function back() {
-        this.props.dispatch(designerActions.back());
-    },
-
-    // -----------------------------
-    getSelectedItem: function getSelectedItem() {
-        var _props6 = this.props,
-            designer = _props6.designer,
-            core = _props6.core;
-
-        return (core[designer.tab] || [])[designer.index];
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Stage = connect(function (state) {
-    return _extends({}, state);
-})(Designer.__Stage);
-
-// -------------------------------------------------
-// <Designer.Summary />
-// -------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-Designer.__Summary = React.createClass({
-    displayName: '__Summary',
-
-    render: function render() {
-        var game = this.props.Game;
-        var createdAgo = moment.utc(game.CreatedDate).fromNow();
-
-        return React.createElement(
-            'div',
-            { className: 'section section--summary designer__summary' },
-            this.props.loading && React.createElement(
-                'h2',
-                null,
-                'Loading...'
-            ),
-            React.createElement(
-                'h1',
-                null,
-                game.Name || '\xA0'
-            ),
-            React.createElement(
-                'p',
-                null,
-                React.createElement(
-                    'b',
-                    null,
-                    'Created By:'
-                ),
-                ' ',
-                game.CreatedByUserName
-            ),
-            React.createElement(
-                'p',
-                null,
-                React.createElement(
-                    'b',
-                    null,
-                    'Last Updated:'
-                ),
-                ' ',
-                createdAgo
-            ),
-            React.createElement('div', { className: 'separator' })
-        );
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Summary = connect(function (state) {
-    return _extends({}, state.core);
-})(Designer.__Summary);
-
-// -------------------------------------------------
-// <Designer.Tabs />
-// -------------------------------------------------
-// =====================================
-// Presentation
-// =====================================
-Designer.__Tabs = React.createClass({
-    displayName: '__Tabs',
-
-    views: ['Menu', 'Tags', 'Rules', 'Definitions'],
-
-    // -----------------------------
-    render: function render() {
-        var tabNodes = this.views.map(this.renderTab);
-
-        return React.createElement(
-            'div',
-            { className: 'tab-group' },
-            tabNodes
-        );
-    },
-
-    // -----------------------------
-    renderTab: function renderTab(label, index) {
-        var _this11 = this;
-
-        // Active Tab Check
-        var checked = label === this.props.tab || undefined;
-
-        // Click Handler
-        // Dispatch action to store and update filter for tab.
-        var onClick = function onClick() {
-            return _this11.props.dispatch(designerActions.changeTab(label));
-        };
-
-        return React.createElement(Tab, { key: label, id: label, label: label, onChange: onClick, name: 'designer-tabs', checked: checked });
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Designer.Tabs = connect(function (state) {
-    return { tab: state.designer.tab };
-})(Designer.__Tabs);
-
 // =====================================
 // <Banner />
 // =====================================
@@ -1676,16 +820,16 @@ var Expandable = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this12 = this;
+        var _this8 = this;
 
-        var _props7 = this.props,
-            children = _props7.children,
-            header = _props7.header;
+        var _props = this.props,
+            children = _props.children,
+            header = _props.header;
         var open = this.state.open;
 
 
         var toggleOpen = function toggleOpen() {
-            return _this12.setState({ open: !open });
+            return _this8.setState({ open: !open });
         };
         var title = open ? 'Collapse' : 'Expand';
 
@@ -2155,12 +1299,12 @@ var Sortable = React.createClass({
     // -----------------------------
     slotDrop: function slotDrop(newIndex, ev) {
         ev.preventDefault();
-        var _state3 = this.state,
-            initialIndex = _state3.initialIndex,
-            index = _state3.index;
-        var _props8 = this.props,
-            list = _props8.list,
-            onChange = _props8.onChange;
+        var _state = this.state,
+            initialIndex = _state.initialIndex,
+            index = _state.index;
+        var _props2 = this.props,
+            list = _props2.list,
+            onChange = _props2.onChange;
 
 
         var handler = function handler(arr, i, i2) {
@@ -2218,6 +1362,860 @@ var Tab = React.createClass({
         this.refs.input.checked = checked;
     }
 });
+// -------------------------------------------------
+// <Designer />
+// 
+// =====================
+// |       a   b       |
+// =====================
+// | 1 |     2     | 3 |
+// |   |           |   |
+// |   |           |   |
+// =====================
+// a: Designer.Summary
+// b: Designer.Tabs
+// 1: Designer.Definitions
+// 2: Designer.Stage
+// 3: Designer.Settings
+//
+// --------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+var __Designer = React.createClass({
+    displayName: '__Designer',
+
+    // -----------------------------
+    render: function render() {
+
+        return React.createElement(
+            'div',
+            { className: 'designer' },
+            React.createElement(Designer.Summary, null),
+            React.createElement(Designer.Tabs, null),
+            React.createElement(
+                'div',
+                { className: 'designer__views' },
+                React.createElement(Designer.List, null),
+                React.createElement(Designer.Stage, null)
+            )
+        );
+    },
+
+    // -----------------------------
+    componentWillMount: function componentWillMount() {
+        // Model comes from C# -
+        // Set data into store with dispatch.
+        var _props3 = this.props,
+            dispatch = _props3.dispatch,
+            id = _props3.id;
+
+        dispatch(coreActions.fetchGame(id));
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        var game = nextProps.Game;
+        if (game && game.Name) document.title = game.Name + ' - Forge | Designer';
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+var Designer = connect(function (state) {
+    return _extends({}, state.core);
+})(__Designer);
+
+// =====================================
+// Root
+// =====================================
+Designer.Provider = function (props) {
+    return React.createElement(
+        Provider,
+        { store: store },
+        React.createElement(Designer, props)
+    );
+};
+
+// =====================================
+// Presentation
+// =====================================
+Designer.__List = React.createClass({
+    displayName: '__List',
+
+    // -----------------------------
+    render: function render() {
+        var listNodes = this.renderList();
+        var actionNodes = this.renderActions();
+
+        var className = ' designer__list';
+        if (!listNodes) className += ' designer__list--empty';
+        if (this.state.open) className += ' designer__list--open';else className += ' designer__list--closed';
+
+        return React.createElement(
+            'div',
+            { className: className },
+            actionNodes,
+            React.createElement(
+                'ul',
+                { className: 'designer__list-items' },
+                listNodes
+            )
+        );
+    },
+
+    // -----------------------------
+    getInitialState: function getInitialState() {
+        return { open: true, listTab: 'List' };
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        if (nextProps.tab !== this.props.tab && nextProps.selectedItem == null) {
+            this.setState({ open: true, listTab: 'List' });
+        }
+    },
+
+    // -----------------------------
+    renderList: function renderList() {
+        var _this9 = this;
+
+        var _props$designer = this.props.designer,
+            tab = _props$designer.tab,
+            index = _props$designer.index;
+        var listTab = this.state.listTab;
+
+
+        switch (listTab) {
+            case 'Settings':
+                return React.createElement(Designer.Settings, null);
+            case 'Search':
+                return React.createElement(Designer.Search, null);
+        }
+
+        var list = this.props.core[tab];
+        if (!Array.isArray(list)) return;
+
+        // Map list items from the store model into nodes.
+        var nodes = list.map(function (item, i) {
+
+            // Unique identifier for the VDOM.
+            var key = tab + '-' + i + '-' + (item.Id || item.Name || item.TempId);
+
+            // ClassName modifiers.
+            var className = 'designer__list-item';
+            if (i === index) className += ' designer__list-item--selected';
+
+            // Click Handler.
+            var onClick = function onClick() {
+                _this9.setState({ open: false });
+                _this9.props.dispatch(designerActions.selectListItem(i));
+            };
+
+            return React.createElement(
+                'li',
+                { key: key, className: className },
+                React.createElement(
+                    'button',
+                    { className: 'button button--primary', onClick: onClick },
+                    item.Name
+                )
+            );
+        });
+
+        // Unshift the ADD button to the top of the list.
+        nodes.unshift(React.createElement(
+            'li',
+            { key: 'add', className: 'designer__list-item' },
+            React.createElement(
+                'button',
+                { className: 'button button--tertiary designer__add', onClick: this.new, title: 'New' },
+                'New'
+            )
+        ));
+
+        return nodes;
+    },
+
+    // -----------------------------
+    renderActions: function renderActions() {
+        var _this10 = this;
+
+        var tab = this.props.designer.tab;
+        var _state2 = this.state,
+            open = _state2.open,
+            listTab = _state2.listTab;
+
+
+        var toggleText = open ? 'Hide' : 'Show';
+        var toggle = function toggle() {
+            return _this10.setState({ open: !open });
+        };
+
+        var buttons = ['List', 'Search'];
+        if (tab === 'Definitions') buttons.push('Settings');
+
+        var miniButtons = buttons.map(function (b) {
+            var onClick = _this10.changeList.bind(_this10, b);
+            var className = 'button icon icon--' + b.toLowerCase();
+            if (b === listTab) className += ' button--active';
+
+            return React.createElement('button', { key: b, className: className, title: b, onClick: onClick });
+        });
+
+        return React.createElement(
+            'div',
+            { className: 'designer__list-actions' },
+            React.createElement('button', { className: 'button button--transparent designer__toggle', onClick: toggle, title: toggleText }),
+            React.createElement(
+                'div',
+                { className: 'designer__mini-buttons' },
+                miniButtons
+            )
+        );
+    },
+
+    // -----------------------------
+    changeList: function changeList(tab) {
+        var open = this.state.open;
+        if (!open) open = true;else if (tab === this.state.listTab) open = !open;
+
+        this.setState({ listTab: tab, open: open });
+    },
+
+    // -----------------------------
+    new: function _new() {
+        this.props.dispatch(coreActions.createItem());
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.List = connect(function (state) {
+    return _extends({}, state);
+})(Designer.__List);
+// =====================================
+// Presentation
+// =====================================
+Designer._Menu = React.createClass({
+    displayName: '_Menu',
+
+    // -----------------------------
+    render: function render() {
+
+        return React.createElement(
+            'div',
+            { className: 'designer__menu' },
+            React.createElement(
+                'div',
+                { className: 'designer__tiles' },
+                React.createElement(
+                    'button',
+                    { className: 'designer__tile' },
+                    'Help'
+                ),
+                React.createElement(
+                    'button',
+                    { className: 'designer__tile' },
+                    'Preview'
+                )
+            )
+        );
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Menu = connect(function (state) {
+    return _extends({}, state.designer);
+})(Designer._Menu);
+
+// -------------------------------------------------
+// <Designer.__Search />
+// -------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+Designer.__Search = React.createClass({
+    displayName: '__Search',
+
+
+    // -----------------------------
+    render: function render() {
+        var _state3 = this.state,
+            all = _state3.all,
+            filter = _state3.filter;
+
+        var filterLower = filter.toLowerCase();
+
+        var listNodes = filter ? all.filter(function (x) {
+            return contains((x.Name || '').toLowerCase(), filterLower);
+        }) : [];
+
+        listNodes = sortBy(listNodes, 'Name').map(this.renderItem);
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement('input', { value: filter, onInput: this.inputHandler }),
+            React.createElement(
+                'ul',
+                null,
+                listNodes
+            )
+        );
+    },
+
+    // -----------------------------
+    getInitialState: function getInitialState() {
+        var all = this.concatCoreArrays();
+
+        return { all: all, filter: '' };
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        var all = this.concatCoreArrays();
+        this.setState({ all: all });
+    },
+
+    // -----------------------------
+    concatCoreArrays: function concatCoreArrays() {
+        var core = this.props.core;
+
+
+        return [].concat(_toConsumableArray(this.mapTabItems(core.Rules, CATEGORIES.RULES)), _toConsumableArray(this.mapTabItems(core.Tags, CATEGORIES.TAGS)), _toConsumableArray(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS)));
+    },
+
+    // -----------------------------
+    mapTabItems: function mapTabItems(items, tab) {
+        return items.map(function (item, index) {
+            return _extends({}, item, { index: index, tab: tab });
+        });
+    },
+
+    // -----------------------------
+    renderItem: function renderItem(item) {
+        var _props4 = this.props,
+            dispatch = _props4.dispatch,
+            designer = _props4.designer;
+
+        var key = item.tab + '-' + (item.Id || item.TempId || item.Name);
+
+        // ClassName modifiers.
+        var className = 'designer__list-item';
+        if (item.index === designer.index) className += ' designer__list-item--selected';
+
+        // Click Handler.
+        var onClick = function onClick() {
+            return dispatch(designerActions.navigate(item.tab, item.index));
+        };
+
+        return React.createElement(
+            'li',
+            { key: key, className: className },
+            React.createElement(
+                'button',
+                { className: 'button button--primary', onClick: onClick },
+                item.Name
+            )
+        );
+    },
+
+    // -----------------------------
+    inputHandler: function inputHandler(evt) {
+        var value = evt.target.value;
+
+        this.setState({ filter: value });
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Search = connect(function (state) {
+    return _extends({}, state);
+})(Designer.__Search);
+
+// -------------------------------------------------
+// <Designer.__Settings />
+// -------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+Designer.__Settings = React.createClass({
+    displayName: '__Settings',
+
+
+    // -----------------------------
+    render: function render() {
+        var settingNodes = this.renderSettingsList();
+
+        return React.createElement(
+            'ul',
+            null,
+            settingNodes
+        );
+    },
+
+    // -----------------------------
+    renderSettingsList: function renderSettingsList() {
+        var _this11 = this;
+
+        var _props5 = this.props,
+            settings = _props5.settings,
+            core = _props5.core,
+            designer = _props5.designer;
+
+        var activeItem = core.Definitions[designer.index];
+        if (!activeItem) return;
+
+        var activeSettings = (activeItem.Settings || []).map(function (s) {
+            return s.Name;
+        });
+
+        return settings.map(function (s) {
+
+            var clickHandler = _this11.addSetting.bind(_this11, s);
+            var className = 'setting';
+            var disabled = false;
+            if (contains(activeSettings, s.Name)) {
+                className += ' setting--active';
+                disabled = true;
+            }
+
+            return React.createElement(
+                'li',
+                { key: s.Name, className: className },
+                React.createElement(
+                    'button',
+                    { onClick: clickHandler, disabled: disabled },
+                    React.createElement('span', { className: 'setting__icon' }),
+                    React.createElement(
+                        'span',
+                        null,
+                        s.Name
+                    )
+                )
+            );
+        });
+    },
+
+    // -----------------------------
+    addSetting: function addSetting(setting) {
+        var _props6 = this.props,
+            dispatch = _props6.dispatch,
+            index = _props6.index;
+
+        dispatch(coreActions.addSetting(index, setting));
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Settings = connect(function (state) {
+    return _extends({
+        settings: state.core.Settings || [],
+        index: state.designer.index
+    }, state);
+})(Designer.__Settings);
+
+// -------------------------------------------------
+// <Designer.Stage />
+// -------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+Designer.__Stage = React.createClass({
+    displayName: '__Stage',
+
+    instructions: {
+        Tags: 'A Tag can be used to logically group Settings and Definitions. Tags can be used to apply Rules to many Definitions at once (ie: Give all Definitions with the Tag of "Attribute" a Minimum value of 1).',
+        Rules: 'Rules are pre-defined Settings that can be applied to many definitions using Tags.',
+        Definitions: 'Definitions are all of the small bits of information that describe a character. These are the building blocks of a charater builder and how it behaves.'
+    },
+
+    // -----------------------------
+    render: function render() {
+        var _props$designer2 = this.props.designer,
+            tab = _props$designer2.tab,
+            index = _props$designer2.index,
+            itemHistory = _props$designer2.itemHistory;
+
+        var list = this.props.core[tab] || [];
+        var selectedItem = list[index];
+        var isMenu = tab === 'Menu';
+
+        var editView = isMenu ? React.createElement(Designer.Menu, null) : this.renderStage();
+
+        var headerNode = '\xA0';
+        if (!isMenu && selectedItem) headerNode = this.renderSelectedHeader();
+
+        var uniqueId = selectedItem ? selectedItem.Id || selectedItem.TempId || selectedItem.Name : '';
+
+        var className = 'designer__stage stage stage--' + tab.toLowerCase();
+        var stageKey = tab + '-' + index + '-' + uniqueId;
+
+        var menuDisabled = !selectedItem;
+        var instructions = this.instructions[tab];
+
+        return React.createElement(
+            'div',
+            { className: className, key: stageKey },
+            React.createElement(
+                'h3',
+                null,
+                headerNode
+            ),
+            React.createElement(
+                'div',
+                { className: 'stage__menu' },
+                React.createElement(
+                    'button',
+                    { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length },
+                    'Back'
+                ),
+                React.createElement(
+                    'button',
+                    { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled },
+                    'Save'
+                ),
+                React.createElement(
+                    'button',
+                    { className: 'button button--transparent stage__delete', disabled: menuDisabled },
+                    'Delete'
+                )
+            ),
+            React.createElement(
+                'div',
+                { className: 'stage__workspace' },
+                instructions && React.createElement(
+                    Banner,
+                    null,
+                    instructions
+                ),
+                React.createElement('div', { className: 'separator separator--small' }),
+                editView
+            )
+        );
+    },
+
+    // -----------------------------
+    renderStage: function renderStage() {
+        var _props7 = this.props,
+            designer = _props7.designer,
+            dispatch = _props7.dispatch,
+            core = _props7.core;
+
+        var selectedItem = this.getSelectedItem();
+
+        if (!selectedItem) {
+
+            var createItem = function createItem() {
+                return dispatch(coreActions.createItem());
+            };
+            var createButton = React.createElement(
+                'button',
+                { className: 'button button--tertiary designer__add', onClick: createItem },
+                'Create one'
+            );
+
+            if (!core[designer.tab] || !core[designer.tab].length) {
+                // No items exist in this list, prompt the user to create one...
+                return React.createElement(
+                    'div',
+                    null,
+                    React.createElement(
+                        'p',
+                        null,
+                        'No ',
+                        designer.tab,
+                        ' exist for this game yet!'
+                    ),
+                    createButton
+                );
+            } else {
+                // Nothing selected yet
+                return React.createElement(
+                    'div',
+                    null,
+                    'Select an item to edit or',
+                    createButton
+                );
+            }
+        }
+
+        // Return a specific editing stage component.
+        switch (designer.tab) {
+            case CATEGORIES.TAGS:
+                return React.createElement(Designer.EditTag, null);
+            case CATEGORIES.RULES:
+                return React.createElement(Designer.EditRule, null);
+            case CATEGORIES.DEFINITIONS:
+                return React.createElement(Designer.EditDefinition, null);
+            default:
+                return React.createElement(Designer.Menu, null);
+        }
+    },
+
+    // -----------------------------
+    renderSelectedHeader: function renderSelectedHeader() {
+        var designer = this.props.designer;
+
+        var selectedItem = this.getSelectedItem();
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'span',
+                { className: 'breadcrumb' },
+                designer.tab
+            ),
+            React.createElement(
+                'span',
+                { className: 'emphasis' },
+                selectedItem && selectedItem.Name
+            )
+        );
+    },
+
+    // -----------------------------
+    save: function save() {
+        this.props.dispatch(designerActions.saveModel());
+    },
+
+    // -----------------------------
+    back: function back() {
+        this.props.dispatch(designerActions.back());
+    },
+
+    // -----------------------------
+    getSelectedItem: function getSelectedItem() {
+        var _props8 = this.props,
+            designer = _props8.designer,
+            core = _props8.core;
+
+        return (core[designer.tab] || [])[designer.index];
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Stage = connect(function (state) {
+    return _extends({}, state);
+})(Designer.__Stage);
+
+// -------------------------------------------------
+// <Designer.Summary />
+// -------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+Designer.__Summary = React.createClass({
+    displayName: '__Summary',
+
+    render: function render() {
+        var game = this.props.Game;
+        var createdAgo = moment.utc(game.CreatedDate).fromNow();
+
+        return React.createElement(
+            'div',
+            { className: 'section section--summary designer__summary' },
+            this.props.loading && React.createElement(
+                'h2',
+                null,
+                'Loading...'
+            ),
+            React.createElement(
+                'h1',
+                null,
+                game.Name || '\xA0'
+            ),
+            React.createElement(
+                'p',
+                null,
+                React.createElement(
+                    'b',
+                    null,
+                    'Created By:'
+                ),
+                ' ',
+                game.CreatedByUserName
+            ),
+            React.createElement(
+                'p',
+                null,
+                React.createElement(
+                    'b',
+                    null,
+                    'Last Updated:'
+                ),
+                ' ',
+                createdAgo
+            ),
+            React.createElement('div', { className: 'separator' })
+        );
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Summary = connect(function (state) {
+    return _extends({}, state.core);
+})(Designer.__Summary);
+
+// -------------------------------------------------
+// <Designer.Tabs />
+// -------------------------------------------------
+// =====================================
+// Presentation
+// =====================================
+Designer.__Tabs = React.createClass({
+    displayName: '__Tabs',
+
+    views: ['Menu', 'Tags', 'Rules', 'Definitions'],
+
+    // -----------------------------
+    render: function render() {
+        var tabNodes = this.views.map(this.renderTab);
+
+        return React.createElement(
+            'div',
+            { className: 'tab-group' },
+            tabNodes
+        );
+    },
+
+    // -----------------------------
+    renderTab: function renderTab(label, index) {
+        var _this12 = this;
+
+        // Active Tab Check
+        var checked = label === this.props.tab || undefined;
+
+        // Click Handler
+        // Dispatch action to store and update filter for tab.
+        var onClick = function onClick() {
+            return _this12.props.dispatch(designerActions.changeTab(label));
+        };
+
+        return React.createElement(Tab, { key: label, id: label, label: label, onChange: onClick, name: 'designer-tabs', checked: checked });
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Tabs = connect(function (state) {
+    return { tab: state.designer.tab };
+})(Designer.__Tabs);
+
+// --------------------------------------------------
+// <Forge.Definition />
+
+// - Settings
+// - ControlName
+// - Value
+// --------------------------------------------------
+Forge.__Definition = React.createClass({
+    displayName: '__Definition',
+
+    // -----------------------------
+    render: function render() {
+        var model = this.props.model;
+        var ControlName = model.ControlName,
+            Control = model.Control;
+
+        var controlName = ControlName || Control || 'Number';
+        var controlProps = {
+            Model: model,
+            onChange: this.valueChange
+        };
+
+        // Dynamically create the component based on Control name.
+        var controlNode = React.createElement(Forge.components.controls[controlName], controlProps);
+
+        return React.createElement(
+            'div',
+            { className: 'definition' },
+            React.createElement(
+                'p',
+                { className: 'definition__name' },
+                model.Name
+            ),
+            React.createElement(
+                'p',
+                { className: 'definition__control' },
+                controlNode
+            )
+        );
+    },
+    // -----------------------------
+    componentWillMount: function componentWillMount() {
+        // Trigger Lifecycle: Initialize
+        this.valueChange(this.props.model.Value, null, Forge.stages.init);
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        if (this.props.model.Value == nextProps.model.Value) {
+            // Trigger Lifecycle: Update.Only do this when something other
+            // than the internal value has changed (ie: Settings).
+            this.valueChange(nextProps.model.Value, null, Forge.stages.update, nextProps);
+        }
+    },
+
+    // -----------------------------
+    computeSettings: function computeSettings(props) {
+        var model = props.model,
+            core = props.core;
+
+
+        return [].concat(_toConsumableArray(model.Settings || []), _toConsumableArray(Forge.functions.getRules(model.Tags, core.Rules)));
+    },
+
+    // -----------------------------
+    valueChange: function valueChange(value, evt) {
+        var lifecycle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Forge.stages.update;
+        var props = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.props;
+        var model = props.model,
+            core = props.core,
+            dispatch = props.dispatch;
+
+        // Only include settings that match the current lifecycle
+
+        var computedSettings = this.computeSettings(props || this.props).filter(function (s) {
+            return Forge.functions.isSettingAlive(s.LifeCycle, lifecycle);
+        });
+
+        // Order by Priority / IsRule
+        Forge.functions.sortSettings(computedSettings)
+        // Apply all settings
+        .forEach(function (s) {
+            return value = Forge.settings[s.Name](value, s.Value);
+        });
+
+        if (value !== props.model.Value) {
+            dispatch(coreActions.updateDefinition(_extends({}, model, {
+                Value: value
+            })));
+        };
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Forge.Definition = connect(function (state) {
+    return { core: state.core };
+})(Forge.__Definition);
 // =====================================
 // <Library />
 // =====================================
@@ -2450,13 +2448,6 @@ Library.Summary = function (_ref8) {
 };
 Forge.components.controls.Number = React.createClass({
     displayName: 'Number',
-
-    // propTypes: {
-    // 	Value: React.PropTypes.oneOf([
-    // 		React.PropTypes.string,
-    // 		React.PropTypes.number
-    // 	])
-    // },
 
     // -----------------------------
     render: function render() {

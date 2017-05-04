@@ -25,6 +25,13 @@ namespace Forge.Web
                  "~/Scripts/Vendor/redux-debounced-0.3.0.js",
                  "~/Scripts/Vendor/react-redux-4.4.5.js"));
 
+            // Tests
+            // ---------------------------
+            bundles.Add(new ScriptBundle("~/scripts/tests-js").Include(
+                "~/Scripts/Vendor/enzyme-2.7.1.js",
+                "~/Scripts/Vendor/jasmine.js",
+                "~/Content/tests.js"));
+
             // Custom
             // ---------------------------
             bundles.Add(new ScriptBundle("~/scripts/app-js")

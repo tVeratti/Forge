@@ -15,9 +15,15 @@ const sourceJS = [
 
     // Components
     'Scripts/**/*.jsx',
+    '!Scripts/Tests/**/*.jsx',
 
     // Store
     'Scripts/store.js'
+];
+
+const sourceJSTests = [
+    'Scripts/Tests/Components/*.jsx',
+    'Scripts/Tests/**/*.jsx'
 ];
 
 const babelOptions = {
@@ -36,8 +42,17 @@ gulp.task('build', function () {
 	    .pipe(gulp.dest('Content'));
 });
 
-gulp.task('watch', ['build'], function () {
+gulp.task('build-tests', function () {
+    return gulp.src(sourceJSTests)
+        .pipe(plumber())
+	    .pipe(concat('tests.js'))
+	    .pipe(babel(babelOptions))
+	    .pipe(gulp.dest('Content'));
+});
+
+gulp.task('watch', ['build', 'build-tests'], function () {
     gulp.watch(sourceJS, ['build']);
+    gulp.watch(sourceJSTests, ['build-tests']);
 });
 
 gulp.task('default', ['watch']);

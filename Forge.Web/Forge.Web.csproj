@@ -197,6 +197,7 @@
     <Compile Include="Controllers\DesignerController.cs" />
     <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TestsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -206,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\scripts.js" />
+    <Content Include="Content\tests.js" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
     <Content Include="Scripts\Common\Components\Banner.jsx" />
@@ -248,6 +250,10 @@
     <Content Include="Scripts\Library\Components\Library_Game.jsx" />
     <Content Include="Scripts\Library\LibraryReducer.js" />
     <Content Include="Scripts\Library\LibraryActions.js" />
+    <Content Include="Scripts\Tests\Components\SpecRunner.jsx" />
+    <Content Include="Scripts\Tests\Specs\DefinitionSpec.jsx" />
+    <Content Include="Scripts\Vendor\enzyme-2.7.1.js" />
+    <Content Include="Scripts\Vendor\jasmine.js" />
     <Content Include="Scripts\Vendor\react-dom-15.0.1.js" />
     <Content Include="Scripts\Vendor\react-dom-15.3.2.js" />
     <Content Include="Scripts\Vendor\react-redux-4.4.5.js" />
@@ -317,6 +323,7 @@
     <Content Include="Styles\Components\_designer__stage.scss" />
     <Content Include="Styles\Components\_sortables.scss" />
     <Content Include="Styles\Components\_expandables.scss" />
+    <Content Include="Views\Tests\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
