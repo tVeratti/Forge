@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Forge.Data.Models
 {
-    public class DesignerModel
+    public class CoreModel
     {
         public GameModel Game { get; set; }
         public IEnumerable<RuleModel> Rules { get; set; }

@@ -76,14 +76,14 @@ namespace Forge.Data.Services
         /// Read all data required to build the Game Designer view.
         /// </summary>
         /// <param name="Id">The Id of the Game to request data for.</param>
-        public DesignerModel Designer(long Id, long UserId)
+        public CoreModel Designer(long Id, long UserId)
         {
             var spr_name = "[Verspyre].[Select_Designer]";
             using (var multi = _cnx.QueryMultiple(spr_name, new { Id, UserId }, commandType: CommandType.StoredProcedure))
             {
                 // Read Designer DataSets
                 // --------------------------------------------------
-                DesignerModel model = new DesignerModel()
+                CoreModel model = new CoreModel()
                 {
                     Game =          multi.Read<GameModel>().Single(),
                     Rules =         multi.Read<RuleModel>(),

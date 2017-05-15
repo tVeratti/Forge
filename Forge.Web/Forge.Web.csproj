@@ -194,6 +194,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CoreController.cs" />
     <Compile Include="Controllers\DesignerController.cs" />
     <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -209,6 +210,9 @@
     <Content Include="Content\scripts.js" />
     <Content Include="Content\tests.js" />
     <Content Include="gulpfile.js" />
+    <Content Include="Scripts\Builder\BuilderActions.js" />
+    <Content Include="Scripts\Builder\BuilderReducer.js" />
+    <Content Include="Scripts\Builder\Components\Builder.jsx" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
     <Content Include="Scripts\Common\Components\Banner.jsx" />
     <Content Include="Scripts\Common\Components\Field.jsx" />
@@ -334,6 +338,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Core\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

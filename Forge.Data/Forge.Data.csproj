@@ -52,7 +52,7 @@
     <Compile Include="DataContext.cs" />
     <Compile Include="Models\ControlModel.cs" />
     <Compile Include="Models\DefinitionModel.cs" />
-    <Compile Include="Models\DesignerModel.cs" />
+    <Compile Include="Models\CoreModel.cs" />
     <Compile Include="Models\GameModel.cs" />
     <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Models\GroupTypeModel.cs" />

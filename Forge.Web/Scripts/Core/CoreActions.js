@@ -24,7 +24,7 @@ const coreActions = {
     // =====================================
     // --------------------------------
     api: {
-        FETCH_GAME: '/Designer/GetDesigner'
+        FETCH_GAME: '/Core/Get'
     },
 
     // Action Creators

@@ -10,7 +10,7 @@ namespace Forge.Data.Services
 {
     public static class MappingService
     {
-        public static DefinitionModel MapDefinition(DesignerModel designer, DefinitionModel Model, IEnumerable<DefinitionTagModel> Tags, IEnumerable<DefinitionSettingModel> Settings)
+        public static DefinitionModel MapDefinition(CoreModel designer, DefinitionModel Model, IEnumerable<DefinitionTagModel> Tags, IEnumerable<DefinitionSettingModel> Settings)
         {
             Model.Tags = Tags.Where(dt => dt.DefinitionId == Model.Id);
             Model.Settings = Settings.Where(ds => ds.DefinitionId == Model.Id);

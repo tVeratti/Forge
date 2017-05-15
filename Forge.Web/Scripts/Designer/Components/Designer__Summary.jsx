@@ -16,8 +16,7 @@ Designer.__Summary = React.createClass({
 
                 {/* Game Information */}
                 <h1>{game.Name || '\u00A0'}</h1>
-                <p><b>Created By:</b> {game.CreatedByUserName}</p>
-                <p><b>Last Updated:</b> {createdAgo}</p>
+                <p><b>{game.CreatedByUserName}</b> {createdAgo}</p>
 
                 <div className='separator' />
 

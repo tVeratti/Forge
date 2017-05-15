@@ -16,6 +16,8 @@ Forge.__Definition = React.createClass({
             onChange: this.valueChange
         };
 
+        console.log(`render ${model.Name}`)
+
         // Dynamically create the component based on Control name.
         const controlNode = React.createElement(
             Forge.components.controls[controlName], 
