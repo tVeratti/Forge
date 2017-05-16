@@ -7,13 +7,12 @@
 
 function libraryReducer(state = initialLibraryState, action){
 
-    const nextState = Object.assign({}, state);
+    const nextState = { ...state };
 
     switch(action.type){
         // --------------------------------
         case REQUEST_GAMES:
             nextState.isLoading = true;
-
             break;
 
         // --------------------------------
@@ -24,7 +23,7 @@ function libraryReducer(state = initialLibraryState, action){
 
         // --------------------------------
         case FILTER_GAMES:
-            const filters = Object.assign({}, nextState.filters);
+            const filters = { ...nextState.filters };
             filters[action.key] = action.value;
             nextState.filters = filters;
             break;

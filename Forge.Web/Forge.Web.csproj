@@ -210,8 +210,8 @@
     <Content Include="Content\scripts.js" />
     <Content Include="Content\tests.js" />
     <Content Include="gulpfile.js" />
-    <Content Include="Scripts\Builder\BuilderActions.js" />
-    <Content Include="Scripts\Builder\BuilderReducer.js" />
+    <Content Include="Scripts\Builder\Actions.js" />
+    <Content Include="Scripts\Builder\Reducer.js" />
     <Content Include="Scripts\Builder\Components\Builder.jsx" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
     <Content Include="Scripts\Common\Components\Banner.jsx" />
@@ -223,8 +223,10 @@
     <Content Include="Scripts\Common\Components\GenreSelect.jsx" />
     <Content Include="Scripts\Common\Components\Sortable.jsx" />
     <Content Include="Scripts\Common\Components\Tab.jsx" />
-    <Content Include="Scripts\Core\CoreActions.js" />
-    <Content Include="Scripts\Core\CoreReducer.js" />
+    <Content Include="Scripts\Core\Actions.js" />
+    <Content Include="Scripts\Core\LifeCycle.js" />
+    <Content Include="Scripts\Core\Reducer.js" />
+    <Content Include="Scripts\Core\Utilities.js" />
     <Content Include="Scripts\Designer\Components\Designer__Search.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition__Settings.jsx" />
@@ -234,26 +236,25 @@
     <Content Include="Scripts\Library\Components\Library_Controls.jsx" />
     <Content Include="Scripts\Library\Components\Library_Summary.jsx" />
     <Content Include="Scripts\Library\Components\Library_List.jsx" />
-    <Content Include="Scripts\store.js" />
-    <Content Include="Scripts\Common\CommonActions.js" />
-    <Content Include="Scripts\Common\CommonReducer.js" />
+    <Content Include="Scripts\Store.js" />
+    <Content Include="Scripts\Common\Actions.js" />
+    <Content Include="Scripts\Common\Reducer.js" />
     <Content Include="Scripts\Common\Components\Nav.jsx" />
     <Content Include="Scripts\Common\userPreferenceStore.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Number.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Text.jsx" />
     <Content Include="Scripts\Core\Components\Definition.jsx" />
-    <Content Include="Scripts\Core\Forge.js" />
-    <Content Include="Scripts\Core\Functions.js" />
+    <Content Include="Scripts\Core\Settings.js" />
     <Content Include="Scripts\Designer\Components\Designer.jsx" />
     <Content Include="Scripts\Designer\Components\Designer__List.jsx" />
     <Content Include="Scripts\Designer\Components\Designer__Menu.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition__Tags.jsx" />
-    <Content Include="Scripts\Designer\DesignerActions.js" />
-    <Content Include="Scripts\Designer\DesignerReducer.js" />
+    <Content Include="Scripts\Designer\Actions.js" />
+    <Content Include="Scripts\Designer\Reducer.js" />
     <Content Include="Scripts\Library\Components\Library.jsx" />
     <Content Include="Scripts\Library\Components\Library_Game.jsx" />
-    <Content Include="Scripts\Library\LibraryReducer.js" />
-    <Content Include="Scripts\Library\LibraryActions.js" />
+    <Content Include="Scripts\Library\Reducer.js" />
+    <Content Include="Scripts\Library\Actions.js" />
     <Content Include="Scripts\Tests\Components\SpecRunner.jsx" />
     <Content Include="Scripts\Tests\Specs\DefinitionSpec.jsx" />
     <Content Include="Scripts\Vendor\enzyme-2.7.1.js" />
@@ -270,12 +271,11 @@
     <Content Include="Styles\Fonts\font-awesome.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Scripts\global.js" />
+    <Content Include="Scripts\Global.js" />
     <Content Include="Scripts\Vendor\jquery-1.10.2.js" />
     <Content Include="Scripts\Vendor\moment.js" />
     <Content Include="Scripts\Vendor\pubsub.js" />
     <Content Include="Scripts\Vendor\react-with-addons-0.13.3.js" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Styles\Fonts\fontawesome-webfont.svg" />
     <Content Include="Styles\site.css">
       <DependentUpon>site.scss</DependentUpon>
@@ -338,7 +338,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Core\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

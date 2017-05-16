@@ -2,6 +2,8 @@
     loading: true,
     saving: false,
 
+    stage: Forge.lifeCycle.stages.init,
+
     Game:           {},
     Rules:          [],
     Definitions:    [],
@@ -32,9 +34,9 @@ function coreReducer(state = initialCoreState, action){
 
             nextState.Definitions.forEach(d => {
                 // Combine Settings & Rules, then sort by Priority.
-                d.Settings = Forge.functions.sortSettings([
+                d.Settings = Forge.utilities.sortSettings([
                     ...d.Settings,
-                    ...Forge.functions.getRules(d.Tags, nextState.Rules)
+                    ...Forge.utilities.getRules(d.Tags, nextState.Rules)
                 ]);
             });
 

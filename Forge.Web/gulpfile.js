@@ -5,7 +5,7 @@ const plumber =     require('gulp-plumber');
 
 const sourceJS = [
     // Global & Utilities
-    'Scripts/global.js',
+    'Scripts/Global.js',
 
     // Actions & Reducers
     'Scripts/Core/*.js',

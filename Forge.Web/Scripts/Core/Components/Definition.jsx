@@ -16,8 +16,6 @@ Forge.__Definition = React.createClass({
             onChange: this.valueChange
         };
 
-        console.log(`render ${model.Name}`)
-
         // Dynamically create the component based on Control name.
         const controlNode = React.createElement(
             Forge.components.controls[controlName], 
@@ -34,7 +32,8 @@ Forge.__Definition = React.createClass({
     // -----------------------------
     componentWillMount: function(){
         // Trigger Lifecycle: Initialize
-        this.valueChange(this.props.model.Value, null, Forge.stages.init);
+        const { stages } = Forge.lifeCycle;
+        this.valueChange(this.props.model.Value, null, stages.init);
     },
 
     // -----------------------------
@@ -42,7 +41,8 @@ Forge.__Definition = React.createClass({
         if (this.props.model.Value == nextProps.model.Value){
             // Trigger Lifecycle: Update.Only do this when something other
             // than the internal value has changed (ie: Settings).
-            this.valueChange(nextProps.model.Value, null, Forge.stages.update, nextProps);
+            const { stages } = Forge.lifeCycle;
+            this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
         }
     },
 
@@ -52,25 +52,21 @@ Forge.__Definition = React.createClass({
 
         return [
             ...(model.Settings || []),
-            ...Forge.functions.getRules(model.Tags, core.Rules)
+            ...Forge.utilities.getRules(model.Tags, core.Rules)
         ];
     },
 
     // -----------------------------
-    valueChange: function(
-        value,
-        evt,
-        lifecycle = Forge.stages.update,
-        props = this.props) {
+    valueChange: function(value, ev, lifecycle = Forge.lifeCycle.stages.update, props = this.props) {
 
         const { model, core, dispatch } = props;
 
         // Only include settings that match the current lifecycle
         const computedSettings = this.computeSettings(props || this.props)
-            .filter(s => Forge.functions.isSettingAlive(s.LifeCycle, lifecycle));
+            .filter(s => Forge.lifeCycle.isActive(s.LifeCycle, lifecycle));
 
         // Order by Priority / IsRule
-        Forge.functions.sortSettings(computedSettings)
+        Forge.utilities.sortSettings(computedSettings)
             // Apply all settings
             .forEach(s => value = Forge.settings[s.Name](value, s.Value));
         

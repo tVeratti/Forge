@@ -1,50 +1,20 @@
-﻿var user = {};
+﻿// Primary NameSpace
+// =====================================
+const Forge = {
+    settings: {},
+    lifeCycle: {},
+    components: {
+        controls: {}
+    }
+};
+
+let user = {};
 
 // Vendor
 // =====================================
 const { combineReducers, applyMiddleware, createStore } = Redux;
 const { Provider, connect } = ReactRedux;
 
-// Utils
-// =====================================
-const debounceAction = (thunk, key, time = 500) => { 
-    return Object.assign(thunk, { meta: { debounce: { time, key }}});
-};
-
-const pushImmutable = (array, item) => {
-    var newArray= (array || []).slice();
-    newArray.push(item);
-    return newArray;
-};
-
-const contains = (array, item) => array.indexOf(item) !== -1;
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-};
-
-const sortBy = (arr, prop) => {
-    return arr.sort((a, b) => {
-        if (a[prop] > b[prop]) return 1;
-        if (a[prop] < b[prop]) return -1;
-        return 0;
-    });
-}
 
 const incrementName = (list, name, activeIndex) => {
     // const pattern = /(\(\d+\))/g;

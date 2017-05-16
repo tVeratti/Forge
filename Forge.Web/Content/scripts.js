@@ -6,6 +6,16 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+// Primary NameSpace
+// =====================================
+var Forge = {
+    settings: {},
+    lifeCycle: {},
+    components: {
+        controls: {}
+    }
+};
+
 var user = {};
 
 // Vendor
@@ -18,52 +28,6 @@ var _ReactRedux = ReactRedux,
     Provider = _ReactRedux.Provider,
     connect = _ReactRedux.connect;
 
-// Utils
-// =====================================
-
-var debounceAction = function debounceAction(thunk, key) {
-    var time = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
-
-    return Object.assign(thunk, { meta: { debounce: { time: time, key: key } } });
-};
-
-var pushImmutable = function pushImmutable(array, item) {
-    var newArray = (array || []).slice();
-    newArray.push(item);
-    return newArray;
-};
-
-var contains = function contains(array, item) {
-    return array.indexOf(item) !== -1;
-};
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function () {
-        var context = this,
-            args = arguments;
-        var later = function later() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
-var sortBy = function sortBy(arr, prop) {
-    return arr.sort(function (a, b) {
-        if (a[prop] > b[prop]) return 1;
-        if (a[prop] < b[prop]) return -1;
-        return 0;
-    });
-};
 
 var incrementName = function incrementName(list, name, activeIndex) {}
 // const pattern = /(\(\d+\))/g;
@@ -129,7 +93,7 @@ var coreActions = {
     // =====================================
     // --------------------------------
     api: {
-        FETCH_GAME: '/Designer/GetDesigner'
+        FETCH_GAME: '/Core/Get'
     },
 
     // Action Creators
@@ -212,9 +176,54 @@ var coreActions = {
     }
 };
 
+// LifeCycle Management
+// =====================================
+Forge.lifeCycle = new LifeCycle();
+
+function LifeCycle() {
+    // Stages
+    // --------------------------------
+    var _stages = {
+        wait: 'Wait',
+        init: 'Initialize',
+        initAndUpdate: 'InitializeAndUpdate',
+        update: 'Update'
+    };
+
+    // Order
+    // --------------------------------
+    var _order = [_wait, _init, _initAndUpdate, _update];
+
+    // --------------------------------
+    var _isActive = function _isActive(settingStage, stage) {
+        if (!store) return false;
+
+        var init = _stages.init,
+            update = _stages.update;
+
+        var index = _order.indexOf(settingStage);
+
+        switch (stage) {
+            case init:
+                return index === 1 || index === 2;
+            case update:
+                return index === 2 || index === 3;
+            default:
+                return false;
+        }
+    };
+
+    return {
+        stages: _stages,
+        order: _order,
+        isActive: _isActive
+    };
+};
 var initialCoreState = {
     loading: true,
     saving: false,
+
+    stage: Forge.lifeCycle.stages.init,
 
     Game: {},
     Rules: [],
@@ -246,7 +255,7 @@ function coreReducer() {
 
             nextState.Definitions.forEach(function (d) {
                 // Combine Settings & Rules, then sort by Priority.
-                d.Settings = Forge.functions.sortSettings([].concat(_toConsumableArray(d.Settings), _toConsumableArray(Forge.functions.getRules(d.Tags, nextState.Rules))));
+                d.Settings = Forge.utilities.sortSettings([].concat(_toConsumableArray(d.Settings), _toConsumableArray(Forge.utilities.getRules(d.Tags, nextState.Rules))));
             });
 
             nextState.loading = false;
@@ -307,31 +316,40 @@ function coreReducer() {
 
     return nextState;
 }
-var Forge = {};
+// Definition Settings
+// =====================================
+Forge.settings = {
+    // --------------------------------
+    Minimum: function Minimum(value, setting) {
+        if (isNaN(value)) value = 0;
+        return Math.max(+value, +setting);
+    },
 
-Forge.stages = {
-    init: 'Initialize',
-    initAndUpdate: 'InitializeAndUpdate',
-    update: 'Update'
+    // --------------------------------
+    Maximum: function Maximum(value, setting) {
+        if (isNaN(value)) value = 0;
+        return Math.min(+value, +setting);
+    },
+
+    // --------------------------------
+    Default: function Default(value, setting) {
+        return value || setting;
+    }
 };
-
-Forge.lifeCycle = [Forge.stages.init, Forge.stages.initAndUpdate, Forge.stages.update];
-
-Forge.components = {
-    controls: {}
-};
-
 // Core Functions
-// ---------------------------------
-Forge.functions = {
+// =====================================
+Forge.utilities = {
     // -----------------------------
     getRules: function getRules(tags, rules) {
-        var tagIds = (tags || []).map(function (t) {
-            return t.Id;
+        tags = tags || [];
+        rules = rules || [];
+
+        var tagIds = tags.map(function (t) {
+            return +t.Id;
         });
 
         // Merge rules into this list, adding the property IsRule = true.
-        var definitionRules = (rules || []).filter(function (r) {
+        var definitionRules = rules.filter(function (r) {
             return tagIds.indexOf(+r.TagId) > -1;
         });
 
@@ -345,41 +363,54 @@ Forge.functions = {
 
     // -----------------------------
     sortSettings: function sortSettings(settings) {
-        return (settings || []).sort(function (settingA, settingB) {
-            if (settingA.Priority > settingB.Priority) return 1;
-            if (settingA.Priority < settingB.Priority) return -1;
-            if (!!settingA.TagId && !settingB.TagId) return -1;
-            if (!!settingB.TagId && !settingA.TagId) return 1;
+        return (settings || []).sort(function (a, b) {
+            if (a.Priority > b.Priority) return 1;
+            if (a.Priority < b.Priority) return -1;
+            if (!!a.TagId && !b.TagId) return -1;
+            if (!!a.TagId && !b.TagId) return 1;
             return 0;
         });
-    },
-
-    // -----------------------------
-    isSettingAlive: function isSettingAlive(settingLifeCycle, currentLifeCycle) {
-        var index = Forge.lifeCycle.indexOf(settingLifeCycle);
-        switch (currentLifeCycle) {
-            case Forge.stages.init:
-                return index === 0 || index === 1;
-            case Forge.stages.update:
-                return index === 1 || index === 2;
-            default:
-                return false;
-        }
     }
 };
 
-Forge.settings = {
-    Minimum: function Minimum(value, setting) {
-        if (isNaN(value)) value = 0;
-        return Math.max(+value, +setting);
-    },
-    Maximum: function Maximum(value, setting) {
-        if (isNaN(value)) value = 0;
-        return Math.min(+value, +setting);
-    },
-    Default: function Default(value, setting) {
-        return value || setting;
-    }
+// General
+// =====================================
+// --------------------------------
+var debounceAction = function debounceAction(thunk, key) {
+    var time = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
+
+    return Object.assign(thunk, { meta: { debounce: { time: time, key: key } } });
+};
+
+// --------------------------------
+var contains = function contains(array, item) {
+    return array.indexOf(item) !== -1;
+};
+
+// --------------------------------
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function () {
+        var context = this,
+            args = arguments;
+        var later = function later() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
+// --------------------------------
+var sortBy = function sortBy(arr, prop) {
+    return arr.sort(function (a, b) {
+        if (a[prop] > b[prop]) return 1;
+        if (a[prop] < b[prop]) return -1;
+        return 0;
+    });
 };
 
 var initialCommonState = {
@@ -522,13 +553,12 @@ function libraryReducer() {
     var action = arguments[1];
 
 
-    var nextState = Object.assign({}, state);
+    var nextState = _extends({}, state);
 
     switch (action.type) {
         // --------------------------------
         case REQUEST_GAMES:
             nextState.isLoading = true;
-
             break;
 
         // --------------------------------
@@ -539,7 +569,7 @@ function libraryReducer() {
 
         // --------------------------------
         case FILTER_GAMES:
-            var filters = Object.assign({}, nextState.filters);
+            var filters = _extends({}, nextState.filters);
             filters[action.key] = action.value;
             nextState.filters = filters;
             break;
@@ -764,6 +794,78 @@ function UserPreferenceStore() {
 
     return self;
 }
+// // -------------------------------------------------
+// // <Designer />
+// // 
+// // =====================
+// // |       a   b       |
+// // =====================
+// // | 1 |     2     | 3 |
+// // |   |           |   |
+// // |   |           |   |
+// // =====================
+// // a: Designer.Summary
+// // b: Designer.Tabs
+// // 1: Designer.Definitions
+// // 2: Designer.Stage
+// // 3: Designer.Settings
+// //
+// // --------------------------------------------------
+// // =====================================
+// // Presentation
+// // =====================================
+// const __Designer = React.createClass({
+//     // -----------------------------
+//     render: function () {
+
+//         return (
+//             <div className='designer'>
+
+//                 {/* Game Information & Navigation */}
+//                 <Designer.Summary />
+//                 <Designer.Tabs />
+
+//                 <div className='designer__views'>
+//                     {/* Stage & Controls */}
+//                     <Designer.List />
+//                     <Designer.Stage />
+//                 </div>
+
+//             </div>
+//         );
+//     },
+
+//     // -----------------------------
+//     componentWillMount: function(){
+//         // Model comes from C# -
+//         // Set data into store with dispatch.
+//         const { dispatch, id } = this.props;
+//         dispatch(coreActions.fetchGame(id));
+//     },
+
+//     // -----------------------------
+//     componentWillReceiveProps: function(nextProps){
+//         const game = nextProps.Game;
+//         if (game && game.Name) document.title = `${game.Name} - Forge | Designer`;
+//     }
+// });
+
+// // =====================================
+// // Container
+// // =====================================
+// const Designer = connect(
+//     state => { return { ...state.core } }
+// )(__Designer);
+
+// // =====================================
+// // Root
+// // =====================================
+// Designer.Provider = (props) => (
+//     <Provider store={store}>
+//         <Designer {...props} />
+//     </Provider>
+// );
+
 // =====================================
 // <Banner />
 // =====================================
@@ -1362,6 +1464,339 @@ var Tab = React.createClass({
         this.refs.input.checked = checked;
     }
 });
+// --------------------------------------------------
+// <Forge.Definition />
+
+// - Settings
+// - ControlName
+// - Value
+// --------------------------------------------------
+Forge.__Definition = React.createClass({
+    displayName: '__Definition',
+
+    // -----------------------------
+    render: function render() {
+        var model = this.props.model;
+        var ControlName = model.ControlName,
+            Control = model.Control;
+
+        var controlName = ControlName || Control || 'Number';
+        var controlProps = {
+            Model: model,
+            onChange: this.valueChange
+        };
+
+        // Dynamically create the component based on Control name.
+        var controlNode = React.createElement(Forge.components.controls[controlName], controlProps);
+
+        return React.createElement(
+            'div',
+            { className: 'definition' },
+            React.createElement(
+                'p',
+                { className: 'definition__name' },
+                model.Name
+            ),
+            React.createElement(
+                'p',
+                { className: 'definition__control' },
+                controlNode
+            )
+        );
+    },
+    // -----------------------------
+    componentWillMount: function componentWillMount() {
+        // Trigger Lifecycle: Initialize
+        var stages = Forge.lifeCycle.stages;
+
+        this.valueChange(this.props.model.Value, null, stages.init);
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        if (this.props.model.Value == nextProps.model.Value) {
+            // Trigger Lifecycle: Update.Only do this when something other
+            // than the internal value has changed (ie: Settings).
+            var stages = Forge.lifeCycle.stages;
+
+            this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
+        }
+    },
+
+    // -----------------------------
+    computeSettings: function computeSettings(props) {
+        var model = props.model,
+            core = props.core;
+
+
+        return [].concat(_toConsumableArray(model.Settings || []), _toConsumableArray(Forge.utilities.getRules(model.Tags, core.Rules)));
+    },
+
+    // -----------------------------
+    valueChange: function valueChange(value, ev) {
+        var lifecycle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Forge.lifeCycle.stages.update;
+        var props = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.props;
+        var model = props.model,
+            core = props.core,
+            dispatch = props.dispatch;
+
+        // Only include settings that match the current lifecycle
+
+        var computedSettings = this.computeSettings(props || this.props).filter(function (s) {
+            return Forge.lifeCycle.isActive(s.LifeCycle, lifecycle);
+        });
+
+        // Order by Priority / IsRule
+        Forge.utilities.sortSettings(computedSettings)
+        // Apply all settings
+        .forEach(function (s) {
+            return value = Forge.settings[s.Name](value, s.Value);
+        });
+
+        if (value !== props.model.Value) {
+            dispatch(coreActions.updateDefinition(_extends({}, model, {
+                Value: value
+            })));
+        };
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Forge.Definition = connect(function (state) {
+    return { core: state.core };
+})(Forge.__Definition);
+// =====================================
+// <Library />
+// =====================================
+var Library = function Library() {
+    return React.createElement(
+        'div',
+        { className: 'library' },
+        React.createElement(Library.Summary, null),
+        React.createElement(Library.Controls, null),
+        React.createElement(Library.List, null)
+    );
+};
+
+// =====================================
+// Root
+// =====================================
+Library.Provider = function () {
+    return React.createElement(
+        Provider,
+        { store: store },
+        React.createElement(Library, null)
+    );
+};
+
+// =====================================
+// Presentation
+// =====================================
+Library.__Controls = React.createClass({
+    displayName: '__Controls',
+
+    // --------------------------------
+    render: function render() {
+
+        return React.createElement(
+            'div',
+            { className: 'library__controls' },
+            React.createElement(Library.Filters, null),
+            React.createElement(
+                'div',
+                { className: 'library__create' },
+                React.createElement('input', { ref: 'input' }),
+                React.createElement(
+                    'button',
+                    { onClick: this.createGame },
+                    'Create'
+                )
+            )
+        );
+    },
+
+    // --------------------------------
+    createGame: function createGame() {
+        var gameInput = this.refs.input;
+        this.props.dispatch(libraryActions.createGame(gameInput.value));
+        gameInput.value = '';
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Library.Controls = connect()(Library.__Controls);
+
+// =====================================
+// Presentation
+// =====================================
+Library.__Filters = React.createClass({
+    displayName: '__Filters',
+
+    // --------------------------------
+    render: function render() {
+        var permissionNodes = this.renderPermissionTabs();
+        var keywordNode = this.renderKeywordInput();
+        var genreNode = this.renderGenreSelect();
+
+        return React.createElement(
+            'div',
+            { className: 'library__filters' },
+            React.createElement(
+                'div',
+                null,
+                permissionNodes
+            ),
+            React.createElement(
+                'div',
+                { className: 'library__other-filters' },
+                keywordNode,
+                React.createElement(GenreSelect, null)
+            )
+        );
+    },
+
+    // --------------------------------
+    renderPermissionTabs: function renderPermissionTabs() {
+        var _this9 = this;
+
+        // Get action types from libraryActions.
+        var _libraryActions$filte = libraryActions.filters,
+            SHOW_PUBLIC = _libraryActions$filte.SHOW_PUBLIC,
+            SHOW_MINE = _libraryActions$filte.SHOW_MINE,
+            SHOW_SHARED = _libraryActions$filte.SHOW_SHARED;
+        var PERMISSION = libraryActions.filterTypes.PERMISSION;
+
+        // Prepare some options for permission filters.
+
+        var permissionTypes = [{ id: SHOW_PUBLIC, label: 'Public' }, { id: SHOW_MINE, label: 'My Games' }, { id: SHOW_SHARED, label: 'Shared with Me' }];
+
+        // Render permission options into Tab nodes.
+        var tabNodes = permissionTypes.map(function (permission) {
+            var tabHandler = _this9.changeFilter.bind(_this9, PERMISSION, permission.id);
+            var checked = permission.id === _this9.props.library.filters[PERMISSION];
+            console.log('state', _this9.props.library.filters[PERMISSION]);
+            return React.createElement(Tab, _extends({ key: permission.id, name: 'access-tab', onChange: tabHandler, checked: checked }, permission));
+        });
+
+        return React.createElement(
+            'div',
+            { className: 'library__permissions tab-group' },
+            tabNodes
+        );
+    },
+
+    // --------------------------------
+    renderKeywordInput: function renderKeywordInput() {
+        var KEYWORD = libraryActions.filterTypes.KEYWORD;
+
+        var inputHandler = this.changeFilter.bind(this, KEYWORD);
+
+        return React.createElement('input', { className: 'library__keyword', onInput: inputHandler });
+    },
+
+    // --------------------------------
+    renderGenreSelect: function renderGenreSelect() {
+        var GENRE = libraryActions.filterTypes.GENRE;
+
+        var changeHandler = this.changeFilter.bind(this, GENRE);
+
+        return React.createElement(GenreSelect, { onChange: changeHandler });
+    },
+
+    // --------------------------------
+    changeFilter: function changeFilter(key, event) {
+        var value = event.target ? event.target.value : event;
+
+        // Update store state and request games with new filters.
+        this.props.dispatch(libraryActions.filterGames(key, value));
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Library.Filters = connect(function (state) {
+    return { library: state.library };
+})(Library.__Filters);
+
+// =====================================
+// <Library.Game />
+// =====================================
+Library.Game = function (_ref7) {
+    var game = _objectWithoutProperties(_ref7, []);
+
+    return React.createElement(
+        'li',
+        { className: 'library__game' },
+        React.createElement(
+            'a',
+            { href: '/Designer?id=' + game.Id },
+            React.createElement(
+                'p',
+                null,
+                game.Name
+            ),
+            React.createElement(
+                'p',
+                null,
+                game.CreatedByUserName
+            )
+        )
+    );
+};
+// =====================================
+// Presentation
+// =====================================
+Library.__List = React.createClass({
+    displayName: '__List',
+
+    // --------------------------------
+    render: function render() {
+        var gameNodes = this.renderGames();
+
+        return React.createElement(
+            'ul',
+            { className: 'library__list' },
+            gameNodes
+        );
+    },
+
+    // --------------------------------
+    componentDidMount: function componentDidMount() {
+        this.props.dispatch(libraryActions.fetchGames());
+    },
+
+    // --------------------------------
+    renderGames: function renderGames() {
+        return this.props.games.map(function (game) {
+            return React.createElement(Library.Game, _extends({ key: game.Id }, game));
+        });
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Library.List = connect(function (state) {
+    return _extends({}, state.library);
+})(Library.__List);
+
+// =====================================
+// <Library.Summary />
+// =====================================
+Library.Summary = function (_ref8) {
+    var game = _objectWithoutProperties(_ref8, []);
+
+    return React.createElement(
+        'div',
+        { className: 'section section--summary library__summary' },
+        React.createElement('div', { className: 'separator separator--medium' })
+    );
+};
 // -------------------------------------------------
 // <Designer />
 // 
@@ -1479,7 +1914,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderList: function renderList() {
-        var _this9 = this;
+        var _this10 = this;
 
         var _props$designer = this.props.designer,
             tab = _props$designer.tab,
@@ -1509,8 +1944,8 @@ Designer.__List = React.createClass({
 
             // Click Handler.
             var onClick = function onClick() {
-                _this9.setState({ open: false });
-                _this9.props.dispatch(designerActions.selectListItem(i));
+                _this10.setState({ open: false });
+                _this10.props.dispatch(designerActions.selectListItem(i));
             };
 
             return React.createElement(
@@ -1540,7 +1975,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderActions: function renderActions() {
-        var _this10 = this;
+        var _this11 = this;
 
         var tab = this.props.designer.tab;
         var _state2 = this.state,
@@ -1550,14 +1985,14 @@ Designer.__List = React.createClass({
 
         var toggleText = open ? 'Hide' : 'Show';
         var toggle = function toggle() {
-            return _this10.setState({ open: !open });
+            return _this11.setState({ open: !open });
         };
 
         var buttons = ['List', 'Search'];
         if (tab === 'Definitions') buttons.push('Settings');
 
         var miniButtons = buttons.map(function (b) {
-            var onClick = _this10.changeList.bind(_this10, b);
+            var onClick = _this11.changeList.bind(_this11, b);
             var className = 'button icon icon--' + b.toLowerCase();
             if (b === listTab) className += ' button--active';
 
@@ -1763,7 +2198,7 @@ Designer.__Settings = React.createClass({
 
     // -----------------------------
     renderSettingsList: function renderSettingsList() {
-        var _this11 = this;
+        var _this12 = this;
 
         var _props5 = this.props,
             settings = _props5.settings,
@@ -1779,7 +2214,7 @@ Designer.__Settings = React.createClass({
 
         return settings.map(function (s) {
 
-            var clickHandler = _this11.addSetting.bind(_this11, s);
+            var clickHandler = _this12.addSetting.bind(_this12, s);
             var className = 'setting';
             var disabled = false;
             if (contains(activeSettings, s.Name)) {
@@ -2043,18 +2478,7 @@ Designer.__Summary = React.createClass({
                 React.createElement(
                     'b',
                     null,
-                    'Created By:'
-                ),
-                ' ',
-                game.CreatedByUserName
-            ),
-            React.createElement(
-                'p',
-                null,
-                React.createElement(
-                    'b',
-                    null,
-                    'Last Updated:'
+                    game.CreatedByUserName
                 ),
                 ' ',
                 createdAgo
@@ -2095,7 +2519,7 @@ Designer.__Tabs = React.createClass({
 
     // -----------------------------
     renderTab: function renderTab(label, index) {
-        var _this12 = this;
+        var _this13 = this;
 
         // Active Tab Check
         var checked = label === this.props.tab || undefined;
@@ -2103,7 +2527,7 @@ Designer.__Tabs = React.createClass({
         // Click Handler
         // Dispatch action to store and update filter for tab.
         var onClick = function onClick() {
-            return _this12.props.dispatch(designerActions.changeTab(label));
+            return _this13.props.dispatch(designerActions.changeTab(label));
         };
 
         return React.createElement(Tab, { key: label, id: label, label: label, onChange: onClick, name: 'designer-tabs', checked: checked });
@@ -2117,335 +2541,6 @@ Designer.Tabs = connect(function (state) {
     return { tab: state.designer.tab };
 })(Designer.__Tabs);
 
-// --------------------------------------------------
-// <Forge.Definition />
-
-// - Settings
-// - ControlName
-// - Value
-// --------------------------------------------------
-Forge.__Definition = React.createClass({
-    displayName: '__Definition',
-
-    // -----------------------------
-    render: function render() {
-        var model = this.props.model;
-        var ControlName = model.ControlName,
-            Control = model.Control;
-
-        var controlName = ControlName || Control || 'Number';
-        var controlProps = {
-            Model: model,
-            onChange: this.valueChange
-        };
-
-        // Dynamically create the component based on Control name.
-        var controlNode = React.createElement(Forge.components.controls[controlName], controlProps);
-
-        return React.createElement(
-            'div',
-            { className: 'definition' },
-            React.createElement(
-                'p',
-                { className: 'definition__name' },
-                model.Name
-            ),
-            React.createElement(
-                'p',
-                { className: 'definition__control' },
-                controlNode
-            )
-        );
-    },
-    // -----------------------------
-    componentWillMount: function componentWillMount() {
-        // Trigger Lifecycle: Initialize
-        this.valueChange(this.props.model.Value, null, Forge.stages.init);
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        if (this.props.model.Value == nextProps.model.Value) {
-            // Trigger Lifecycle: Update.Only do this when something other
-            // than the internal value has changed (ie: Settings).
-            this.valueChange(nextProps.model.Value, null, Forge.stages.update, nextProps);
-        }
-    },
-
-    // -----------------------------
-    computeSettings: function computeSettings(props) {
-        var model = props.model,
-            core = props.core;
-
-
-        return [].concat(_toConsumableArray(model.Settings || []), _toConsumableArray(Forge.functions.getRules(model.Tags, core.Rules)));
-    },
-
-    // -----------------------------
-    valueChange: function valueChange(value, evt) {
-        var lifecycle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Forge.stages.update;
-        var props = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.props;
-        var model = props.model,
-            core = props.core,
-            dispatch = props.dispatch;
-
-        // Only include settings that match the current lifecycle
-
-        var computedSettings = this.computeSettings(props || this.props).filter(function (s) {
-            return Forge.functions.isSettingAlive(s.LifeCycle, lifecycle);
-        });
-
-        // Order by Priority / IsRule
-        Forge.functions.sortSettings(computedSettings)
-        // Apply all settings
-        .forEach(function (s) {
-            return value = Forge.settings[s.Name](value, s.Value);
-        });
-
-        if (value !== props.model.Value) {
-            dispatch(coreActions.updateDefinition(_extends({}, model, {
-                Value: value
-            })));
-        };
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Forge.Definition = connect(function (state) {
-    return { core: state.core };
-})(Forge.__Definition);
-// =====================================
-// <Library />
-// =====================================
-var Library = function Library() {
-    return React.createElement(
-        'div',
-        { className: 'library' },
-        React.createElement(Library.Summary, null),
-        React.createElement(Library.Controls, null),
-        React.createElement(Library.List, null)
-    );
-};
-
-// =====================================
-// Root
-// =====================================
-Library.Provider = function () {
-    return React.createElement(
-        Provider,
-        { store: store },
-        React.createElement(Library, null)
-    );
-};
-
-// =====================================
-// Presentation
-// =====================================
-Library.__Controls = React.createClass({
-    displayName: '__Controls',
-
-    // --------------------------------
-    render: function render() {
-
-        return React.createElement(
-            'div',
-            { className: 'library__controls' },
-            React.createElement(Library.Filters, null),
-            React.createElement(
-                'div',
-                { className: 'library__create' },
-                React.createElement('input', { ref: 'input' }),
-                React.createElement(
-                    'button',
-                    { onClick: this.createGame },
-                    'Create'
-                )
-            )
-        );
-    },
-
-    // --------------------------------
-    createGame: function createGame() {
-        var gameInput = this.refs.input;
-        this.props.dispatch(libraryActions.createGame(gameInput.value));
-        gameInput.value = '';
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Library.Controls = connect()(Library.__Controls);
-
-// =====================================
-// Presentation
-// =====================================
-Library.__Filters = React.createClass({
-    displayName: '__Filters',
-
-    // --------------------------------
-    render: function render() {
-        var permissionNodes = this.renderPermissionTabs();
-        var keywordNode = this.renderKeywordInput();
-        var genreNode = this.renderGenreSelect();
-
-        return React.createElement(
-            'div',
-            { className: 'library__filters' },
-            React.createElement(
-                'div',
-                null,
-                permissionNodes
-            ),
-            React.createElement(
-                'div',
-                { className: 'library__other-filters' },
-                keywordNode,
-                React.createElement(GenreSelect, null)
-            )
-        );
-    },
-
-    // --------------------------------
-    renderPermissionTabs: function renderPermissionTabs() {
-        var _this13 = this;
-
-        // Get action types from libraryActions.
-        var _libraryActions$filte = libraryActions.filters,
-            SHOW_PUBLIC = _libraryActions$filte.SHOW_PUBLIC,
-            SHOW_MINE = _libraryActions$filte.SHOW_MINE,
-            SHOW_SHARED = _libraryActions$filte.SHOW_SHARED;
-        var PERMISSION = libraryActions.filterTypes.PERMISSION;
-
-        // Prepare some options for permission filters.
-
-        var permissionTypes = [{ id: SHOW_PUBLIC, label: 'Public' }, { id: SHOW_MINE, label: 'My Games' }, { id: SHOW_SHARED, label: 'Shared with Me' }];
-
-        // Render permission options into Tab nodes.
-        var tabNodes = permissionTypes.map(function (permission) {
-            var tabHandler = _this13.changeFilter.bind(_this13, PERMISSION, permission.id);
-            var checked = permission.id === _this13.props.library.filters[PERMISSION];
-            console.log('state', _this13.props.library.filters[PERMISSION]);
-            return React.createElement(Tab, _extends({ key: permission.id, name: 'access-tab', onChange: tabHandler, checked: checked }, permission));
-        });
-
-        return React.createElement(
-            'div',
-            { className: 'library__permissions tab-group' },
-            tabNodes
-        );
-    },
-
-    // --------------------------------
-    renderKeywordInput: function renderKeywordInput() {
-        var KEYWORD = libraryActions.filterTypes.KEYWORD;
-
-        var inputHandler = this.changeFilter.bind(this, KEYWORD);
-
-        return React.createElement('input', { className: 'library__keyword', onInput: inputHandler });
-    },
-
-    // --------------------------------
-    renderGenreSelect: function renderGenreSelect() {
-        var GENRE = libraryActions.filterTypes.GENRE;
-
-        var changeHandler = this.changeFilter.bind(this, GENRE);
-
-        return React.createElement(GenreSelect, { onChange: changeHandler });
-    },
-
-    // --------------------------------
-    changeFilter: function changeFilter(key, event) {
-        var value = event.target ? event.target.value : event;
-
-        // Update store state and request games with new filters.
-        this.props.dispatch(libraryActions.filterGames(key, value));
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Library.Filters = connect(function (state) {
-    return { library: state.library };
-})(Library.__Filters);
-
-// =====================================
-// <Library.Game />
-// =====================================
-Library.Game = function (_ref7) {
-    var game = _objectWithoutProperties(_ref7, []);
-
-    return React.createElement(
-        'li',
-        { className: 'library__game' },
-        React.createElement(
-            'a',
-            { href: '/Designer?id=' + game.Id },
-            React.createElement(
-                'p',
-                null,
-                game.Name
-            ),
-            React.createElement(
-                'p',
-                null,
-                game.CreatedByUserName
-            )
-        )
-    );
-};
-// =====================================
-// Presentation
-// =====================================
-Library.__List = React.createClass({
-    displayName: '__List',
-
-    // --------------------------------
-    render: function render() {
-        var gameNodes = this.renderGames();
-
-        return React.createElement(
-            'ul',
-            { className: 'library__list' },
-            gameNodes
-        );
-    },
-
-    // --------------------------------
-    componentDidMount: function componentDidMount() {
-        this.props.dispatch(libraryActions.fetchGames());
-    },
-
-    // --------------------------------
-    renderGames: function renderGames() {
-        return this.props.games.map(function (game) {
-            return React.createElement(Library.Game, _extends({ key: game.Id }, game));
-        });
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-Library.List = connect(function (state) {
-    return _extends({}, state.library);
-})(Library.__List);
-
-// =====================================
-// <Library.Summary />
-// =====================================
-Library.Summary = function (_ref8) {
-    var game = _objectWithoutProperties(_ref8, []);
-
-    return React.createElement(
-        'div',
-        { className: 'section section--summary library__summary' },
-        React.createElement('div', { className: 'separator separator--medium' })
-    );
-};
 Forge.components.controls.Number = React.createClass({
     displayName: 'Number',
 
