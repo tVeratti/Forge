@@ -118,9 +118,9 @@ const __Definition__Tags = React.createClass({
         model.Tags = tags;
 
         // Update rules
-        model.Settings = Forge.functions.sortSettings([
+        model.Settings = Forge.utilities.sortSettings([
             ...(model.Settings || []).filter(s => !s.TagId),
-            ...Forge.functions.getRules(tags, core.Rules)
+            ...Forge.utilities.getRules(tags, core.Rules)
         ]);
 
         dispatch(coreActions.updateDefinition(model));

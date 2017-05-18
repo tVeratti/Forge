@@ -211,6 +211,7 @@
     <Content Include="Content\tests.js" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\Builder\Actions.js" />
+    <Content Include="Scripts\Builder\Components\Builder__Groups.jsx" />
     <Content Include="Scripts\Builder\Reducer.js" />
     <Content Include="Scripts\Builder\Components\Builder.jsx" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
@@ -227,6 +228,7 @@
     <Content Include="Scripts\Core\LifeCycle.js" />
     <Content Include="Scripts\Core\Reducer.js" />
     <Content Include="Scripts\Core\Utilities.js" />
+    <Content Include="Scripts\Designer\Components\Designer__Preview.jsx" />
     <Content Include="Scripts\Designer\Components\Designer__Search.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition__Settings.jsx" />

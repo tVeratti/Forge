@@ -96,6 +96,7 @@ Designer.__Stage = React.createClass({
             case CATEGORIES.TAGS:            return <Designer.EditTag />;
             case CATEGORIES.RULES:           return <Designer.EditRule />;
             case CATEGORIES.DEFINITIONS:     return <Designer.EditDefinition />;
+            case 'Preview':                  return <Designer.Preview />;
             default:                         return <Designer.Menu />
         }
     },

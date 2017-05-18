@@ -5,7 +5,7 @@
 // Presentation
 // =====================================
 Designer.__Tabs = React.createClass({
-    views: ['Menu', 'Tags', 'Rules', 'Definitions'],
+    views: ['Menu', 'Tags', 'Rules', 'Definitions', 'Preview'],
 
     // -----------------------------
     render: function () {

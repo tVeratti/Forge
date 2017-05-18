@@ -15,10 +15,10 @@ function LifeCycle(){
 	// Order
 	// --------------------------------
 	const _order = [
-		_wait,
-		_init,
-		_initAndUpdate,
-		_update
+		_stages.wait,
+		_stages.init,
+		_stages.initAndUpdate,
+		_stages.update
 	];
 
 	// --------------------------------

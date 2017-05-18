@@ -108,7 +108,7 @@ const __Definition__Settings = React.createClass({
         const itemSettings = selectedItem.Settings || [];
     
         // Get all Rules based on the tags on this item.
-        let rules = Forge.functions.getRules(selectedItem.Tags || [], core.Rules);
+        let rules = Forge.utilities.getRules(selectedItem.Tags || [], core.Rules);
         let settingIds = itemSettings.map(s => s.Id);
 
         // Nest Rules that share the same setting.
@@ -120,7 +120,7 @@ const __Definition__Settings = React.createClass({
             });
         });
         
-        return Forge.functions
+        return Forge.utilities
             .sortSettings(itemSettings)
             // Only show 1 rule per setting (rest are nested).
             .filter(s => {
@@ -163,7 +163,7 @@ const __Definition__Settings = React.createClass({
         // Set Priority based on index.
         flatSettings.forEach((s, i) => s.Priority = i);
 
-        model.Settings = Forge.functions.sortSettings(flatSettings);
+        model.Settings = Forge.utilities.sortSettings(flatSettings);
 
         dispatch(coreActions.updateDefinition(model));
     }

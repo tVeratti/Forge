@@ -2,7 +2,8 @@
     core:           coreReducer,
     common:         commonReducer,
     library:        libraryReducer,
-    designer:       designerReducer
+    designer:       designerReducer,
+    builder:        builderReducer
 });
 
 const store = createStore(

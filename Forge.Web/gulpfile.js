@@ -11,6 +11,7 @@ const sourceJS = [
     'Scripts/Core/*.js',
     'Scripts/Common/*.js',
     'Scripts/Library/*.js',
+    'Scripts/Builder/*.js',
     'Scripts/Designer/*.js',
 
     // Components
