@@ -62,7 +62,7 @@ Designer.__Stage = React.createClass({
         const { designer, dispatch, core } = this.props;
         const selectedItem = this.getSelectedItem();
 
-        if (!selectedItem){
+        if (!selectedItem && designer.tab !== 'Preview'){
 
             const createItem = () => dispatch(coreActions.createItem());
             const createButton = (

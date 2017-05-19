@@ -82,11 +82,9 @@ const coreActions = {
     updateItem: function(model, category){
         return (dispatch, getState) => {
             const { designer, core } = getState();
-            let index = designer.index;
-
-            if (index == -1){
-                index = core[category].indexOf(model);
-            }
+            let index = designer.index === -1
+                ? model.index
+                : designer.index;
 
             dispatch({ type: UPDATE_ITEM, category, index, model });
         }

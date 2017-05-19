@@ -19,9 +19,9 @@ const designerActions = {
     // --------------------------------
     api: {
         FETCH_DESIGNER:     '/Designer/GetDesigner',
-        SAVE_RULE:          '/Designer/SaveRule',
-        SAVE_TAG:           '/Designer/SaveTag',
-        SAVE_DEFINITION:    '/Designer/SaveDefinition'
+        SAVE_RULE:          '/Core/SaveRule',
+        SAVE_TAG:           '/Core/SaveTag',
+        SAVE_DEFINITION:    '/Core/SaveDefinition'
     },
 
     // Action Creators
@@ -84,13 +84,16 @@ const designerActions = {
             const { core, designer } = getState();
             const { tab, index } = designer;
             const gameId = core.Game.Id;
-            const model = core[tab][index];
+            const model = { ...core[tab][index] };
             
             let api;
             switch(designer.tab){
                 case 'Tags': api = this.api.SAVE_TAG; break;
                 case 'Rules': api = this.api.SAVE_RULE; break;
-                case 'Definitions':  api = this.api.SAVE_DEFINITION; break;
+                case 'Definitions':  
+                    api = this.api.SAVE_DEFINITION;
+                    model.Settings = model.Settings.filter(s => !s.TagId);
+                    break;
             }
             
             // Send model data to database.

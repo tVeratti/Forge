@@ -29,6 +29,7 @@ Forge.__Definition = React.createClass({
             </div>
         );
     },
+
     // -----------------------------
     componentWillMount: function(){
         // Trigger Lifecycle: Initialize
@@ -38,12 +39,13 @@ Forge.__Definition = React.createClass({
 
     // -----------------------------
     componentWillReceiveProps: function(nextProps){
-        if (this.props.model.Value == nextProps.model.Value){
-            // Trigger Lifecycle: Update.Only do this when something other
-            // than the internal value has changed (ie: Settings).
-            const { stages } = Forge.lifeCycle;
-            this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
-        }
+        const { core, model } = nextProps;
+        //if (core.updateIds.indexOf(model.Id) === -1 && model.Value === this.props.model.Value) return;
+
+        // Trigger Lifecycle: Update.Only do this when something other
+        // than the internal value has changed (ie: Settings).
+        const { stages } = Forge.lifeCycle;
+        this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
     },
 
     // -----------------------------
@@ -64,11 +66,11 @@ Forge.__Definition = React.createClass({
         // Only include settings that match the current lifecycle
         const computedSettings = this.computeSettings(props || this.props)
             .filter(s => Forge.lifeCycle.isActive(s.LifeCycle, lifecycle));
-
+            
         // Order by Priority / IsRule
         Forge.utilities.sortSettings(computedSettings)
             // Apply all settings
-            .forEach(s => value = Forge.settings[s.Name](value, s.Value));
+            .forEach(s => value = Forge.settings[s.SettingName || s.Name](value, s.Value));
         
         if (value !== props.model.Value){
             dispatch(coreActions.updateDefinition({

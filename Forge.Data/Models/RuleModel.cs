@@ -10,8 +10,10 @@ namespace Forge.Data.Models
     {
         public long SettingId { get; set; }
         public long TagId { get; set; }
+        public string SettingName { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+        public string LifeCycle { get; set; }
         public long CreatedById { get; set; }
         public DateTime CreatedDate { get; set; }
         public long ModifiedById { get; set; }
