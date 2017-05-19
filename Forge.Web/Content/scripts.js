@@ -286,27 +286,28 @@ function coreReducer() {
 
             nextState[action.category] = items;
 
-            var updateIds = [];
-            switch (action.category) {
-                // Rules
-                case CATEGORIES.RULES:
-                    updateIds = state.Definitions.filter(function (d) {
-                        return d.Settings.filter(function (s) {
-                            return s.TagId === action.model.TagId || s.SettingId === action.model.SettingId;
-                        })[0];
-                    }).map(function (d) {
-                        return d.Id;
-                    });break;
+            // let updateIds = [];
+            // switch(action.category){
+            //     // Rules
+            //     case CATEGORIES.RULES: 
+            //         updateIds = state.Definitions
+            //             .filter(d => {
+            //                 return d.Settings.filter(s => {
+            //                     return s.TagId === action.model.TagId 
+            //                         || s.SettingId === action.model.SettingId;
+            //                 })[0];
+            //             })
+            //             .map(d => d.Id); break;
 
-                // Update dependent children.
-                case CATEGORIES.DEFINITIONS:
-                    state.Definitions.forEach(function (d) {
-                        updateIds = [].concat(_toConsumableArray(updateIds), _toConsumableArray(d.Children || []));
-                    });
-                    break;
-            }
+            //     // Update dependent children.
+            //     case CATEGORIES.DEFINITIONS: 
+            //         state.Definitions.forEach(d => {
+            //             updateIds = [ ...updateIds, ...(d.Children || []) ];
+            //         });
+            //         break;
+            // }
 
-            nextState.updateIds = updateIds;
+            // nextState.updateIds = updateIds;
 
             break;
 
@@ -390,10 +391,11 @@ Forge.utilities = {
     // -----------------------------
     sortSettings: function sortSettings(settings) {
         return (settings || []).sort(function (a, b) {
-            if (a.Priority > b.Priority) return 1;
-            if (a.Priority < b.Priority) return -1;
             if (!!a.TagId && !b.TagId) return -1;
             if (!!a.TagId && !b.TagId) return 1;
+            if (a.Priority > b.Priority) return 1;
+            if (a.Priority < b.Priority) return -1;
+
             return 0;
         });
     }

@@ -23,10 +23,11 @@ Forge.utilities = {
 	// -----------------------------
 	sortSettings: function(settings){
 		return (settings || []).sort(function(a, b){
-			if (a.Priority > b.Priority) return 1;
-			if (a.Priority < b.Priority) return -1;
 			if (!!a.TagId && !b.TagId) return -1;
 			if (!!a.TagId && !b.TagId) return 1;
+			if (a.Priority > b.Priority) return 1;
+			if (a.Priority < b.Priority) return -1;
+			
 			return 0;
 		});
 	}

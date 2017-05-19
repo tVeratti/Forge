@@ -34,7 +34,7 @@ function coreReducer(state = initialCoreState, action){
 
             nextState.Definitions.forEach((d, i) => {
                 d.index = i;
-                
+
                 // Combine Settings & Rules, then sort by Priority.
                 d.Settings = Forge.utilities.sortSettings([
                     ...d.Settings,
@@ -78,28 +78,28 @@ function coreReducer(state = initialCoreState, action){
 
             nextState[action.category] = items;
 
-            let updateIds = [];
-            switch(action.category){
-                // Rules
-                case CATEGORIES.RULES: 
-                    updateIds = state.Definitions
-                        .filter(d => {
-                            return d.Settings.filter(s => {
-                                return s.TagId === action.model.TagId 
-                                    || s.SettingId === action.model.SettingId;
-                            })[0];
-                        })
-                        .map(d => d.Id); break;
+            // let updateIds = [];
+            // switch(action.category){
+            //     // Rules
+            //     case CATEGORIES.RULES: 
+            //         updateIds = state.Definitions
+            //             .filter(d => {
+            //                 return d.Settings.filter(s => {
+            //                     return s.TagId === action.model.TagId 
+            //                         || s.SettingId === action.model.SettingId;
+            //                 })[0];
+            //             })
+            //             .map(d => d.Id); break;
 
-                // Update dependent children.
-                case CATEGORIES.DEFINITIONS: 
-                    state.Definitions.forEach(d => {
-                        updateIds = [ ...updateIds, ...(d.Children || []) ];
-                    });
-                    break;
-            }
+            //     // Update dependent children.
+            //     case CATEGORIES.DEFINITIONS: 
+            //         state.Definitions.forEach(d => {
+            //             updateIds = [ ...updateIds, ...(d.Children || []) ];
+            //         });
+            //         break;
+            // }
 
-            nextState.updateIds = updateIds;
+            // nextState.updateIds = updateIds;
 
             break;
         
