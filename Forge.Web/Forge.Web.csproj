@@ -331,6 +331,7 @@
     <Content Include="Styles\Components\_expandables.scss" />
     <Content Include="Views\Tests\Index.cshtml" />
     <Content Include="Styles\Components\_spec-runner.scss" />
+    <Content Include="Styles\Components\_overlay.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -789,8 +789,6 @@ function designerReducer() {
 
     var nextState = Object.assign({}, state);
 
-    if (state.saving) return nextState;
-
     if (action.tab || action.index) {
         // Push a new history item for the user to navigate back to.
         nextState.itemHistory = [{
@@ -819,6 +817,7 @@ function designerReducer() {
         // --------------------------------
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
+            if (state.saving) return nextState;
             nextState.tab = action.tab || action.category || state.tab;
             nextState.index = action.index;
             nextState.activeTagId = null;
@@ -831,8 +830,12 @@ function designerReducer() {
 
         // --------------------------------
         case SAVE_MODEL:
+            if (state.saving) return nextState;
             nextState.saving = true;
             break;
+
+        case UPDATE_ITEM:
+            nextState.saving = false;
     }
 
     return nextState;
@@ -1665,6 +1668,8 @@ var __Designer = React.createClass({
 
     // -----------------------------
     render: function render() {
+        var designer = this.props.designer;
+
 
         return React.createElement(
             'div',
@@ -1673,7 +1678,8 @@ var __Designer = React.createClass({
             React.createElement(Designer.Tabs, null),
             React.createElement(
                 'div',
-                { className: 'designer__views' },
+                { className: 'designer__views overlay__anchor' },
+                designer.loading && React.createElement('div', { className: 'overlay' }),
                 React.createElement(Designer.List, null),
                 React.createElement(Designer.Stage, null)
             )
@@ -1693,7 +1699,7 @@ var __Designer = React.createClass({
 
     // -----------------------------
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        var game = nextProps.Game;
+        var game = nextProps.core.Game;
         if (game && game.Name) document.title = game.Name + ' - Forge | Designer';
     }
 });
@@ -1702,7 +1708,7 @@ var __Designer = React.createClass({
 // Container
 // =====================================
 var Designer = connect(function (state) {
-    return _extends({}, state.core);
+    return _extends({}, state);
 })(__Designer);
 
 // =====================================

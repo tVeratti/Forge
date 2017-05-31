@@ -11,8 +11,6 @@ function designerReducer(state = initialDesignerState, action){
     
     let nextState = Object.assign({}, state);
 
-    if (state.saving) return nextState;
-
     if (action.tab || action.index){
         // Push a new history item for the user to navigate back to.
         nextState.itemHistory = [
@@ -44,6 +42,7 @@ function designerReducer(state = initialDesignerState, action){
         // --------------------------------
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
+            if (state.saving) return nextState;
             nextState.tab = action.tab || action.category || state.tab;
             nextState.index = action.index;
             nextState.activeTagId = null;
@@ -56,8 +55,12 @@ function designerReducer(state = initialDesignerState, action){
         
         // --------------------------------
         case SAVE_MODEL:
+            if (state.saving) return nextState;
             nextState.saving = true;
             break;
+
+        case UPDATE_ITEM:
+            nextState.saving = false;
     }
 
     return nextState;

@@ -21,6 +21,7 @@
 const __Designer = React.createClass({
     // -----------------------------
     render: function () {
+        const { designer } = this.props;
 
         return (
             <div className='designer'>
@@ -29,7 +30,9 @@ const __Designer = React.createClass({
                 <Designer.Summary />
                 <Designer.Tabs />
 
-                <div className='designer__views'>
+                <div className='designer__views overlay__anchor'>
+                    {designer.loading && <div className='overlay'/>}
+
                     {/* Stage & Controls */}
                     <Designer.List />
                     <Designer.Stage />
@@ -49,7 +52,7 @@ const __Designer = React.createClass({
 
     // -----------------------------
     componentWillReceiveProps: function(nextProps){
-        const game = nextProps.Game;
+        const game = nextProps.core.Game;
         if (game && game.Name) document.title = `${game.Name} - Forge | Designer`;
     }
 });
@@ -58,7 +61,7 @@ const __Designer = React.createClass({
 // Container
 // =====================================
 const Designer = connect(
-    state => { return { ...state.core } }
+    state => { return { ...state } }
 )(__Designer);
 
 // =====================================
