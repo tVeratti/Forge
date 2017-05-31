@@ -36,17 +36,10 @@ function coreReducer(state = initialCoreState, action){
                 d.index = i;
 
                 // Combine Settings & Rules, then sort by Priority.
-                d.Settings = Forge.utilities.sortSettings([
-                    ...d.Settings,
-                    ...Forge.utilities.getRules(d.Tags, nextState.Rules)
-                ]);
+                const settings = (d.Settings || []).filter(s => !s.TagId);
+                const rules = Forge.utilities.getRules(d.Tags, nextState.Rules);
+                d.Settings = Forge.utilities.sortSettings([ ...settings, ...rules ]);
             });
-
-            // nextState.Definitions.forEach(d => {
-            //     d.Children = nextState.Definitions.filter(c => {
-            //         return c.Settings.filter(s => s.D)
-            //     })
-            // });
 
             nextState.loading = false;
             nextState.saving = false;
@@ -77,29 +70,19 @@ function coreReducer(state = initialCoreState, action){
             };
 
             nextState[action.category] = items;
+            switch(action.category){
+                case CATEGORIES.RULES: 
+                case CATEGORIES.TAGS:
+                    // Re-Calculate all Definitions' Settings
+                    nextState.Definitions = state.Definitions.map(d => {
+                        const settings = (d.Settings || []).filter(s => !s.TagId);
+                        const rules = Forge.utilities.getRules(d.Tags, nextState.Rules);
 
-            // let updateIds = [];
-            // switch(action.category){
-            //     // Rules
-            //     case CATEGORIES.RULES: 
-            //         updateIds = state.Definitions
-            //             .filter(d => {
-            //                 return d.Settings.filter(s => {
-            //                     return s.TagId === action.model.TagId 
-            //                         || s.SettingId === action.model.SettingId;
-            //                 })[0];
-            //             })
-            //             .map(d => d.Id); break;
+                        d.Settings = Forge.utilities.sortSettings([ ...settings, ...rules ]);
+                    });
+                    break;
+            }
 
-            //     // Update dependent children.
-            //     case CATEGORIES.DEFINITIONS: 
-            //         state.Definitions.forEach(d => {
-            //             updateIds = [ ...updateIds, ...(d.Children || []) ];
-            //         });
-            //         break;
-            // }
-
-            // nextState.updateIds = updateIds;
 
             break;
         

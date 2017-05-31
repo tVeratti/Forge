@@ -754,7 +754,7 @@ select {
     box-shadow: #e1b853 0 0 8px 0;
     outline: none; }
 
-@media (min-width: 420px) {
+@media (min-width: 720px) {
   .field {
     display: table;
     width: 100%; }
