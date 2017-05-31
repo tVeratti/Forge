@@ -40,37 +40,24 @@ Forge.__Definition = React.createClass({
     // -----------------------------
     componentWillReceiveProps: function(nextProps){
         const { core, model } = nextProps;
-        //if (core.updateIds.indexOf(model.Id) === -1 && model.Value === this.props.model.Value) return;
-
-        // Trigger Lifecycle: Update.Only do this when something other
-        // than the internal value has changed (ie: Settings).
         const { stages } = Forge.lifeCycle;
         this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
     },
 
     // -----------------------------
-    computeSettings: function(props){
-        const { model, core } = props;
+    valueChange: function(value, ev, stage, props) {
+        const { lifeCycle, settings } = Forge;
 
-        return [
-            ...(model.Settings || []),
-            ...Forge.utilities.getRules(model.Tags, core.Rules)
-        ];
-    },
-
-    // -----------------------------
-    valueChange: function(value, ev, lifecycle = Forge.lifeCycle.stages.update, props = this.props) {
+        // Defaults (event triggered == null)
+        stage = stage || lifeCycle.stages.update;
+        props = props || this.props;
 
         const { model, core, dispatch } = props;
 
-        // Only include settings that match the current lifecycle
-        const computedSettings = this.computeSettings(props || this.props)
-            .filter(s => Forge.lifeCycle.isActive(s.LifeCycle, lifecycle));
-            
-        // Order by Priority / IsRule
-        Forge.utilities.sortSettings(computedSettings)
-            // Apply all settings
-            .forEach(s => value = Forge.settings[s.SettingName || s.Name](value, s.Value));
+        // Apply all settings that match the current lifecycle
+        model.Settings
+            .filter(s => lifeCycle.isActive(s.LifeCycle, lifecycle))
+            .forEach(s => value = settings.apply(value, s));
         
         if (value !== props.model.Value){
             dispatch(coreActions.updateDefinition({
