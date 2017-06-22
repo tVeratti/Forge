@@ -2,35 +2,66 @@
 @import '../units';
 @import '../_mixins';
 
+.designer__stage{
+    display: table-cell;
+    vertical-align: top;
+
+    @media screen and (max-width: 720px){
+        &:not(.stage--menu):not(.stage--preview){ 
+            padding-left: 44px;
+        }
+        .stage__workspace{
+            padding-right: 10px;
+        }
+    }
+    
+}
 
 .stage{ 
-    flex-grow: 3;
     border-top: 1px solid $color-background-menu;
-    padding-bottom: 100px;
-    .designer__add{ margin: 0 10px; }
+    .designer__add{
+        margin: 0 5px;
+        height: 40px;
+    }
+
+    .designer__recent{
+        border-top: 1px solid $color-primary-40;
+        margin-top: 10px;
+        padding-top: 10px;
+        a{
+            display: block;
+        }
+    }
 }
 
 .stage__workspace{
     padding:20px;
-    .banner { padding-right: 20px; }
+    min-height: calc(100% - 91px);
 
-    .definition__tag,
-    .definition__setting {
-        border: 1px solid $color-primary-10;
-        padding: 10px 0;
+    .group__definitions{
+        display: flex;
+        flex-wrap:wrap;
+        .definition{
+            margin: 10px;
+        }
     }
 
     .definition__setting{
         position: relative;
+        padding: 10px 0;
 
-        .field__value{ font-size: 14px; }
+        .field__value{ 
+            font-size: 14px;
+            padding-right: 30px;
+        }
         .field__label {
              min-width: 120px;
         }
+
         .definition__setting-remove {
             position: absolute;
             font-family: FontAwesome;
-            right: 10px;
+            right: 0;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer !important;
@@ -43,13 +74,18 @@
     .definition__tag--active,
     .definition__setting--active,
     .definition__nested-rule--active { 
-        background-color: $color-action-20 !important;
+        background-color: $color-action-10 !important;
         color: $color-action-70 !important;
+        
+    }
+
+    .definition__setting--active,
+    .definition__nested-rule--active {
         transition: background-color 0.3s ease-in-out;
     }
 
     .definition__rule {
-        .expandable__label > .field .field__value{ opacity: 0.6; }
+        .expandable__label > .field .field__value{ opacity: 0.8; }
         &:after{
             position: absolute;
             font-family: FontAwesome;
@@ -62,8 +98,7 @@
     }
 
     .expandable__header { 
-        position: relative; 
-        .field__label { padding-left: 15px !important; }
+        position: relative;
     }
 
     .expandable__button { 
@@ -71,7 +106,7 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        left: -20px;
+        left: -8px;
     }
 
     .expandable__content{
@@ -80,14 +115,13 @@
     }
 
     .definition__overrides{
-        padding-left: 10px;
+        padding-left: 8px;
+        opacity: 0.7;
         border-left: 2px solid $color-primary-60;
+
         li {
-            padding: 5px;
-            opacity: 0.6;
             .field__label,
             .field__value{
-                padding: 0;
                 font-size: 12px;
             }
 
@@ -98,8 +132,7 @@
 
 .stage__menu{
     background-color: $color-background-menu-2;
-    //border-top: 1px solid $color-primary-60;
-    padding-left: 240px;
+    border-bottom: 1px solid $color-primary-60;
     .button{
         line-height: 1.2;
         padding: 10px 15px;

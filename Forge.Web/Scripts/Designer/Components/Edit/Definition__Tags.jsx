@@ -11,7 +11,7 @@ const __Definition__Tags = React.createClass({
         return (
             <div className='definition__tags field'>
                 <label className='field__label'>{addTagNode}</label>
-                <div className='field__value'> {tagNodes}</div>
+                <div className='field__value'><div className='tags'>{tagNodes}</div></div>
             </div>
         );
     },
@@ -53,14 +53,14 @@ const __Definition__Tags = React.createClass({
                 dispatch(designerActions.activateTag(newId));
             };
 
-            let className = 'definition__tag';
+            let className = 'button button--secondary definition__tag';
             if (tag.Id === designer.activeTagId) className += ' definition__tag--active';
 
             return (
-                <span className={className} onClick={clickHandler} key={tag.Id}>
+                <button className={className} onClick={clickHandler} key={tag.Id}>
                     <span className='definition__tag-name'>{tag.Name}</span>
                     <span className='fa fa-remove' onClick={removeTagHandler} />
-                </span>
+                </button>
             );
         });
     },
@@ -116,12 +116,6 @@ const __Definition__Tags = React.createClass({
         const { designer, dispatch, core } = this.props;
         const { ...model } = core.Definitions[designer.index];
         model.Tags = tags;
-
-        // Update rules
-        model.Settings = Forge.utilities.sortSettings([
-            ...(model.Settings || []).filter(s => !s.TagId),
-            ...Forge.utilities.getRules(tags, core.Rules)
-        ]);
 
         dispatch(coreActions.updateDefinition(model));
     }

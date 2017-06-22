@@ -25,10 +25,11 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public void SaveRule(RuleModel Model, long GameId)
+        public long SaveRule(RuleModel Model, long GameId)
         {
             Model.ModifiedById = User.Id;
             _context.Rules.Create(Model);
+            return 0;
         }
 
         [HttpPost]

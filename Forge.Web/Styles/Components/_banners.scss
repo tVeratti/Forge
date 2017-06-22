@@ -4,12 +4,13 @@
 
 
 @mixin icon($icon){ .banner__icon:after{ content: $icon; }}
+$color-border: rgba(black, 0.3);
 
 .banner {
     display: table;
     width: 100%;
-    background: $color-background-menu-2;
-    border-left: 1px dashed $color-primary-60;
+    background: $color-primary-20;
+    border: 1px solid $color-primary-60;
 
     .banner__content {
         display: table-cell;
@@ -21,7 +22,9 @@
         display: table-cell;
         width: 1%;
         padding: 10px;
-        color: $color-secondary-50;
+        color: $color-primary-80;
+        background: white;
+        vertical-align: middle;
 
         &:after {
             font-family: FontAwesome; 

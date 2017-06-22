@@ -23,6 +23,12 @@ function designerReducer(state = initialDesignerState, action){
     }
 
     switch(action.type){
+        case GET_LOCAL_GAME:
+            nextState.local = true;
+        case RECEIVE_GAME:
+            nextState.saving = false;
+            nextState.loading = false;
+            
         // --------------------------------
         case BACK:
             if (state.itemHistory.length){
@@ -43,9 +49,14 @@ function designerReducer(state = initialDesignerState, action){
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
             if (state.saving) return nextState;
+            nextState.navigated = !!action.tab || !!action.category;
             nextState.tab = action.tab || action.category || state.tab;
             nextState.index = action.index;
             nextState.activeTagId = null;
+            break;
+
+        case DELETE_ITEM:
+            nextState.index = -1;
             break;
 
         // --------------------------------

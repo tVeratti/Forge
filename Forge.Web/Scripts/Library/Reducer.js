@@ -12,13 +12,13 @@ function libraryReducer(state = initialLibraryState, action){
     switch(action.type){
         // --------------------------------
         case REQUEST_GAMES:
-            nextState.isLoading = true;
+            nextState.loading = true;
             break;
 
         // --------------------------------
         case RECEIVE_GAMES:
             nextState.games = action.games;
-            nextState.isLoading = false;
+            nextState.loading = false;
             break;
 
         // --------------------------------

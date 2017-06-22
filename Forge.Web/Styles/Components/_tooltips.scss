@@ -1,0 +1,40 @@
+﻿@import '../mixins';
+
+.tooltip{
+    position: relative;
+
+    .tooltip__value{
+        position: absolute;
+        display: none;
+        top: calc(100% + 5px);
+        left: 25%;
+        transform: translateX(-50%);
+        padding: 10px;
+        background: white;
+        border: 1px solid $color-primary-80;
+
+        &:after,
+        &:before {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            content: "";
+        }
+
+        &:before{
+            top: -10px;
+            @include arrow-up(10px, $color-primary-80);
+        }
+
+        &:after {
+            top: -9px;
+            @include arrow-up(10px, white);
+        }
+    }
+
+    &:hover{
+        .tooltip__value{
+            display: block;
+        }
+    }
+}

@@ -3,8 +3,10 @@
 // --------------------------------
 const REQUEST_GAME =        'REQUEST_GAME';
 const RECEIVE_GAME =        'RECEIVE_GAME';
+const GET_LOCAL_GAME =      'GET_LOCAL_GAME';
 const CREATE_ITEM =         'CREATE_ITEM';
 const UPDATE_ITEM =         'UPDATE_ITEM';
+const DELETE_ITEM =         'DELETE_ITEM';
 
 const UPDATE_DEFINITION =   'UPDATE_DEFINITION';
 const ADD_SETTING =         'ADD_SETTING';
@@ -30,8 +32,9 @@ const coreActions = {
     // Action Creators
     // =====================================
     // --------------------------------
-    requestGame: function()      { return { type: REQUEST_GAME }},
-    receiveGame: function(game)  { return { type: RECEIVE_GAME, game }},
+    requestGame:    function()      { return { type: REQUEST_GAME }},
+    receiveGame:    function(game)  { return { type: RECEIVE_GAME, game }},
+    getLocalGame:   function(id)    { return { type: GET_LOCAL_GAME, id}},
 
     // --------------------------------
     fetchGame: function(id){
@@ -41,8 +44,11 @@ const coreActions = {
 
             // Fetch games from database with state filters.
             $.get(this.api.FETCH_GAME, { id })
-                .then(response => JSON.parse(response))
-                .then(result => dispatch(this.receiveGame(result)));
+                .fail(response => dispatch(this.getLocalGame(id)))
+                .done(response => {
+                    const result = JSON.parse(response)
+                    dispatch(this.receiveGame(result))
+                });
         }
     },
 
@@ -74,19 +80,21 @@ const coreActions = {
     },
 
     // --------------------------------
-    updateDefinition: function(model){
-        return this.updateItem(model, CATEGORIES.DEFINITIONS);
+    updateDefinition: function(model, fromCore){
+        return this.updateItem(model, CATEGORIES.DEFINITIONS, false, fromCore);
     },
 
     // --------------------------------
-    updateItem: function(model, category){
+    updateItem: function(model, category, saved, fromCore){
+        saved = fromCore ? !model.unsaved : saved;
+
         return (dispatch, getState) => {
             const { designer, core } = getState();
             let index = designer.index === -1
                 ? model.index
                 : designer.index;
 
-            dispatch({ type: UPDATE_ITEM, category, index, model });
+            dispatch({ type: UPDATE_ITEM, category, index, model, saved, fromCore });
         }
     }
 }

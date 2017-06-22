@@ -16,21 +16,23 @@ Designer.__EditTag = React.createClass({
             .map(this.renderLink);
 
         const definitionNodes = core.Definitions
-            .filter(def => {
-                const defTags = def.Tags.map(t => t.Id);
-                return def.Id && defTags.indexOf(selectedItem.Id) !== -1;
+            .filter(d => {
+                const defTags = (d.Tags || []).map(t => t.Id);
+                return d.Id && defTags.indexOf(selectedItem.Id) !== -1;
             })
             .map(this.renderLink);
 
         return (
             <div className='edit edit--tag'>
-                <Field label='Name' id='tag-name' type='text' defaultValue={selectedItem.Name} onChange={this.updateTagName} />
-                
-                <div className='separator' />
 
-                <div className='edit__information'>
+                <div className='panel'>
+                    <h4>General</h4>
+                    <Field label='Name' id='tag-name' type='text' defaultValue={selectedItem.Name} onChange={this.updateTagName} />
+                </div>
 
-                    <Banner header='Active Links' icon='linked'>View objects which currently have this tag applied to them.</Banner>
+                <div className='panel edit__information'>
+                    <h4>Tagged Items</h4>
+                    <p className='summary'>View objects which currently have this tag applied to them.</p>
 
                     {/* Rules that have this tag applied to them */}
                     <Field label='Rules'>
@@ -54,10 +56,12 @@ Designer.__EditTag = React.createClass({
 
     // -----------------------------
     renderLink: function(item, tab){
+        const { dispatch } = this.props;
+        const category = item.TagId ? 'Rules' : 'Definitions';
 
         return (
             <li key={item.Name} className='list__item'>
-                <a>{item.Name}</a>
+                <Designer.Link model={item} dispatch={dispatch} category={category} />
             </li>
         );
     },

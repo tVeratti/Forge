@@ -51,8 +51,6 @@ const libraryActions = {
             // Get the current filters from store state.
             const filters = getState().library.filters;
 
-                console.log(this.api.FETCH_GAMES)
-
             // Fetch games from database with state filters.
             $.post(this.api.FETCH_GAMES, filters)
                 .then(response => JSON.parse(response))

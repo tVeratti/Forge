@@ -12,10 +12,13 @@ namespace Forge.Data.Models
         public string Name { get; set; }
         public DateTime CreatedDate { get; set; }
         public long CreatedById { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public long UpdatedById { get; set; }
         public int EditTypeId { get; set; }
         public int ViewTypeId { get; set; }
 
         public string CreatedByUserName { get; set; }
+        public string UpdatedByUserName { get; set; }
         public bool IsLocked { get; set; }
 
     }

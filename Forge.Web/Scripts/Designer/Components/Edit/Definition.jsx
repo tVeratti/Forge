@@ -68,6 +68,12 @@ Designer.__EditDefinition = React.createClass({
         const { ...model } = core.Definitions[designer.index];
         model[prop] = ev.target.value;
 
+        if (prop == 'ControlId') {
+            // Get the new ControlName
+            model.ControlName = core.Controls
+                .filter(c => c.Id == ev.target.value)[0].Name;
+        }
+
         dispatch(coreActions.updateDefinition(model));
     }
 });

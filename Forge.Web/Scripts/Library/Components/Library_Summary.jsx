@@ -1,10 +1,11 @@
 ﻿// =====================================
 // <Library.Summary />
 // =====================================
-Library.Summary = ({ ...game }) => {
+Library.Summary = () => {
     return (
         <div className='section section--summary library__summary'>
-            <div className='separator separator--medium' />
+            <h1>Library</h1>
+
         </div>
     );
 };

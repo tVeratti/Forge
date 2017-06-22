@@ -24,6 +24,12 @@ const designerActions = {
         SAVE_DEFINITION:    '/Core/SaveDefinition'
     },
 
+    // --------------------------------
+    dialogTypes: {
+        LOAD_ERROR: 'LOAD_ERROR',
+        LOAD_CONFLICT: 'LOAD_CONFLICT'
+    },
+
     // Action Creators
     // =====================================
     // --------------------------------
@@ -75,6 +81,19 @@ const designerActions = {
     },
 
     // --------------------------------
+    delete: function(){
+        return (dispatch, getState) => {
+            // Get the current state data.
+            const { core, designer } = getState();
+            const { tab, index } = designer;
+            const gameId = core.Game.Id;
+            const model = { ...core[tab][index] };
+
+            dispatch({ type: DELETE_ITEM, model, tab });
+        }
+    },
+
+    // --------------------------------
     saveModel: function(){
         const thunk = (dispatch, getState) => {
 
@@ -98,7 +117,8 @@ const designerActions = {
             
             // Send model data to database.
             $.post(api, { model, gameId })
-                .then(response => JSON.parse(response))
+                .fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                .success(response => JSON.parse(response))
                 .then(id => {
                     // Check if an id was sent back from the controller -
                     // this indicates if an item was inserted or updated.
@@ -106,8 +126,9 @@ const designerActions = {
                         // A new item was created, so we need
                         // to capture the new Id and update the model.
                         model.Id = id;
-                        dispatch(coreActions.updateItem(model, tab));
-                    } 
+                    }
+                    
+                    dispatch(coreActions.updateItem(model, tab, true));
                 });
         }
         

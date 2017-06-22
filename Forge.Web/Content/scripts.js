@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -72,8 +74,10 @@ var incrementName = function incrementName(list, name, activeIndex) {}
 // --------------------------------
 ;var REQUEST_GAME = 'REQUEST_GAME';
 var RECEIVE_GAME = 'RECEIVE_GAME';
+var GET_LOCAL_GAME = 'GET_LOCAL_GAME';
 var CREATE_ITEM = 'CREATE_ITEM';
 var UPDATE_ITEM = 'UPDATE_ITEM';
+var DELETE_ITEM = 'DELETE_ITEM';
 
 var UPDATE_DEFINITION = 'UPDATE_DEFINITION';
 var ADD_SETTING = 'ADD_SETTING';
@@ -105,6 +109,9 @@ var coreActions = {
     receiveGame: function receiveGame(game) {
         return { type: RECEIVE_GAME, game: game };
     },
+    getLocalGame: function getLocalGame(id) {
+        return { type: GET_LOCAL_GAME, id: id };
+    },
 
     // --------------------------------
     fetchGame: function fetchGame(id) {
@@ -115,10 +122,11 @@ var coreActions = {
             dispatch(_this.requestGame());
 
             // Fetch games from database with state filters.
-            $.get(_this.api.FETCH_GAME, { id: id }).then(function (response) {
-                return JSON.parse(response);
-            }).then(function (result) {
-                return dispatch(_this.receiveGame(result));
+            $.get(_this.api.FETCH_GAME, { id: id }).fail(function (response) {
+                return dispatch(_this.getLocalGame(id));
+            }).done(function (response) {
+                var result = JSON.parse(response);
+                dispatch(_this.receiveGame(result));
             });
         };
     },
@@ -154,12 +162,14 @@ var coreActions = {
     },
 
     // --------------------------------
-    updateDefinition: function updateDefinition(model) {
-        return this.updateItem(model, CATEGORIES.DEFINITIONS);
+    updateDefinition: function updateDefinition(model, fromCore) {
+        return this.updateItem(model, CATEGORIES.DEFINITIONS, false, fromCore);
     },
 
     // --------------------------------
-    updateItem: function updateItem(model, category) {
+    updateItem: function updateItem(model, category, saved, fromCore) {
+        saved = fromCore ? !model.unsaved : saved;
+
         return function (dispatch, getState) {
             var _getState2 = getState(),
                 designer = _getState2.designer,
@@ -167,7 +177,7 @@ var coreActions = {
 
             var index = designer.index === -1 ? model.index : designer.index;
 
-            dispatch({ type: UPDATE_ITEM, category: category, index: index, model: model });
+            dispatch({ type: UPDATE_ITEM, category: category, index: index, model: model, saved: saved, fromCore: fromCore });
         };
     }
 };
@@ -218,8 +228,7 @@ function LifeCycle() {
 var initialCoreState = {
     loading: true,
     saving: false,
-
-    updateIds: [],
+    conflict: false,
 
     Game: {},
     Rules: [],
@@ -234,6 +243,9 @@ var initialCoreState = {
 function coreReducer() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialCoreState;
     var action = arguments[1];
+    var _Forge$utilities = Forge.utilities,
+        getRules = _Forge$utilities.getRules,
+        sortSettings = _Forge$utilities.sortSettings;
 
 
     var nextState = _extends({}, state);
@@ -241,27 +253,61 @@ function coreReducer() {
     switch (action.type) {
         // --------------------------------
         case REQUEST_GAME:
-            nextState.loading = true;
+            var localGame = getGameFomLocalStorage(action.id) || initialCoreState;
+            nextState = _extends({}, localGame, { loading: true });
+
             break;
 
         // --------------------------------
+        case GET_LOCAL_GAME:
+            // Check for a game that was saved to local and compare
+            // it to what was retrieved from the database.
+            var localGame = getGameFomLocalStorage(action.id);
+            if (action.game) {
+                var localTime = localGame.Game.ModifiedDate;
+                var serverTime = action.game.ModifiedDate;
+                if (localTime != serverTime) {
+                    // The game saved in localStorage was updated at a different time
+                    // than what was found in the database. Ask the user to decide which
+                    // copy to keep.
+                    nextState.conflict = {
+                        localTime: localTime,
+                        serverTime: serverTime
+                    };
+
+                    return nextState;
+                }
+            }
+
+        // NO BREAK, FALL-THROUGH...
+        // Same prep code for Local & DB.
+
+        // --------------------------------
         case RECEIVE_GAME:
-
-            nextState = _extends({}, nextState, action.game);
-
-            nextState.Definitions.forEach(function (d, i) {
-                d.index = i;
-
-                // Combine Settings & Rules, then sort by Priority.
-                var settings = (d.Settings || []).filter(function (s) {
-                    return !s.TagId;
-                });
-                var rules = Forge.utilities.getRules(d.Tags, nextState.Rules);
-                d.Settings = Forge.utilities.sortSettings([].concat(_toConsumableArray(settings), _toConsumableArray(rules)));
+            nextState = _extends({}, nextState, action.game || localGame, {
+                loading: false,
+                saving: false
             });
 
-            nextState.loading = false;
-            nextState.saving = false;
+            console.log(nextState.Settings);
+
+            nextState.Rules.forEach(function (r, i) {
+                return r.index = i;
+            });
+            nextState.Tags.forEach(function (t, i) {
+                return t.index = i;
+            });
+
+            nextState.Definitions = nextState.Definitions.map(function (d, i) {
+                // Get Rules & merge with Settings.
+                var Rules = getRules(nextState, d);
+                var MergedSettings = sortSettings([].concat(_toConsumableArray(Rules), _toConsumableArray(d.Settings))).filter(function (s) {
+                    return !s.overridden;
+                });
+                return _extends({}, d, { index: i, Rules: Rules, MergedSettings: MergedSettings });
+            });
+
+            setGameToLocalStorage(nextState);
             break;
 
         // --------------------------------
@@ -269,35 +315,75 @@ function coreReducer() {
             // New item with temporary Id
             var newItem = {
                 Name: 'New ' + action.category.slice(0, -1),
-                TempId: 't-' + Math.random()
+                TempId: 't-' + Math.random(),
+                unsaved: true
             };
 
             nextState[action.category] = [].concat(_toConsumableArray(nextState[action.category]), [newItem]);
+
+            nextState[action.category].forEach(function (x, i) {
+                return x.index = i;
+            });
+
+            nextState.Game.ModifiedDate = Date.now();
+            setGameToLocalStorage(nextState);
 
             break;
 
         // --------------------------------
         case UPDATE_ITEM:
             var items = [].concat(_toConsumableArray(state[action.category]));
-
-            items[action.index] = _extends({}, items[action.index], action.model);
+            items[action.index] = _extends({}, items[action.index], action.model, {
+                unsaved: !action.saved,
+                ModifiedDate: Date.now()
+            });
 
             nextState[action.category] = items;
-            switch (action.category) {
-                case CATEGORIES.RULES:
-                case CATEGORIES.TAGS:
-                    // Re-Calculate all Definitions' Settings
-                    nextState.Definitions = state.Definitions.map(function (d) {
-                        var settings = (d.Settings || []).filter(function (s) {
-                            return !s.TagId;
-                        });
-                        var rules = Forge.utilities.getRules(d.Tags, nextState.Rules);
 
-                        d.Settings = Forge.utilities.sortSettings([].concat(_toConsumableArray(settings), _toConsumableArray(rules)));
+            var calculateAll = false;
+            switch (action.category) {
+                case CATEGORIES.TAGS:
+                case CATEGORIES.RULES:
+                    calculateAll = true;
+                    nextState.Rules = nextState.Rules.map(function (r) {
+                        var tag = nextState.Tags.filter(function (t) {
+                            return t.Id == r.TagId;
+                        })[0] || {};
+                        var setting = nextState.Settings.filter(function (s) {
+                            return s.Id == r.SettingId;
+                        })[0] || {};
+                        return _extends({}, r, {
+                            Name: (tag.Name || '-') + ' ' + (setting.Name || '-'),
+                            error: !tag.Name || !setting.Name
+                        });
                     });
+
+                // NO BREAK
+                case CATEGORIES.DEFINITIONS:
+                    if (!action.fromCore) {
+                        nextState.Definitions.forEach(function (d) {
+                            if (calculateAll || d.Id == action.model.Id) {
+                                d.Rules = getRules(nextState, d);
+                                d.MergedSettings = sortSettings([].concat(_toConsumableArray(d.Rules), _toConsumableArray(d.Settings))).filter(function (s) {
+                                    return !s.overridden;
+                                });
+                            }
+                        });
+                    }
                     break;
             }
 
+            nextState.Game.ModifiedDate = Date.now();
+            setGameToLocalStorage(nextState);
+            break;
+
+        // --------------------------------
+        case DELETE_ITEM:
+            nextState[action.tab] = state[action.tab].slice();
+            nextState[action.tab].splice(action.model.index, 1);
+            nextState[action.tab].forEach(function (x, i) {
+                return x.index = i;
+            });
             break;
 
         // --------------------------------
@@ -324,22 +410,52 @@ function coreReducer() {
                 definition.Settings = [].concat(_toConsumableArray(definition.Settings || []), [definitionSetting]);
             }
 
+            definition.unsaved = true;
+
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
+            nextState.Game.ModifiedDate = Date.now();
+            setGameToLocalStorage(nextState);
             break;
     }
 
     return nextState;
 }
+
+// --------------------------------
+function setGameToLocalStorage(state) {
+    var Id = state.Game.Id;
+
+    if (Id) {
+        try {
+            var gameJSON = JSON.stringify(state);
+            localStorage.setItem('core_' + Id, gameJSON);
+        } catch (err) {
+            console.warn('Error saving game to local storage.', err);
+        }
+    }
+}
+
+// --------------------------------
+function getGameFomLocalStorage(id) {
+    if (id) {
+        try {
+            var gameJSON = localStorage.getItem('core_' + id);
+            if (gameJSON) return JSON.parse(gameJSON);
+        } catch (err) {
+            console.warn('Error retrieving game from local storage.', err);
+        }
+    }
+}
 // Definition Settings
 // =====================================
 Forge.settings = {
-    Apply: function Apply(value, setting) {
+    apply: function apply(value, setting) {
         var SettingName = setting.SettingName,
             Name = setting.Name;
 
-        return undefined[SettingName || Name](value, setting);
+        return this[SettingName || Name](value, setting);
     },
 
     // --------------------------------
@@ -372,25 +488,67 @@ Forge.settings = {
 // Core Functions
 // =====================================
 Forge.utilities = {
-    // -----------------------------
-    getRules: function getRules(tags, rules) {
-        tags = tags || [];
-        rules = rules || [];
+    renderControl: function renderControl(item, onChange) {
+        // Dynamically create the component based on Control name.
+        return React.createElement(Forge.components.controls[item.Control || item.ControlName || 'Text'], { Model: item, onChange: onChange });
+    },
 
-        var tagIds = tags.map(function (t) {
+    // -----------------------------
+    getRules: function getRules(state, definition) {
+        var Rules = state.Rules,
+            Tags = state.Tags;
+
+
+        definition.Rules = definition.Rules || [];
+        definition.Tags = definition.Tags || [];
+
+        // Get all Rules associated to the Definition by Tags.
+        var definitionTags = definition.Tags.map(function (t) {
             return +t.Id;
         });
 
-        // Merge rules into this list, adding the property IsRule = true.
-        var definitionRules = rules.filter(function (r) {
-            return tagIds.indexOf(+r.TagId) > -1;
+        // Remove rules no longer associated by a Tag.
+        // This will happen when a Tag has been removed from the Definition.
+        var definitionRules = definition.Rules.filter(function (r) {
+            return definitionTags.indexOf(+r.TagId) > -1;
+        });
+
+        // Add/Update all Rules from core.
+        Rules.filter(function (r) {
+            return definitionTags.indexOf(+r.TagId) > -1;
+        }).forEach(function (r) {
+            var match = definitionRules.filter(function (dr) {
+                return dr.TagId == r.TagId && dr.SettingId == r.SettingId;
+            })[0];
+            if (!match) {
+                // Add this rule.
+                definitionRules.push(_extends({}, r, { Priority: definitionRules.length - 1 }));
+            } else {
+                // Update the rule.
+                var index = definitionRules.indexOf(match);
+                definitionRules[index] = _extends({}, match, r, {
+                    // Maintain the Priority!!
+                    Priority: match.Priority
+                });
+            }
         });
 
         return definitionRules.map(function (rule) {
+            // Check if there's a local setting that overrides this rule,
+            // Or a Rule with a higher Priority...
+            var overridden = !!(definition.Settings.filter(function (s) {
+                return s.Id == rule.SettingId;
+            })[0] || definitionRules.filter(function (s) {
+                return s.SettingId == rule.SettingId && s.Priority < rule.Priority;
+            })[0]);
+
             // Return as a new DefinitionSettingModel
             return _extends({}, rule, {
-                Id: rule.SettingId + '-' + rule.TagId
+                Id: rule.SettingId + '-' + rule.TagId,
+                overridden: overridden
             });
+        }).filter(function (r) {
+            return !!r.TagId;
         });
     },
 
@@ -398,12 +556,18 @@ Forge.utilities = {
     sortSettings: function sortSettings(settings) {
         return (settings || []).sort(function (a, b) {
             if (!!a.TagId && !b.TagId) return -1;
-            if (!!a.TagId && !b.TagId) return 1;
+            if (!!b.TagId && !a.TagId) return 1;
             if (a.Priority > b.Priority) return 1;
             if (a.Priority < b.Priority) return -1;
 
             return 0;
         });
+    },
+
+    // -----------------------------
+    getDefinitionSettings: function getDefinitionSettings(state, definition) {
+        var rules = Forge.utilities.getRules(state, definition);
+        return Forge.utilities.sortSettings([].concat(_toConsumableArray(definition.Settings), _toConsumableArray(rules)));
     }
 };
 
@@ -446,8 +610,27 @@ var sortBy = function sortBy(arr, prop) {
         return 0;
     });
 };
+// Action Types
+// =====================================
+var OPEN_DIALOG = 'OPEN_DIALOG';
+var CLOSE_DIALOG = 'CLOSE_DIALOG';
 
+// Action Creators
+// =====================================
+var commonActions = {
+    // --------------------------------
+    openDialog: function openDialog(dialogType) {
+        return { type: OPEN_DIALOG, dialogType: dialogType };
+    },
+
+    // --------------------------------
+    closeDialog: function closeDialog() {
+        return { type: CLOSE_DIALOG };
+    }
+};
 var initialCommonState = {
+    dialogType: null,
+
     genres: [{ id: 1, value: 'Fantasy' }, { id: 2, value: 'Sci-Fi' }]
 };
 
@@ -455,13 +638,25 @@ function commonReducer() {
     var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialCommonState;
     var action = arguments[1];
 
-    return state;
-    // let nextState = Object.assign({}, state);
+    var nextState = Object.assign({}, state);
 
-    // switch(action.type){
-    // }
+    switch (action.type) {
+        case GET_LOCAL_GAME:
+            nextState.dialogType = designerActions.dialogTypes.LOAD_ERROR;
+            break;
 
-    // return nextState;
+        // --------------------------------
+        case OPEN_DIALOG:
+            nextState.dialogType = action.dialogType;
+            break;
+
+        // --------------------------------
+        case CLOSE_DIALOG:
+            nextState.dialogType = null;
+            break;
+    }
+
+    return nextState;
 }
 // Action Types
 // =====================================
@@ -517,8 +712,6 @@ var libraryActions = {
 
             // Get the current filters from store state.
             var filters = getState().library.filters;
-
-            console.log(_this2.api.FETCH_GAMES);
 
             // Fetch games from database with state filters.
             $.post(_this2.api.FETCH_GAMES, filters).then(function (response) {
@@ -592,13 +785,13 @@ function libraryReducer() {
     switch (action.type) {
         // --------------------------------
         case REQUEST_GAMES:
-            nextState.isLoading = true;
+            nextState.loading = true;
             break;
 
         // --------------------------------
         case RECEIVE_GAMES:
             nextState.games = action.games;
-            nextState.isLoading = false;
+            nextState.loading = false;
             break;
 
         // --------------------------------
@@ -673,6 +866,12 @@ var designerActions = {
         SAVE_DEFINITION: '/Core/SaveDefinition'
     },
 
+    // --------------------------------
+    dialogTypes: {
+        LOAD_ERROR: 'LOAD_ERROR',
+        LOAD_CONFLICT: 'LOAD_CONFLICT'
+    },
+
     // Action Creators
     // =====================================
     // --------------------------------
@@ -728,6 +927,24 @@ var designerActions = {
     },
 
     // --------------------------------
+    delete: function _delete() {
+        return function (dispatch, getState) {
+            // Get the current state data.
+            var _getState3 = getState(),
+                core = _getState3.core,
+                designer = _getState3.designer;
+
+            var tab = designer.tab,
+                index = designer.index;
+
+            var gameId = core.Game.Id;
+            var model = _extends({}, core[tab][index]);
+
+            dispatch({ type: DELETE_ITEM, model: model, tab: tab });
+        };
+    },
+
+    // --------------------------------
     saveModel: function saveModel() {
         var _this7 = this;
 
@@ -737,9 +954,9 @@ var designerActions = {
 
             // Get the current state data.
 
-            var _getState3 = getState(),
-                core = _getState3.core,
-                designer = _getState3.designer;
+            var _getState4 = getState(),
+                core = _getState4.core,
+                designer = _getState4.designer;
 
             var tab = designer.tab,
                 index = designer.index;
@@ -762,7 +979,9 @@ var designerActions = {
             }
 
             // Send model data to database.
-            $.post(api, { model: model, gameId: gameId }).then(function (response) {
+            $.post(api, { model: model, gameId: gameId }).fail(function (response) {
+                return dispatch(coreActions.updateItem(model, tab, true));
+            }).success(function (response) {
                 return JSON.parse(response);
             }).then(function (id) {
                 // Check if an id was sent back from the controller -
@@ -771,8 +990,9 @@ var designerActions = {
                     // A new item was created, so we need
                     // to capture the new Id and update the model.
                     model.Id = id;
-                    dispatch(coreActions.updateItem(model, tab));
                 }
+
+                dispatch(coreActions.updateItem(model, tab, true));
             });
         };
 
@@ -804,6 +1024,12 @@ function designerReducer() {
     }
 
     switch (action.type) {
+        case GET_LOCAL_GAME:
+            nextState.local = true;
+        case RECEIVE_GAME:
+            nextState.saving = false;
+            nextState.loading = false;
+
         // --------------------------------
         case BACK:
             if (state.itemHistory.length) {
@@ -824,9 +1050,14 @@ function designerReducer() {
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
             if (state.saving) return nextState;
+            nextState.navigated = !!action.tab || !!action.category;
             nextState.tab = action.tab || action.category || state.tab;
             nextState.index = action.index;
             nextState.activeTagId = null;
+            break;
+
+        case DELETE_ITEM:
+            nextState.index = -1;
             break;
 
         // --------------------------------
@@ -867,6 +1098,51 @@ function UserPreferenceStore() {
 
     return self;
 }
+// =====================================
+// Presentation
+// =====================================
+var __Account = React.createClass({
+    displayName: '__Account',
+
+    // -----------------------------
+    render: function render() {
+
+        return React.createElement('div', { className: 'account' });
+    },
+
+    // -----------------------------
+    componentWillMount: function componentWillMount() {
+        // Model comes from C# -
+        // Set data into store with dispatch.
+        // const { dispatch, id } = this.props;
+        // dispatch(coreActions.fetchGame(id));
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        // const game = nextProps.Game;
+        // if (game && game.Name) document.title = `${game.Name} - Forge | Builder`;
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+var Account = connect(function (state) {
+    return _extends({}, state.core);
+})(__Account);
+
+// =====================================
+// Root
+// =====================================
+Account.Provider = function (props) {
+    return React.createElement(
+        Provider,
+        { store: store },
+        React.createElement(Account, props)
+    );
+};
+
 // =====================================
 // Presentation
 // =====================================
@@ -918,24 +1194,22 @@ Builder.Provider = function (props) {
 // =====================================
 // Presentation
 // =====================================
-Builder._Groups = React.createClass({
-    displayName: '_Groups',
+Builder._Groups = function (props) {
+    var core = props.core;
 
-    // -----------------------------
-    render: function render() {
-        var core = this.props.core;
+    var topGroups = core.Groups.filter(function (g) {
+        return !g.ParentId;
+    });
+    var groupNodes = topGroups.map(function (g) {
+        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
+    });
 
-        var definitionNodes = core.Definitions.map(function (d) {
-            return React.createElement(Forge.Definition, { key: d.Id, model: d });
-        });
-
-        return React.createElement(
-            'div',
-            { className: 'builder__groups' },
-            definitionNodes
-        );
-    }
-});
+    return React.createElement(
+        'div',
+        { className: 'builder__groups' },
+        groupNodes
+    );
+};
 
 // =====================================
 // Container
@@ -944,6 +1218,46 @@ Builder.Groups = connect(function (state) {
     return _extends({}, state);
 })(Builder._Groups);
 
+// =====================================
+// <Builder.Group />
+// =====================================
+Builder.Group = function (props) {
+    var core = props.core,
+        model = props.model;
+
+
+    var childNodes = core.Groups.filter(function (g) {
+        return g.ParentId == model.Id;
+    }).map(function (g) {
+        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
+    });
+
+    var definitionNodes = core.Definitions.filter(function (d) {
+        return d.GroupId == model.Id;
+    }).map(function (d, i) {
+        return React.createElement(Forge.Definition, { key: i, model: d });
+    });
+
+    return React.createElement(
+        'div',
+        { className: 'builder__group group panel' },
+        React.createElement(
+            'h4',
+            null,
+            model.Name
+        ),
+        React.createElement(
+            'div',
+            { className: 'group__definitions' },
+            definitionNodes
+        ),
+        React.createElement(
+            'div',
+            { className: 'group__children' },
+            childNodes
+        )
+    );
+};
 // =====================================
 // <Banner />
 // =====================================
@@ -991,6 +1305,69 @@ var Checkbox = function Checkbox(_ref2) {
             'label',
             { className: 'checkbox__label', htmlFor: id },
             label
+        )
+    );
+};
+
+var Dialog = function Dialog(props) {
+    var children = props.children,
+        header = props.header,
+        buttons = props.buttons,
+        requiredAction = props.requiredAction,
+        onClose = props.onClose;
+
+
+    var close = onClose ? function () {
+        return onClose();
+    } : function () {
+        return store.dispatch(commonActions.closeDialog());
+    };
+
+    var overlayClick = requiredAction ? null : close;
+
+    return React.createElement(
+        'div',
+        { className: 'dialog' },
+        React.createElement(
+            'div',
+            { className: 'dialog__container' },
+            React.createElement('div', { className: 'dialog__overlay overlay', onClick: overlayClick }),
+            React.createElement(
+                'div',
+                { className: 'dialog__window' },
+                React.createElement(
+                    'div',
+                    { className: 'dialog__header' },
+                    React.createElement(
+                        'div',
+                        null,
+                        header
+                    ),
+                    React.createElement(
+                        'div',
+                        null,
+                        React.createElement(
+                            'button',
+                            { className: 'dialog__close button button--transparent', onClick: close, title: 'Close' },
+                            React.createElement('span', { className: 'fa fa-remove' })
+                        )
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'dialog__content' },
+                    children
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'dialog__buttons' },
+                    buttons || React.createElement(
+                        'button',
+                        { onClick: close },
+                        'Close'
+                    )
+                )
+            )
         )
     );
 };
@@ -1088,19 +1465,19 @@ var Footer = React.createClass({
                 { className: 'footer__nav' },
                 navLinks
             ),
-            React.createElement('div', { className: 'footer__message' })
+            'TatianaVeratti@gmail.com @TatianaVeratti'
         );
     },
 
     // ----------------------------
     componentDidMount: function componentDidMount() {
-        this.contentNode = document.getElementById('content');
-        this.footerNode = this.refs.footer;
+        // this.contentNode = document.getElementById('content');
+        // this.footerNode = this.refs.footer;
 
-        // Every (resizeTime) milliseconds, calculate the footer's height.
-        // This is to compensate for window and body size changes.
-        this.interval = window.setInterval(this.updateSize, 300);
-        this.updateSize();
+        // // Every (resizeTime) milliseconds, calculate the footer's height.
+        // // This is to compensate for window and body size changes.
+        // this.interval = window.setInterval(this.updateSize, 300);
+        // this.updateSize();
     },
 
     // ----------------------------
@@ -1513,16 +1890,24 @@ var Tab = React.createClass({
 
     // ----------------------------
     render: function render() {
-        var props = this.props;
+        var _props4 = this.props,
+            id = _props4.id,
+            name = _props4.name,
+            onChange = _props4.onChange,
+            label = _props4.label,
+            checked = _props4.checked;
+
+        var className = 'tab';
+        if (checked) className += ' tab--checked';
 
         return React.createElement(
             'span',
-            { className: 'tab' },
-            React.createElement('input', { className: 'tab__input', id: props.id, type: 'radio', name: props.name, onChange: props.onChange, ref: 'input' }),
+            { className: className },
+            React.createElement('input', { className: 'tab__input', id: id, type: 'radio', name: name, onChange: onChange, ref: 'input' }),
             React.createElement(
                 'label',
-                { className: 'tab__label', htmlFor: props.id },
-                props.label
+                { className: 'tab__label', htmlFor: id },
+                label
             )
         );
     },
@@ -1542,6 +1927,25 @@ var Tab = React.createClass({
         this.refs.input.checked = checked;
     }
 });
+// =====================================
+// <Tooltip />
+// =====================================
+var Tooltip = function Tooltip(_ref7) {
+    var children = _ref7.children,
+        tip = _ref7.tip;
+
+
+    return React.createElement(
+        'div',
+        { className: 'tooltip' },
+        children,
+        React.createElement(
+            'div',
+            { className: 'tooltip__value' },
+            tip
+        )
+    );
+};
 // --------------------------------------------------
 // <Forge.Definition />
 
@@ -1554,29 +1958,23 @@ Forge.__Definition = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var model = this.props.model;
-        var ControlName = model.ControlName,
-            Control = model.Control;
+        var model = _objectWithoutProperties(this.props.model, []);
 
-        var controlName = ControlName || Control || 'Number';
-        var controlProps = {
-            Model: model,
-            onChange: this.valueChange
-        };
+        model._formId = 'd-' + model.Id;
 
         // Dynamically create the component based on Control name.
-        var controlNode = React.createElement(Forge.components.controls[controlName], controlProps);
+        var controlNode = Forge.utilities.renderControl(model, this.valueChange);
 
         return React.createElement(
             'div',
             { className: 'definition' },
             React.createElement(
-                'p',
-                { className: 'definition__name' },
+                'label',
+                { htmlFor: model._formId, className: 'definition__name' },
                 model.Name
             ),
             React.createElement(
-                'p',
+                'div',
                 { className: 'definition__control' },
                 controlNode
             )
@@ -1597,7 +1995,7 @@ Forge.__Definition = React.createClass({
             model = nextProps.model;
         var stages = Forge.lifeCycle.stages;
 
-        this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
+        this.valueChange(model.Value, null, stages.update, nextProps);
     },
 
     // -----------------------------
@@ -1610,23 +2008,23 @@ Forge.__Definition = React.createClass({
         stage = stage || lifeCycle.stages.update;
         props = props || this.props;
 
-        var _props4 = props,
-            model = _props4.model,
-            core = _props4.core,
-            dispatch = _props4.dispatch;
+        var _props5 = props,
+            model = _props5.model,
+            core = _props5.core,
+            dispatch = _props5.dispatch;
 
         // Apply all settings that match the current lifecycle
 
-        model.Settings.filter(function (s) {
-            return lifeCycle.isActive(s.LifeCycle, lifecycle);
+        model.MergedSettings.filter(function (s) {
+            return lifeCycle.isActive(s.LifeCycle, stage);
         }).forEach(function (s) {
             return value = settings.apply(value, s);
         });
 
-        if (value !== props.model.Value) {
-            dispatch(coreActions.updateDefinition(_extends({}, model, {
-                Value: value
-            })));
+        if (typeof value == 'number' && isNaN(value)) value = 0;
+
+        if (value != props.model.Value) {
+            dispatch(coreActions.updateDefinition(_extends({}, model, { Value: value }), true));
         };
     }
 });
@@ -1643,7 +2041,7 @@ Forge.Definition = connect(function (state) {
 // =====================
 // |       a   b       |
 // =====================
-// | 1 |     2     | 3 |
+// | 1 |     2     | x |
 // |   |           |   |
 // |   |           |   |
 // =====================
@@ -1664,16 +2062,25 @@ var __Designer = React.createClass({
     render: function render() {
         var designer = this.props.designer;
 
+        var loading = designer.saving || designer.loading;
+
+        var className = 'designer';
+        if (loading) className += ' designer--loading';
 
         return React.createElement(
             'div',
-            { className: 'designer' },
-            React.createElement(Designer.Summary, null),
-            React.createElement(Designer.Tabs, null),
+            { className: className },
+            React.createElement(Designer.Dialogs, null),
+            React.createElement(
+                'div',
+                { className: 'section section--secondary' },
+                loading && React.createElement('div', { className: 'loading-bar' }),
+                React.createElement(Designer.Summary, null),
+                React.createElement(Designer.Tabs, null)
+            ),
             React.createElement(
                 'div',
                 { className: 'designer__views overlay__anchor' },
-                designer.loading && React.createElement('div', { className: 'overlay' }),
                 React.createElement(Designer.List, null),
                 React.createElement(Designer.Stage, null)
             )
@@ -1684,9 +2091,9 @@ var __Designer = React.createClass({
     componentWillMount: function componentWillMount() {
         // Model comes from C# -
         // Set data into store with dispatch.
-        var _props5 = this.props,
-            dispatch = _props5.dispatch,
-            id = _props5.id;
+        var _props6 = this.props,
+            dispatch = _props6.dispatch,
+            id = _props6.id;
 
         dispatch(coreActions.fetchGame(id));
     },
@@ -1719,6 +2126,114 @@ Designer.Provider = function (props) {
 // =====================================
 // Presentation
 // =====================================
+Designer.__Dialogs = React.createClass({
+    displayName: '__Dialogs',
+
+    render: function render() {
+        var dialogType = this.props.common.dialogType;
+        var conflict = this.props.core.conflict;
+        var local = this.props.designer.local;
+        var _designerActions$dial = designerActions.dialogTypes,
+            LOAD_ERROR = _designerActions$dial.LOAD_ERROR,
+            LOAD_CONFLICT = _designerActions$dial.LOAD_CONFLICT;
+
+
+        var dialogProps = void 0;
+        switch (true) {
+            case dialogType == LOAD_ERROR:
+                dialogProps = this.getLoadErrorProps();break;
+            case !!conflict:
+                dialogProps = this.getLoadConflictProps();break;
+        }
+
+        return React.createElement(
+            'div',
+            { className: 'designer__dialogs' },
+            dialogProps && React.createElement(Dialog, dialogProps)
+        );
+    },
+
+    // -----------------------------
+    getLoadErrorProps: function getLoadErrorProps() {
+        return {
+            header: 'Connection Failed',
+            children: 'The Designer could not be loaded. You may continue working in offline mode, but your changes will not be committed to the database until your connection resumes.'
+        };
+    },
+
+    // -----------------------------
+    getLoadConflictProps: function getLoadConflictProps() {
+        var _props$core = this.props.core,
+            Game = _props$core.Game,
+            conflict = _props$core.conflict;
+
+
+        return {
+            header: 'Conflicting Designer Data',
+            children: React.createElement(
+                'div',
+                null,
+                'The Designer data retrieved from the database does not match your local version. Please choose which version of the Designer you wish to keep.',
+                React.createElement(
+                    'p',
+                    null,
+                    'Local: ',
+                    Game.UpdatedDate,
+                    ', ',
+                    Game.UpdatedByUserName
+                ),
+                React.createElement(
+                    'p',
+                    null,
+                    'Last Saved: ',
+                    conflict.UpdatedDate,
+                    ', ',
+                    conflict.UpdatedByUserName
+                )
+            ),
+            buttons: [React.createElement(
+                'button',
+                null,
+                'Local'
+            ), React.createElement(
+                'button',
+                null,
+                'Last Saved'
+            )]
+        };
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+Designer.Dialogs = connect(function (state) {
+    return _extends({}, state);
+})(Designer.__Dialogs);
+
+// =====================================
+// <Designer.Link />
+// =====================================
+Designer.Link = function (_ref8) {
+    var model = _ref8.model,
+        dispatch = _ref8.dispatch,
+        category = _ref8.category;
+
+    var onClick = category ? function () {
+        return dispatch(designerActions.navigate(category, model.index));
+    } : function () {
+        return dispatch(designerActions.selectListItem(model.index));
+    };
+
+    return React.createElement(
+        'a',
+        { onClick: onClick },
+        model.Name
+    );
+};
+// =====================================
+// Presentation
+// =====================================
 Designer.__List = React.createClass({
     displayName: '__List',
 
@@ -1733,7 +2248,7 @@ Designer.__List = React.createClass({
 
         return React.createElement(
             'div',
-            { className: className },
+            { className: className, ref: 'wrapper' },
             actionNodes,
             React.createElement(
                 'ul',
@@ -1749,9 +2264,23 @@ Designer.__List = React.createClass({
     },
 
     // -----------------------------
+    componentDidMount: function componentDidMount() {
+        document.addEventListener('click', this.close);
+    },
+
+    // -----------------------------
     componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        if (nextProps.tab !== this.props.tab && nextProps.selectedItem == null) {
+        if (nextProps.designer.navigated) {
+            this.setState({ open: false, listTab: 'List' });
+        } else if (nextProps.designer.tab !== this.props.designer.tab) {
             this.setState({ open: true, listTab: 'List' });
+        }
+    },
+
+    // -----------------------------
+    componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+        if (!prevState.open && this.state.open) {
+            document.addEventListener('click', this.close);
         }
     },
 
@@ -1784,6 +2313,7 @@ Designer.__List = React.createClass({
             // ClassName modifiers.
             var className = 'designer__list-item';
             if (i === index) className += ' designer__list-item--selected';
+            if (item.unsaved) className += ' designer__list-item--unsaved';
 
             // Click Handler.
             var onClick = function onClick() {
@@ -1796,7 +2326,7 @@ Designer.__List = React.createClass({
                 { key: key, className: className },
                 React.createElement(
                     'button',
-                    { className: 'button button--primary', onClick: onClick },
+                    { className: 'button button--transparent', onClick: onClick },
                     item.Name
                 )
             );
@@ -1841,11 +2371,10 @@ Designer.__List = React.createClass({
 
             return React.createElement('button', { key: b, className: className, title: b, onClick: onClick });
         });
-
+        //<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
         return React.createElement(
             'div',
             { className: 'designer__list-actions' },
-            React.createElement('button', { className: 'button button--transparent designer__toggle', onClick: toggle, title: toggleText }),
             React.createElement(
                 'div',
                 { className: 'designer__mini-buttons' },
@@ -1857,14 +2386,27 @@ Designer.__List = React.createClass({
     // -----------------------------
     changeList: function changeList(tab) {
         var open = this.state.open;
-        if (!open) open = true;else if (tab === this.state.listTab) open = !open;
+        if (!open) {
+            open = true;
+        }
 
         this.setState({ listTab: tab, open: open });
     },
 
     // -----------------------------
     new: function _new() {
+        this.setState({ open: false });
         this.props.dispatch(coreActions.createItem());
+    },
+
+    // -----------------------------
+    close: function close(evt) {
+        var $wrapper = $(this.refs.wrapper);
+        //if ($wrapper.find())
+        if (true) {
+            this.setState({ open: false });
+            document.removeEventListener('click', this.close);
+        }
     }
 });
 
@@ -1893,11 +2435,6 @@ Designer._Menu = React.createClass({
                     'button',
                     { className: 'designer__tile' },
                     'Help'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'designer__tile' },
-                    'Preview'
                 )
             )
         );
@@ -1953,14 +2490,16 @@ Designer.__Search = React.createClass({
         var filterLower = filter.toLowerCase();
 
         var listNodes = filter ? all.filter(function (x) {
-            return contains((x.Name || '').toLowerCase(), filterLower);
+            return contains((x.Name || '').toLowerCase(), filterLower) || x.header;
         }) : [];
 
-        listNodes = sortBy(listNodes, 'Name').map(this.renderItem);
+        listNodes = listNodes.filter(function (x, i) {
+            return !x.header || x.header && !(listNodes[i + 1] || { header: true }).header;
+        }).map(this.renderItem);
 
         return React.createElement(
             'div',
-            null,
+            { className: 'designer__search' },
             React.createElement('input', { value: filter, onInput: this.inputHandler }),
             React.createElement(
                 'ul',
@@ -1988,7 +2527,7 @@ Designer.__Search = React.createClass({
         var core = this.props.core;
 
 
-        return [].concat(_toConsumableArray(this.mapTabItems(core.Rules, CATEGORIES.RULES)), _toConsumableArray(this.mapTabItems(core.Tags, CATEGORIES.TAGS)), _toConsumableArray(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS)));
+        return [{ header: CATEGORIES.RULES }].concat(_toConsumableArray(sortBy(this.mapTabItems(core.Rules, CATEGORIES.RULES), 'Name')), [{ header: CATEGORIES.TAGS }], _toConsumableArray(sortBy(this.mapTabItems(core.Tags, CATEGORIES.TAGS), 'Name')), [{ header: CATEGORIES.DEFINITIONS }], _toConsumableArray(sortBy(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS), 'Name')));
     },
 
     // -----------------------------
@@ -2000,15 +2539,24 @@ Designer.__Search = React.createClass({
 
     // -----------------------------
     renderItem: function renderItem(item) {
-        var _props6 = this.props,
-            dispatch = _props6.dispatch,
-            designer = _props6.designer;
+        var _props7 = this.props,
+            dispatch = _props7.dispatch,
+            designer = _props7.designer;
 
-        var key = item.tab + '-' + (item.Id || item.TempId || item.Name);
+        var key = item.tab + '-' + (item.Id || item.TempId || item.Name || item.header);
+
+        if (item.header) {
+            return React.createElement(
+                'li',
+                { key: key, className: 'designer__list-header' },
+                item.header
+            );
+        }
 
         // ClassName modifiers.
         var className = 'designer__list-item';
-        if (item.index === designer.index) className += ' designer__list-item--selected';
+        if (item.unsaved) className += ' designer__list-item--unsaved';
+        if (item.tab === designer.tab && item.index === designer.index) className += ' designer__list-item--selected';
 
         // Click Handler.
         var onClick = function onClick() {
@@ -2020,7 +2568,7 @@ Designer.__Search = React.createClass({
             { key: key, className: className },
             React.createElement(
                 'button',
-                { className: 'button button--primary', onClick: onClick },
+                { className: 'button button--transparent', onClick: onClick },
                 item.Name
             )
         );
@@ -2066,10 +2614,10 @@ Designer.__Settings = React.createClass({
     renderSettingsList: function renderSettingsList() {
         var _this11 = this;
 
-        var _props7 = this.props,
-            settings = _props7.settings,
-            core = _props7.core,
-            designer = _props7.designer;
+        var _props8 = this.props,
+            settings = _props8.settings,
+            core = _props8.core,
+            designer = _props8.designer;
 
         var activeItem = core.Definitions[designer.index];
         if (!activeItem) return;
@@ -2107,9 +2655,9 @@ Designer.__Settings = React.createClass({
 
     // -----------------------------
     addSetting: function addSetting(setting) {
-        var _props8 = this.props,
-            dispatch = _props8.dispatch,
-            index = _props8.index;
+        var _props9 = this.props,
+            dispatch = _props9.dispatch,
+            index = _props9.index;
 
         dispatch(coreActions.addSetting(index, setting));
     }
@@ -2187,7 +2735,7 @@ Designer.__Stage = React.createClass({
                 ),
                 React.createElement(
                     'button',
-                    { className: 'button button--transparent stage__delete', disabled: menuDisabled },
+                    { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled },
                     'Delete'
                 )
             ),
@@ -2199,7 +2747,6 @@ Designer.__Stage = React.createClass({
                     null,
                     instructions
                 ),
-                React.createElement('div', { className: 'separator separator--small' }),
                 editView
             )
         );
@@ -2207,10 +2754,10 @@ Designer.__Stage = React.createClass({
 
     // -----------------------------
     renderStage: function renderStage() {
-        var _props9 = this.props,
-            designer = _props9.designer,
-            dispatch = _props9.dispatch,
-            core = _props9.core;
+        var _props10 = this.props,
+            designer = _props10.designer,
+            dispatch = _props10.dispatch,
+            core = _props10.core;
 
         var selectedItem = this.getSelectedItem();
 
@@ -2229,23 +2776,30 @@ Designer.__Stage = React.createClass({
                 // No items exist in this list, prompt the user to create one...
                 return React.createElement(
                     'div',
-                    null,
-                    React.createElement(
-                        'p',
-                        null,
-                        'No ',
-                        designer.tab,
-                        ' exist for this game yet!'
-                    ),
+                    { className: 'panel panel--centered' },
+                    'No ',
+                    designer.tab,
+                    ' exist for this game yet! ',
                     createButton
                 );
             } else {
+                var recentNodes = core[designer.tab].slice().sort(function (x) {
+                    return x.updated;
+                }).reverse().slice(0, 5).map(function (x, i) {
+                    return React.createElement(Designer.Link, { key: i, model: x, dispatch: dispatch });
+                });
+
                 // Nothing selected yet
                 return React.createElement(
                     'div',
-                    null,
-                    'Select an item to edit or',
-                    createButton
+                    { className: 'panel panel--centered' },
+                    'Select an item to edit or ',
+                    createButton,
+                    React.createElement(
+                        'div',
+                        { className: 'designer__recent' },
+                        recentNodes
+                    )
                 );
             }
         }
@@ -2292,6 +2846,10 @@ Designer.__Stage = React.createClass({
         this.props.dispatch(designerActions.saveModel());
     },
 
+    delete: function _delete() {
+        this.props.dispatch(designerActions.delete());
+    },
+
     // -----------------------------
     back: function back() {
         this.props.dispatch(designerActions.back());
@@ -2299,9 +2857,9 @@ Designer.__Stage = React.createClass({
 
     // -----------------------------
     getSelectedItem: function getSelectedItem() {
-        var _props10 = this.props,
-            designer = _props10.designer,
-            core = _props10.core;
+        var _props11 = this.props,
+            designer = _props11.designer,
+            core = _props11.core;
 
         return (core[designer.tab] || [])[designer.index];
     }
@@ -2324,21 +2882,19 @@ Designer.__Summary = React.createClass({
     displayName: '__Summary',
 
     render: function render() {
-        var game = this.props.Game;
-        var createdAgo = moment.utc(game.CreatedDate).fromNow();
+        var Game = this.props.core.Game;
+        var loading = this.props.designer.loading;
+
+
+        var createdAgo = moment.utc(Game.CreatedDate).fromNow();
 
         return React.createElement(
             'div',
             { className: 'section section--summary designer__summary' },
-            this.props.loading && React.createElement(
-                'h2',
-                null,
-                'Loading...'
-            ),
             React.createElement(
                 'h1',
                 null,
-                game.Name || '\xA0'
+                Game.Name || loading && 'Loading...' || '\xA0'
             ),
             React.createElement(
                 'p',
@@ -2346,7 +2902,7 @@ Designer.__Summary = React.createClass({
                 React.createElement(
                     'b',
                     null,
-                    game.CreatedByUserName
+                    Game.CreatedByUserName
                 ),
                 ' ',
                 createdAgo
@@ -2360,7 +2916,7 @@ Designer.__Summary = React.createClass({
 // Container
 // =====================================
 Designer.Summary = connect(function (state) {
-    return _extends({}, state.core);
+    return _extends({}, state);
 })(Designer.__Summary);
 
 // -------------------------------------------------
@@ -2412,15 +2968,30 @@ Designer.Tabs = connect(function (state) {
 // =====================================
 // <Library />
 // =====================================
-var Library = function Library() {
+var __Library = function __Library(props) {
+    var loading = props.library.loading;
+
+
     return React.createElement(
         'div',
         { className: 'library' },
-        React.createElement(Library.Summary, null),
-        React.createElement(Library.Controls, null),
+        React.createElement(
+            'div',
+            { className: 'section section--secondary' },
+            loading && React.createElement('div', { className: 'loading-bar' }),
+            React.createElement(Library.Summary, null),
+            React.createElement(Library.Controls, null)
+        ),
         React.createElement(Library.List, null)
     );
 };
+
+// =====================================
+// Container
+// =====================================
+var Library = connect(function (state) {
+    return _extends({}, state);
+})(__Library);
 
 // =====================================
 // Root
@@ -2445,26 +3016,10 @@ Library.__Controls = React.createClass({
         return React.createElement(
             'div',
             { className: 'library__controls' },
-            React.createElement(Library.Filters, null),
-            React.createElement(
-                'div',
-                { className: 'library__create' },
-                React.createElement('input', { ref: 'input' }),
-                React.createElement(
-                    'button',
-                    { onClick: this.createGame },
-                    'Create'
-                )
-            )
+            React.createElement(Library.Filters, null)
         );
-    },
-
-    // --------------------------------
-    createGame: function createGame() {
-        var gameInput = this.refs.input;
-        this.props.dispatch(libraryActions.createGame(gameInput.value));
-        gameInput.value = '';
     }
+
 });
 
 // =====================================
@@ -2520,7 +3075,6 @@ Library.__Filters = React.createClass({
         var tabNodes = permissionTypes.map(function (permission) {
             var tabHandler = _this13.changeFilter.bind(_this13, PERMISSION, permission.id);
             var checked = permission.id === _this13.props.library.filters[PERMISSION];
-            console.log('state', _this13.props.library.filters[PERMISSION]);
             return React.createElement(Tab, _extends({ key: permission.id, name: 'access-tab', onChange: tabHandler, checked: checked }, permission));
         });
 
@@ -2568,24 +3122,46 @@ Library.Filters = connect(function (state) {
 // =====================================
 // <Library.Game />
 // =====================================
-Library.Game = function (_ref7) {
-    var game = _objectWithoutProperties(_ref7, []);
+Library.Game = function (_ref9) {
+    var game = _objectWithoutProperties(_ref9, []);
+
+    var updated = moment(game.ModifiedDate).format('MMM DD');
+    var created = moment(game.CreatedDate).format('MMM DD');
 
     return React.createElement(
         'li',
-        { className: 'library__game' },
+        { className: 'library__game game panel panel--clickable' },
         React.createElement(
             'a',
             { href: '/Designer?id=' + game.Id },
+            React.createElement('div', { className: 'game__column game__column--icons' }),
             React.createElement(
-                'p',
-                null,
-                game.Name
+                'div',
+                { className: 'game__column game__column--summary' },
+                React.createElement(
+                    'p',
+                    { className: 'game__name' },
+                    game.Name
+                ),
+                React.createElement(
+                    'p',
+                    null,
+                    game.CreatedByUserName
+                )
             ),
             React.createElement(
-                'p',
-                null,
-                game.CreatedByUserName
+                'div',
+                { className: 'game__column game__column--dates' },
+                React.createElement(
+                    'p',
+                    null,
+                    created
+                ),
+                React.createElement(
+                    'p',
+                    null,
+                    updated
+                )
             )
         )
     );
@@ -2601,9 +3177,23 @@ Library.__List = React.createClass({
         var gameNodes = this.renderGames();
 
         return React.createElement(
-            'ul',
+            'div',
             { className: 'library__list' },
-            gameNodes
+            React.createElement(
+                'div',
+                { className: 'library__create' },
+                React.createElement('input', { ref: 'input' }),
+                React.createElement(
+                    'button',
+                    { onClick: this.createGame },
+                    'Create'
+                )
+            ),
+            React.createElement(
+                'ul',
+                null,
+                gameNodes
+            )
         );
     },
 
@@ -2617,6 +3207,13 @@ Library.__List = React.createClass({
         return this.props.games.map(function (game) {
             return React.createElement(Library.Game, _extends({ key: game.Id }, game));
         });
+    },
+
+    // --------------------------------
+    createGame: function createGame() {
+        var gameInput = this.refs.input;
+        this.props.dispatch(libraryActions.createGame(gameInput.value));
+        gameInput.value = '';
     }
 });
 
@@ -2630,29 +3227,36 @@ Library.List = connect(function (state) {
 // =====================================
 // <Library.Summary />
 // =====================================
-Library.Summary = function (_ref8) {
-    var game = _objectWithoutProperties(_ref8, []);
-
+Library.Summary = function () {
     return React.createElement(
         'div',
         { className: 'section section--summary library__summary' },
-        React.createElement('div', { className: 'separator separator--medium' })
+        React.createElement(
+            'h1',
+            null,
+            'Library'
+        )
     );
 };
-Forge.components.controls.Number = React.createClass({
-    displayName: 'Number',
+Forge.components.controls.DefinitionSelect = React.createClass({
+    displayName: 'DefinitionSelect',
 
     // -----------------------------
     render: function render() {
-        var _props11 = this.props,
-            Model = _props11.Model,
-            Value = _props11.Value;
+        var _props12 = this.props,
+            Model = _props12.Model,
+            Value = _props12.Value;
 
+        var _store$getState = store.getState(),
+            core = _store$getState.core;
 
-        var value = Model.Value || Value;
-        if (isNaN(value)) value = 0;
+        var options = core.Definitions.map(function (d) {
+            return { Id: d.Id, Label: d.Name };
+        });
 
-        return React.createElement('input', { type: 'number', value: value, onChange: this.change });
+        var value = Model.Value || Value || '';
+
+        return React.createElement(Select, { options: options, value: value, onChange: this.change });
     },
 
     // -----------------------------
@@ -2663,21 +3267,238 @@ Forge.components.controls.Number = React.createClass({
     // -----------------------------
     change: function change(ev) {
         var onChange = this.props.onChange;
-        var value = +ev.target.value;
+        var value = ev.target.value;
         if (typeof onChange === 'function') {
             onChange(value, ev);
         }
     }
 });
+
+Forge.components.controls.Dictionary = React.createClass({
+    displayName: 'Dictionary',
+
+    render: function render() {
+        var _this14 = this;
+
+        var Keys = this.props.Model.Keys;
+
+
+        var keyNodes = (Keys || []).map(function (v) {
+            return v.Key;
+        }).join(', ');
+        var listNodes = this.renderList(true);
+
+        var dialogNode = this.state.dialog ? this.renderEditDialog() : undefined;
+
+        var editHandler = function editHandler() {
+            return _this14.setState({ dialog: true });
+        };
+
+        return React.createElement(
+            'div',
+            { className: 'dictionary' },
+            React.createElement(
+                'div',
+                { className: 'dictionary__tooltip', onClick: editHandler },
+                React.createElement(
+                    Tooltip,
+                    { tip: listNodes },
+                    React.createElement(
+                        'div',
+                        { className: 'input' },
+                        keyNodes
+                    )
+                )
+            ),
+            dialogNode
+        );
+    },
+
+    // -----------------------------
+    getInitialState: function getInitialState() {
+        return { dialog: false };
+    },
+
+    // -----------------------------
+    renderEditDialog: function renderEditDialog() {
+        var _this15 = this;
+
+        var _props13 = this.props,
+            Model = _props13.Model,
+            allowAdd = _props13.allowAdd;
+
+
+        var listNodes = this.renderList();
+
+        var onClose = function onClose() {
+            return _this15.setState({ dialog: false });
+        };
+
+        var formNode = allowAdd ? this.renderAddForm() : undefined;
+
+        return React.createElement(
+            Dialog,
+            { header: 'Edit ' + Model.Name, onClose: onClose },
+            formNode,
+            React.createElement(
+                'ul',
+                { className: 'dictionary__list' },
+                listNodes
+            )
+        );
+    },
+
+    // -----------------------------
+    renderAddForm: function renderAddForm() {
+        return React.createElement(
+            'form',
+            { className: 'dictionary__add', ref: 'form' },
+            React.createElement('input', { type: 'text', ref: 'key', placeholder: 'Key' }),
+            React.createElement('input', { type: 'text', ref: 'value', placeholder: 'Value' }),
+            React.createElement(
+                'button',
+                { type: 'submit', className: 'button button--tertiary', onClick: this.add },
+                'Add'
+            )
+        );
+    },
+
+    // -----------------------------
+    renderList: function renderList(flat) {
+        var _this16 = this;
+
+        var Model = this.props.Model;
+
+
+        var list = Model.AdditionalValues || [];
+        var listNodes = list.map(function (x, i) {
+            return _this16.renderPair(x, i, flat);
+        });
+        return listNodes.length ? React.createElement(
+            'ul',
+            null,
+            listNodes
+        ) : 'No Values';
+    },
+
+    // -----------------------------
+    renderPair: function renderPair(item, index, flat) {
+        var allowAdd = this.props.allowAdd;
+        var Key = item.Key,
+            Value = item.Value,
+            ControlName = item.ControlName;
+
+
+        var id = 'k-' + Key;
+        var onChange = this.changePair.bind(this, index);
+
+        var valueNode = flat ? React.createElement(
+            'span',
+            { className: 'dictionary__value' },
+            Value
+        ) : this.renderControl(item);
+
+        var removeNode = flat || !allowAdd ? undefined : React.createElement(
+            'button',
+            { className: 'button button--transparent', title: 'Remove' },
+            React.createElement('span', { className: 'fa fa-remove' })
+        );
+
+        return React.createElement(
+            'li',
+            { key: id },
+            React.createElement(
+                'label',
+                { htmlFor: id, className: 'dictionary__key' },
+                Key
+            ),
+            valueNode,
+            removeNode
+        );
+    },
+
+    // -----------------------------
+    renderControl: function renderControl(item, onChange) {
+        // Dynamically create the component based on Control name.
+        return React.createElement(Forge.components.controls[item.Control || item.ControlName || 'Text'], { Model: item, onChange: onChange });
+    },
+
+    // -----------------------------
+    changePair: function changePair(index, value) {
+        var list = _objectWithoutProperties(this.props.Model.AdditionalValues, []);
+
+        list[index].Value = value;
+
+        this.reportChange(list);
+    },
+
+    // -----------------------------
+    add: function add() {
+        var list = _objectWithoutProperties(this.props.Model.AdditionalValues, []);
+
+        var _refs = this.refs,
+            key = _refs.key,
+            value = _refs.value,
+            form = _refs.form;
+
+
+        list.push({ Key: key.value, Value: value.value });
+        this.reportChange(list);
+
+        form.reset();
+    },
+
+    // -----------------------------
+    reportChange: function reportChange(list) {
+        var onChange = this.props.onChange;
+        if (typeof onChange === 'function') {
+            onChange(list);
+        }
+    }
+});
+Forge.components.controls.Number = React.createClass({
+    displayName: 'Number',
+
+    // -----------------------------
+    render: function render() {
+        var Model = this.props.Model;
+
+
+        var value = Model.Value;
+        if (isNaN(value)) value = 0;
+
+        return React.createElement('input', { id: Model._formId, type: 'number', value: value, onChange: this.change });
+    },
+
+    // -----------------------------
+    change: function change(ev) {
+        var onChange = this.props.onChange;
+        var value = ev.target.value;
+
+
+        onChange && onChange(+value);
+    }
+});
 Forge.components.controls.Text = React.createClass({
     displayName: 'Text',
 
+    // -----------------------------
     render: function render() {
-        return React.createElement(
-            'div',
-            null,
-            'Text Control'
-        );
+        var Model = this.props.Model;
+
+
+        var value = Model.Value || '';
+
+        return React.createElement('input', { id: Model._formId, type: 'text', value: value, onChange: this.change });
+    },
+
+    // -----------------------------
+    change: function change(ev) {
+        var onChange = this.props.onChange;
+        var value = ev.target.value;
+
+
+        onChange && onChange(value);
     }
 });
 // -------------------------------------------------
@@ -2692,17 +3513,17 @@ Designer.__EditDefinition = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this14 = this;
+        var _this17 = this;
 
-        var _props12 = this.props,
-            designer = _props12.designer,
-            core = _props12.core;
+        var _props14 = this.props,
+            designer = _props14.designer,
+            core = _props14.core;
 
 
         var selectedItem = core.Definitions[designer.index];
 
         var update = function update(prop) {
-            return _this14.updateModel.bind(_this14, prop);
+            return _this17.updateModel.bind(_this17, prop);
         };
 
         return React.createElement(
@@ -2777,14 +3598,21 @@ Designer.__EditDefinition = React.createClass({
 
     // -----------------------------
     updateModel: function updateModel(prop, ev) {
-        var _props13 = this.props,
-            designer = _props13.designer,
-            core = _props13.core,
-            dispatch = _props13.dispatch;
+        var _props15 = this.props,
+            designer = _props15.designer,
+            core = _props15.core,
+            dispatch = _props15.dispatch;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
         model[prop] = ev.target.value;
+
+        if (prop == 'ControlId') {
+            // Get the new ControlName
+            model.ControlName = core.Controls.filter(function (c) {
+                return c.Id == ev.target.value;
+            })[0].Name;
+        }
 
         dispatch(coreActions.updateDefinition(model));
     }
@@ -2848,10 +3676,10 @@ var __Definition__Settings = React.createClass({
             removeNode
         );
 
-        if (setting.Rules && setting.Rules.length) {
+        if (setting.rules && setting.rules.length) {
             // Map relevant rules underneath this setting so that
             // they can be displayed as children of this setting.
-            var ruleNodes = setting.Rules.map(function (r) {
+            var ruleNodes = setting.rules.map(function (r) {
                 var className = 'definition__nested-rule';
                 if (activeTagId === r.TagId) className += ' definition__nested-rule--active';
                 return React.createElement(
@@ -2892,6 +3720,7 @@ var __Definition__Settings = React.createClass({
     renderControl: function renderControl(setting, index) {
         var controlName = setting.ControlName || setting.Control || 'Number';
         var controlProps = {
+            Model: setting,
             Value: setting.Value || undefined,
             onChange: this.valueChange.bind(this, setting.Id)
         };
@@ -2902,10 +3731,10 @@ var __Definition__Settings = React.createClass({
 
     // -----------------------------
     removeSetting: function removeSetting(setting) {
-        var _props14 = this.props,
-            dispatch = _props14.dispatch,
-            core = _props14.core,
-            designer = _props14.designer;
+        var _props16 = this.props,
+            dispatch = _props16.dispatch,
+            core = _props16.core,
+            designer = _props16.designer;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -2922,29 +3751,28 @@ var __Definition__Settings = React.createClass({
 
     // -----------------------------
     nestRules: function nestRules() {
-        var _props15 = this.props,
-            core = _props15.core,
-            designer = _props15.designer;
+        var _props17 = this.props,
+            core = _props17.core,
+            designer = _props17.designer;
 
         var selectedItem = core.Definitions[designer.index];
-        var itemSettings = selectedItem.Settings || [];
+        var Settings = selectedItem.Settings,
+            Rules = selectedItem.Rules;
 
-        // Get all Rules based on the tags on this item.
-        var rules = Forge.utilities.getRules(selectedItem.Tags || [], core.Rules);
-        var settingIds = itemSettings.map(function (s) {
+
+        var settingIds = Settings.map(function (s) {
             return s.Id;
         });
 
-        // Nest Rules that share the same setting.
-        itemSettings.forEach(function (s) {
-            s.Rules = rules.filter(function (r) {
-                return s.TagId ? r.SettingId === s.SettingId && r.TagId !== s.TagId : r.SettingId === s.Id;
+        var flatSettings = Forge.utilities.sortSettings([].concat(_toConsumableArray(Settings), _toConsumableArray(Rules))).map(function (s) {
+            var subRules = Rules.filter(function (r) {
+                return (!r.TagId || r.TagId != s.TagId) && (r.SettingId == s.Id || r.SettingId == s.SettingId);
             });
+            return _extends({}, s, { rules: subRules });
         });
 
-        return Forge.utilities.sortSettings(itemSettings)
-        // Only show 1 rule per setting (rest are nested).
-        .filter(function (s) {
+        return flatSettings.filter(function (s) {
+            // Only show 1 rule per setting (rest are nested).
             if (s.SettingId) {
                 var index = settingIds.indexOf(s.SettingId);
                 if (index === -1) settingIds.push(s.SettingId);
@@ -2956,10 +3784,10 @@ var __Definition__Settings = React.createClass({
 
     // -----------------------------
     valueChange: function valueChange(settingId, value, ev) {
-        var _props16 = this.props,
-            dispatch = _props16.dispatch,
-            core = _props16.core,
-            designer = _props16.designer;
+        var _props18 = this.props,
+            dispatch = _props18.dispatch,
+            core = _props18.core,
+            designer = _props18.designer;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -2967,9 +3795,13 @@ var __Definition__Settings = React.createClass({
 
 
         var settings = [].concat(_toConsumableArray(model.Settings || []));
+
+        var prop = 'Value';
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') prop = 'AdditionalValues';
+
         settings.filter(function (s) {
             return s.Id === settingId;
-        })[0].Value = value;
+        })[0][prop] = value;
 
         model.Settings = settings;
 
@@ -2978,10 +3810,10 @@ var __Definition__Settings = React.createClass({
 
     // -----------------------------
     updateOrder: function updateOrder(initialIndex, newIndex, handler) {
-        var _props17 = this.props,
-            dispatch = _props17.dispatch,
-            designer = _props17.designer,
-            core = _props17.core;
+        var _props19 = this.props,
+            dispatch = _props19.dispatch,
+            designer = _props19.designer,
+            core = _props19.core;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -2994,7 +3826,7 @@ var __Definition__Settings = React.createClass({
         // Un-nest the settings in an order such that the nested rules have
         // have a Priority set just after its parent.
         settings.forEach(function (s) {
-            return flatSettings = [].concat(_toConsumableArray(flatSettings), [s], _toConsumableArray(s.Rules));
+            return flatSettings = [].concat(_toConsumableArray(flatSettings), [s], _toConsumableArray(s.rules || []));
         });
 
         // Set Priority based on index.
@@ -3002,7 +3834,13 @@ var __Definition__Settings = React.createClass({
             return s.Priority = i;
         });
 
-        model.Settings = Forge.utilities.sortSettings(flatSettings);
+        var sortedSettings = Forge.utilities.sortSettings(flatSettings);
+        model.Settings = sortedSettings.filter(function (s) {
+            return !s.TagId;
+        });
+        model.Rules = sortedSettings.filter(function (s) {
+            return !!s.TagId;
+        });
 
         dispatch(coreActions.updateDefinition(model));
     }
@@ -3037,8 +3875,11 @@ var __Definition__Tags = React.createClass({
             React.createElement(
                 'div',
                 { className: 'field__value' },
-                ' ',
-                tagNodes
+                React.createElement(
+                    'div',
+                    { className: 'tags' },
+                    tagNodes
+                )
             )
         );
     },
@@ -3050,9 +3891,9 @@ var __Definition__Tags = React.createClass({
 
     // -----------------------------
     renderAddTag: function renderAddTag() {
-        var _props18 = this.props,
-            core = _props18.core,
-            designer = _props18.designer;
+        var _props20 = this.props,
+            core = _props20.core,
+            designer = _props20.designer;
 
         var selectedItem = core.Definitions[designer.index];
 
@@ -3083,29 +3924,29 @@ var __Definition__Tags = React.createClass({
 
     // -----------------------------
     renderTags: function renderTags() {
-        var _this15 = this;
+        var _this18 = this;
 
-        var _props19 = this.props,
-            core = _props19.core,
-            designer = _props19.designer,
-            dispatch = _props19.dispatch;
+        var _props21 = this.props,
+            core = _props21.core,
+            designer = _props21.designer,
+            dispatch = _props21.dispatch;
 
         var selectedItem = core.Definitions[designer.index];
 
         // Map tags into spans that can be removed onClick
         return (selectedItem.Tags || []).map(function (tag, index) {
-            var removeTagHandler = _this15.removeTag.bind(_this15, index);
+            var removeTagHandler = _this18.removeTag.bind(_this18, index);
 
             var clickHandler = function clickHandler() {
                 var newId = tag.Id !== designer.activeTagId ? tag.Id : null;
                 dispatch(designerActions.activateTag(newId));
             };
 
-            var className = 'definition__tag';
+            var className = 'button button--secondary definition__tag';
             if (tag.Id === designer.activeTagId) className += ' definition__tag--active';
 
             return React.createElement(
-                'span',
+                'button',
                 { className: className, onClick: clickHandler, key: tag.Id },
                 React.createElement(
                     'span',
@@ -3125,9 +3966,9 @@ var __Definition__Tags = React.createClass({
 
     // -----------------------------
     removeTag: function removeTag(index) {
-        var _props20 = this.props,
-            core = _props20.core,
-            designer = _props20.designer;
+        var _props22 = this.props,
+            core = _props22.core,
+            designer = _props22.designer;
 
         var selectedItem = core.Definitions[designer.index];
         var newTags = [].concat(_toConsumableArray(selectedItem.Tags || []));
@@ -3141,9 +3982,9 @@ var __Definition__Tags = React.createClass({
 
     // -----------------------------
     addTag: function addTag(tagId) {
-        var _props21 = this.props,
-            core = _props21.core,
-            designer = _props21.designer;
+        var _props23 = this.props,
+            core = _props23.core,
+            designer = _props23.designer;
 
         var selectedItem = core.Definitions[designer.index];
         var newTags = [].concat(_toConsumableArray(selectedItem.Tags || []));
@@ -3175,19 +4016,14 @@ var __Definition__Tags = React.createClass({
 
     // -----------------------------
     updateModel: function updateModel(tags) {
-        var _props22 = this.props,
-            designer = _props22.designer,
-            dispatch = _props22.dispatch,
-            core = _props22.core;
+        var _props24 = this.props,
+            designer = _props24.designer,
+            dispatch = _props24.dispatch,
+            core = _props24.core;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
         model.Tags = tags;
-
-        // Update rules
-        model.Settings = Forge.utilities.sortSettings([].concat(_toConsumableArray((model.Settings || []).filter(function (s) {
-            return !s.TagId;
-        })), _toConsumableArray(Forge.utilities.getRules(tags, core.Rules))));
 
         dispatch(coreActions.updateDefinition(model));
     }
@@ -3211,60 +4047,57 @@ Designer.__EditRule = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this16 = this;
+        var _this19 = this;
 
-        var _props23 = this.props,
-            designer = _props23.designer,
-            core = _props23.core;
+        var _props25 = this.props,
+            designer = _props25.designer,
+            core = _props25.core;
 
         var selectedItem = core.Rules[designer.index];
 
         var update = function update(prop) {
-            return _this16.updateModel.bind(_this16, prop);
+            return _this19.updateModel.bind(_this19, prop);
         };
 
         return React.createElement(
             'div',
             { className: 'edit edit--rule field-group' },
-            React.createElement(Field, { label: 'Tag',
-                id: 'tag',
-                defaultValue: selectedItem.TagId,
-                onChange: update('TagId'),
-                options: core.Tags }),
-            React.createElement(Field, { label: 'Setting',
-                id: 'setting',
-                defaultValue: selectedItem.SettingId,
-                onChange: update('SettingId'),
-                options: core.Settings }),
-            React.createElement(Field, { label: 'Value',
-                id: 'value',
-                defaultValue: selectedItem.Value,
-                onChange: update('Value') })
+            React.createElement(
+                'div',
+                { className: 'panel' },
+                React.createElement(
+                    'h4',
+                    null,
+                    'General'
+                ),
+                React.createElement(Field, { label: 'Tag',
+                    id: 'tag',
+                    defaultValue: selectedItem.TagId,
+                    onChange: update('TagId'),
+                    options: core.Tags }),
+                React.createElement(Field, { label: 'Setting',
+                    id: 'setting',
+                    defaultValue: selectedItem.SettingId,
+                    onChange: update('SettingId'),
+                    options: core.Settings }),
+                React.createElement(Field, { label: 'Value',
+                    id: 'value',
+                    defaultValue: selectedItem.Value,
+                    onChange: update('Value') })
+            )
         );
     },
 
     // -----------------------------
     updateModel: function updateModel(prop, ev) {
-        var _props24 = this.props,
-            designer = _props24.designer,
-            core = _props24.core,
-            dispatch = _props24.dispatch;
+        var _props26 = this.props,
+            designer = _props26.designer,
+            core = _props26.core,
+            dispatch = _props26.dispatch;
 
         var model = _objectWithoutProperties(core.Rules[designer.index], []);
 
         model[prop] = ev.target.value;
-
-        if (prop === 'TagId' || prop === 'SettingId') {
-            // Generate the name again based on tag/setting
-            var tag = core.Tags.filter(function (t) {
-                return t.Id == model.TagId;
-            })[0];
-            var setting = core.Settings.filter(function (t) {
-                return t.Id == model.SettingId;
-            })[0];
-
-            model.Name = tag.Name + ' ' + setting.Name;
-        }
 
         dispatch(coreActions.updateRule(model));
     }
@@ -3290,9 +4123,9 @@ Designer.__EditTag = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _props25 = this.props,
-            core = _props25.core,
-            designer = _props25.designer;
+        var _props27 = this.props,
+            core = _props27.core,
+            designer = _props27.designer;
 
         var selectedItem = core.Tags[designer.index];
 
@@ -3300,24 +4133,37 @@ Designer.__EditTag = React.createClass({
             return rule.TagId && rule.TagId === selectedItem.Id;
         }).map(this.renderLink);
 
-        var definitionNodes = core.Definitions.filter(function (def) {
-            var defTags = def.Tags.map(function (t) {
+        var definitionNodes = core.Definitions.filter(function (d) {
+            var defTags = (d.Tags || []).map(function (t) {
                 return t.Id;
             });
-            return def.Id && defTags.indexOf(selectedItem.Id) !== -1;
+            return d.Id && defTags.indexOf(selectedItem.Id) !== -1;
         }).map(this.renderLink);
 
         return React.createElement(
             'div',
             { className: 'edit edit--tag' },
-            React.createElement(Field, { label: 'Name', id: 'tag-name', type: 'text', defaultValue: selectedItem.Name, onChange: this.updateTagName }),
-            React.createElement('div', { className: 'separator' }),
             React.createElement(
                 'div',
-                { className: 'edit__information' },
+                { className: 'panel' },
                 React.createElement(
-                    Banner,
-                    { header: 'Active Links', icon: 'linked' },
+                    'h4',
+                    null,
+                    'General'
+                ),
+                React.createElement(Field, { label: 'Name', id: 'tag-name', type: 'text', defaultValue: selectedItem.Name, onChange: this.updateTagName })
+            ),
+            React.createElement(
+                'div',
+                { className: 'panel edit__information' },
+                React.createElement(
+                    'h4',
+                    null,
+                    'Tagged Items'
+                ),
+                React.createElement(
+                    'p',
+                    { className: 'summary' },
                     'View objects which currently have this tag applied to them.'
                 ),
                 React.createElement(
@@ -3345,24 +4191,23 @@ Designer.__EditTag = React.createClass({
 
     // -----------------------------
     renderLink: function renderLink(item, tab) {
+        var dispatch = this.props.dispatch;
+
+        var category = item.TagId ? 'Rules' : 'Definitions';
 
         return React.createElement(
             'li',
             { key: item.Name, className: 'list__item' },
-            React.createElement(
-                'a',
-                null,
-                item.Name
-            )
+            React.createElement(Designer.Link, { model: item, dispatch: dispatch, category: category })
         );
     },
 
     // -----------------------------
     updateTagName: function updateTagName(ev) {
-        var _props26 = this.props,
-            designer = _props26.designer,
-            core = _props26.core,
-            dispatch = _props26.dispatch;
+        var _props28 = this.props,
+            designer = _props28.designer,
+            core = _props28.core,
+            dispatch = _props28.dispatch;
 
         var tag = _objectWithoutProperties(core.Tags[designer.index], []);
 

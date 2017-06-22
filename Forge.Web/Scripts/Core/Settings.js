@@ -1,7 +1,7 @@
 // Definition Settings
 // =====================================
 Forge.settings = {
-	Apply: function(value, setting) { 
+	apply: function(value, setting) {
 		const { SettingName, Name } = setting;
 		return this[SettingName || Name](value, setting);
 	},

@@ -13,20 +13,20 @@ const Footer = React.createClass({
         return (
             <div className='footer' ref='footer'>
                 <ul className='footer__nav'>{navLinks}</ul>
-                <div className='footer__message' />
+                TatianaVeratti@gmail.com @TatianaVeratti
             </div>
         );
     },
 
     // ----------------------------
     componentDidMount: function(){
-        this.contentNode = document.getElementById('content');
-        this.footerNode = this.refs.footer;
+        // this.contentNode = document.getElementById('content');
+        // this.footerNode = this.refs.footer;
 
-        // Every (resizeTime) milliseconds, calculate the footer's height.
-        // This is to compensate for window and body size changes.
-        this.interval = window.setInterval(this.updateSize, 300);
-        this.updateSize();
+        // // Every (resizeTime) milliseconds, calculate the footer's height.
+        // // This is to compensate for window and body size changes.
+        // this.interval = window.setInterval(this.updateSize, 300);
+        // this.updateSize();
     },
 
     // ----------------------------

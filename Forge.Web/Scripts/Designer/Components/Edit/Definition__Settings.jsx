@@ -42,10 +42,10 @@ const __Definition__Settings = React.createClass({
             </div>
         );
 
-        if (setting.Rules && setting.Rules.length){
+        if (setting.rules && setting.rules.length){
             // Map relevant rules underneath this setting so that
             // they can be displayed as children of this setting.
-            const ruleNodes = setting.Rules.map(r => {
+            const ruleNodes = setting.rules.map(r => {
                 let className = 'definition__nested-rule';
                 if (activeTagId === r.TagId) className += ' definition__nested-rule--active';
                 return (
@@ -76,6 +76,7 @@ const __Definition__Settings = React.createClass({
     renderControl: function(setting, index){
         const controlName = setting.ControlName || setting.Control || 'Number';
         const controlProps = {
+            Model: setting,
             Value: setting.Value || undefined,
             onChange: this.valueChange.bind(this, setting.Id)
         };
@@ -105,32 +106,29 @@ const __Definition__Settings = React.createClass({
     nestRules: function(){
         const { core, designer } = this.props;
         const selectedItem = core.Definitions[designer.index];
-        const itemSettings = selectedItem.Settings || [];
+        const { Settings, Rules } = selectedItem;
     
-        // Get all Rules based on the tags on this item.
-        let rules = Forge.utilities.getRules(selectedItem.Tags || [], core.Rules);
-        let settingIds = itemSettings.map(s => s.Id);
-
-        // Nest Rules that share the same setting.
-        itemSettings.forEach(s => {
-            s.Rules = rules.filter(r => {
-                return s.TagId
-                    ? (r.SettingId === s.SettingId && r.TagId !== s.TagId)
-                    : r.SettingId === s.Id;
-            });
-        });
+        let settingIds = Settings.map(s => s.Id);
         
-        return Forge.utilities
-            .sortSettings(itemSettings)
-            // Only show 1 rule per setting (rest are nested).
-            .filter(s => {
-                if (s.SettingId) {
-                    const index = settingIds.indexOf(s.SettingId);
-                    if (index === -1) settingIds.push(s.SettingId);
-                    return index === -1;
-                }
-                return true;
+        let flatSettings = Forge.utilities
+            .sortSettings([ ...Settings, ...Rules ])
+            .map(s => {
+                const subRules = Rules.filter(r => {
+                    return (!r.TagId || r.TagId != s.TagId)
+                        && (r.SettingId == s.Id || r.SettingId == s.SettingId)
+                });
+                return { ...s, rules: subRules };
             });
+        
+        return flatSettings.filter(s => {
+            // Only show 1 rule per setting (rest are nested).
+            if (s.SettingId) {
+                const index = settingIds.indexOf(s.SettingId);
+                if (index === -1) settingIds.push(s.SettingId);
+                return index === -1;
+            }
+            return true;
+        });
     },
 
     // -----------------------------
@@ -140,7 +138,11 @@ const __Definition__Settings = React.createClass({
 
         // Update the value of one individual setting.
         const settings = [ ...model.Settings || [] ];
-        settings.filter(s => s.Id === settingId)[0].Value = value;
+
+        let prop = 'Value';
+        if (typeof value === 'object') prop = 'AdditionalValues';
+
+        settings.filter(s => s.Id === settingId)[0][prop] = value;
 
         model.Settings = settings;
 
@@ -158,12 +160,14 @@ const __Definition__Settings = React.createClass({
 
         // Un-nest the settings in an order such that the nested rules have
         // have a Priority set just after its parent.
-        settings.forEach(s => flatSettings = [ ...flatSettings, s, ...s.Rules ]);
+        settings.forEach(s => flatSettings = [ ...flatSettings, s, ...(s.rules || []) ]);
 
         // Set Priority based on index.
         flatSettings.forEach((s, i) => s.Priority = i);
 
-        model.Settings = Forge.utilities.sortSettings(flatSettings);
+        const sortedSettings = Forge.utilities.sortSettings(flatSettings);
+        model.Settings = sortedSettings.filter(s => !s.TagId);
+        model.Rules = sortedSettings.filter(s => !!s.TagId);
 
         dispatch(coreActions.updateDefinition(model));
     }

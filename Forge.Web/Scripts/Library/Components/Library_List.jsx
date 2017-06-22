@@ -7,9 +7,15 @@ Library.__List = React.createClass({
         const gameNodes = this.renderGames();
 
         return (
-            <ul className='library__list'>
-                {gameNodes}
-            </ul>
+            <div className='library__list'>
+                <div className='library__create'>
+                    <input ref='input' />
+                    <button onClick={this.createGame}>Create</button>
+                </div>
+
+                {/* Games */}
+                <ul>{gameNodes}</ul>
+            </div>
         );
     },
 
@@ -23,6 +29,13 @@ Library.__List = React.createClass({
         return this.props.games.map(game => {
             return <Library.Game key={game.Id} {...game} />;
         });
+    },
+
+    // --------------------------------
+    createGame: function(){
+        const gameInput = this.refs.input;
+        this.props.dispatch(libraryActions.createGame(gameInput.value));
+        gameInput.value = '';
     }
 });
 

@@ -1,27 +1,21 @@
 Forge.components.controls.Number = React.createClass({
 	// -----------------------------
 	render: function(){
-		const { Model, Value } = this.props;
+		const { Model } = this.props;
 
-		let value = Model.Value || Value;
+		let value = Model.Value;
 		if (isNaN(value)) value = 0;
 
 		return (
-			<input type='number' value={value} onChange={this.change} />
+			<input id={Model._formId} type='number' value={value} onChange={this.change} />
 		);
 	},
 
 	// -----------------------------
-	getDefaultProps: function(){
-		return { Model: {} };
-	},
-
-	// -----------------------------
 	change: function(ev) {
-		const onChange = this.props.onChange;
-		const value = +ev.target.value;
-		if (typeof onChange === 'function'){
-			onChange(value, ev);
-		}
+		const { onChange } = this.props;
+		const { value } = ev.target;
+		
+		onChange && onChange(+value);
 	}
 });

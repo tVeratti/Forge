@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace Forge.Web.Controllers
 {
-    public class DesignerController : Controller
+    public class DesignerController : BaseController
     {
         // GET: Designer
         public ActionResult Index(long id)

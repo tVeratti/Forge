@@ -2,26 +2,30 @@
 @import '../units';
 @import '../_mixins';
 
-.footer{
-    position: absolute;
+#footer{
     display: block;
-    bottom: 0;
+    height: $size-footer-height;
     width: 100%;
     max-width: 100%;
-    border-top: 1px solid $color-primary-60;
-    background-color: $color-primary-50;
+    background-color: $color-primary-90;
+    color: $color-primary-10 !important;
+    text-align: center;
+    font-size: 12px;
+    margin-top: -1px;
 
-    .footer__nav,
-    .footer__message{ 
-        min-height: 50px;
+    .footer__nav{
         padding: 10px;
     }
 
-    .footer__message{ background-color: $color-primary-60; }
-
     .footer__nav{
-        li { display: inline-block; }
-        .footer__link{ padding: 5px; font-size: 10px; }
+        
+        li {
+            display: inline-block;
+            &:after{content: "|"; }
+            &:last-child:after{ content: ""; }
+
+        }
+        .footer__link{ color: white; padding: 5px; }
 
         @media screen and (max-width: 420px){
             li{ width: 50%; }

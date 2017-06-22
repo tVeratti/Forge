@@ -210,10 +210,18 @@
     <Content Include="Content\scripts.js" />
     <Content Include="Content\tests.js" />
     <Content Include="gulpfile.js" />
+    <Content Include="Scripts\Account\Components\Account.jsx" />
     <Content Include="Scripts\Builder\Actions.js" />
     <Content Include="Scripts\Builder\Components\Builder__Groups.jsx" />
     <Content Include="Scripts\Builder\Reducer.js" />
     <Content Include="Scripts\Builder\Components\Builder.jsx" />
+    <Content Include="Scripts\Account\Actions.js" />
+    <Content Include="Scripts\Account\Reducer.js" />
+    <Content Include="Scripts\Common\Components\Tooltip.jsx" />
+    <Content Include="Scripts\Core\Components\Controls\Dictionary.jsx" />
+    <Content Include="Scripts\Core\Components\Controls\DefinitionSelect.jsx" />
+    <Content Include="Scripts\Designer\Components\Designer__Link.jsx" />
+    <Content Include="Scripts\Common\Components\Dialog.jsx" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
     <Content Include="Scripts\Common\Components\Banner.jsx" />
     <Content Include="Scripts\Common\Components\Field.jsx" />
@@ -230,6 +238,7 @@
     <Content Include="Scripts\Core\Utilities.js" />
     <Content Include="Scripts\Designer\Components\Designer__Preview.jsx" />
     <Content Include="Scripts\Designer\Components\Designer__Search.jsx" />
+    <Content Include="Scripts\Designer\Components\Designer__Dialogs.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Definition__Settings.jsx" />
     <Content Include="Scripts\Designer\Components\Edit\Rule.jsx" />
@@ -332,6 +341,9 @@
     <Content Include="Views\Tests\Index.cshtml" />
     <Content Include="Styles\Components\_spec-runner.scss" />
     <Content Include="Styles\Components\_overlay.scss" />
+    <Content Include="Styles\Components\_dialogs.scss" />
+    <Content Include="Styles\Components\_tooltips.scss" />
+    <Content Include="Styles\Components\_pushList.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

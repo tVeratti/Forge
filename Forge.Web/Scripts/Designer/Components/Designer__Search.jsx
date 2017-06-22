@@ -12,14 +12,15 @@ Designer.__Search = React.createClass({
         const filterLower = filter.toLowerCase();
 
         let listNodes = filter
-            ? all.filter(x => contains((x.Name || '').toLowerCase(), filterLower))
+            ? all.filter(x => contains((x.Name || '').toLowerCase(), filterLower) || x.header)
             : [];
             
-        listNodes = sortBy(listNodes, 'Name')
+        listNodes = listNodes
+            .filter((x, i) => !x.header || x.header && !(listNodes[i + 1] || {header:true}).header)
             .map(this.renderItem);
 
         return (
-            <div>
+            <div className='designer__search'>
                 <input value={filter} onInput={this.inputHandler} />
                 <ul>{listNodes}</ul>
             </div>
@@ -44,9 +45,12 @@ Designer.__Search = React.createClass({
         const { core } = this.props;
 
         return [
-            ...this.mapTabItems(core.Rules, CATEGORIES.RULES),
-            ...this.mapTabItems(core.Tags, CATEGORIES.TAGS),
-            ...this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS)
+            { header: CATEGORIES.RULES },
+            ...sortBy(this.mapTabItems(core.Rules, CATEGORIES.RULES), 'Name'),
+            { header: CATEGORIES.TAGS },
+            ...sortBy(this.mapTabItems(core.Tags, CATEGORIES.TAGS), 'Name'),
+            { header: CATEGORIES.DEFINITIONS },
+            ...sortBy(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS), 'Name')
         ];
     },
 
@@ -60,18 +64,25 @@ Designer.__Search = React.createClass({
     // -----------------------------
     renderItem: function(item){
         const { dispatch, designer } = this.props;
-        const key = `${item.tab}-${item.Id || item.TempId || item.Name}`;
+        const key = `${item.tab}-${item.Id || item.TempId || item.Name || item.header}`;
+
+        if (item.header) {
+            return <li key={key} className='designer__list-header'>{item.header}</li>;
+        }
 
         // ClassName modifiers.
         let className = 'designer__list-item';
-        if (item.index === designer.index) className += ' designer__list-item--selected';
+        if (item.unsaved) className += ' designer__list-item--unsaved';
+        if (item.tab === designer.tab && item.index === designer.index) className += ' designer__list-item--selected';
 
         // Click Handler.
         const onClick = () => dispatch(designerActions.navigate(item.tab, item.index));
 
         return (
             <li key={key} className={className}>
-                <button className='button button--primary' onClick={onClick}>{item.Name}</button>
+                <button className='button button--transparent' onClick={onClick}>
+                    {item.Name}
+                </button>
             </li>
         );
     },

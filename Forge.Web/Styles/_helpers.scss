@@ -2,6 +2,17 @@
 @import 'units';
 @import 'mixins';
 
+.loading-bar{
+    position: absolute;
+    height: 15px;
+    top: 0;
+    left: 0;
+    right: 0;
+    @include gradient-animate-pattern($color-secondary-70);
+    text-align: center;
+    border-bottom: 1px solid $color-secondary-50;
+    box-shadow: inset 0 0 2px rgba(black, 0.3);
+}
 
 .separator{
     display: block;
@@ -30,25 +41,47 @@
 
 .list{
     .list__item{
-        border-bottom: 1px solid rgba(black, 0.1);
-        &:last-child{ border-bottom: none; }
+        //border-bottom: 1px solid rgba(black, 0.1);
+        //&:last-child{ border-bottom: none; }
         //&:nth-child(even){ background: rgba(black, 0.05); }
         //&:hover { background: rgba(white, 0.7); }
     }
 }
 
-.section--summary{
+.section--secondary{
     background-color: $color-secondary-70;
+}
+
+.section--summary{
+    padding: 10px;
     color: $color-primary-10;
+
     h1{ text-shadow: 2px 2px rgba(black, 0.2); }
 }
 
 .panel {
-    background: rgba(white, 0.5);
+    background: $color-primary-10;
     padding: 10px;
-    border-radius: 3px;
     margin: 10px 0;
+    border: 1px solid $color-primary-60;
     //@include soft-shadow();
+    &.panel--centered{
+        text-align: center;
+    }
+
+    &.panel--clickable{
+        &:hover{
+            background: $color-secondary-10;
+            border-color: $color-secondary-60;
+        }
+    }
+
+    h4 {
+        margin: -10px;
+        margin-bottom: 20px;
+        background: rgba(white, 0.7);
+        padding: 10px;
+    }
 }
 
 // DESKTOP ( >= 720px  )

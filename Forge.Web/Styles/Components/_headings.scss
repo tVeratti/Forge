@@ -6,7 +6,6 @@
 h1{
     font-size: 24px;
     font-weight: bold;
-    //color: $color-primary-90;
     margin: 10px 0;
 }
 
@@ -19,10 +18,8 @@ h3 {
 
 h4 { 
     font-weight: bold;
-    margin: 20px 0;
-    padding-bottom: 3px;
-    border-bottom: 2px solid $color-secondary-40;
-    &+.summary { margin-top: -10px; }
+    margin: 0 0 20px 0;
+    &+.summary { margin-top: -15px; }
 }
 
 h5 {

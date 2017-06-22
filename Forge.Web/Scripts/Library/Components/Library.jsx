@@ -1,15 +1,29 @@
 ﻿// =====================================
 // <Library />
 // =====================================
-const Library = () => {
+const __Library = (props) => {
+    const { loading } = props.library;
+
     return (
         <div className='library'>
-            <Library.Summary />
-            <Library.Controls />
+            {/* Summary & Controls */}
+            <div className='section section--secondary'>
+                { loading && <div className='loading-bar' />}
+                <Library.Summary />
+                <Library.Controls />
+            </div>
+
             <Library.List />
         </div>
     );
 };
+
+// =====================================
+// Container
+// =====================================
+const Library = connect(
+    state => { return { ...state } }
+)(__Library);
 
 // =====================================
 // Root

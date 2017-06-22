@@ -6,17 +6,17 @@
 // =====================================
 Designer.__Summary = React.createClass({
     render: function(){
-        var game = this.props.Game;
-        var createdAgo = moment.utc(game.CreatedDate).fromNow();
+        const { Game } = this.props.core;
+        const { loading } = this.props.designer; 
+
+        const createdAgo = moment.utc(Game.CreatedDate).fromNow();
         
         return (
             <div className='section section--summary designer__summary'>
 
-                { this.props.loading && <h2>Loading...</h2> }
-
                 {/* Game Information */}
-                <h1>{game.Name || '\u00A0'}</h1>
-                <p><b>{game.CreatedByUserName}</b> {createdAgo}</p>
+                <h1>{Game.Name || (loading && 'Loading...') || '\u00A0'}</h1>
+                <p><b>{Game.CreatedByUserName}</b> {createdAgo}</p>
 
                 <div className='separator' />
 
@@ -29,5 +29,5 @@ Designer.__Summary = React.createClass({
 // Container
 // =====================================
 Designer.Summary = connect(
-    state => { return { ...state.core} }
+    state => { return { ...state } }
 )(Designer.__Summary);

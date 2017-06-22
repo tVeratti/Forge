@@ -4,7 +4,7 @@
 // =====================
 // |       a   b       |
 // =====================
-// | 1 |     2     | 3 |
+// | 1 |     2     | x |
 // |   |           |   |
 // |   |           |   |
 // =====================
@@ -22,17 +22,24 @@ const __Designer = React.createClass({
     // -----------------------------
     render: function () {
         const { designer } = this.props;
+        const loading = designer.saving || designer.loading;
+
+        let className = 'designer';        
+        if (loading) className += ' designer--loading';
 
         return (
-            <div className='designer'>
+            <div className={className}>
+                <Designer.Dialogs />
 
-                {/* Game Information & Navigation */}
-                <Designer.Summary />
-                <Designer.Tabs />
+                <div className='section section--secondary'>
+                    {loading && <div className='loading-bar' />}
+                    
+                    {/* Game Information & Navigation */}
+                    <Designer.Summary />
+                    <Designer.Tabs />
+                </div>
 
                 <div className='designer__views overlay__anchor'>
-                    {designer.loading && <div className='overlay'/>}
-
                     {/* Stage & Controls */}
                     <Designer.List />
                     <Designer.Stage />

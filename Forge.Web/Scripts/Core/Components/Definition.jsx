@@ -8,24 +8,16 @@
 Forge.__Definition = React.createClass({    
     // -----------------------------
     render: function() {
-        const { model } = this.props;
-        const { ControlName, Control } = model;
-        const controlName = ControlName || Control || 'Number';
-        const controlProps = {
-            Model: model,
-            onChange: this.valueChange
-        };
+        const { ...model } = this.props.model;
+        model._formId = `d-${model.Id}`;
 
         // Dynamically create the component based on Control name.
-        const controlNode = React.createElement(
-            Forge.components.controls[controlName], 
-            controlProps
-        );
+        const controlNode = Forge.utilities.renderControl(model, this.valueChange)
 
         return (
             <div className='definition'>
-                <p className='definition__name'>{model.Name}</p>
-                <p className='definition__control'>{controlNode}</p>
+                <label htmlFor={model._formId} className='definition__name'>{model.Name}</label>
+                <div className='definition__control'>{controlNode}</div>
             </div>
         );
     },
@@ -41,13 +33,13 @@ Forge.__Definition = React.createClass({
     componentWillReceiveProps: function(nextProps){
         const { core, model } = nextProps;
         const { stages } = Forge.lifeCycle;
-        this.valueChange(nextProps.model.Value, null, stages.update, nextProps);
+        this.valueChange(model.Value, null, stages.update, nextProps);
     },
 
     // -----------------------------
     valueChange: function(value, ev, stage, props) {
         const { lifeCycle, settings } = Forge;
-
+        
         // Defaults (event triggered == null)
         stage = stage || lifeCycle.stages.update;
         props = props || this.props;
@@ -55,17 +47,16 @@ Forge.__Definition = React.createClass({
         const { model, core, dispatch } = props;
 
         // Apply all settings that match the current lifecycle
-        model.Settings
-            .filter(s => lifeCycle.isActive(s.LifeCycle, lifecycle))
+        model.MergedSettings
+            .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
             .forEach(s => value = settings.apply(value, s));
-        
-        if (value !== props.model.Value){
-            dispatch(coreActions.updateDefinition({
-                ...model,
-                Value: value
-            }));
+
+        if (typeof value == 'number' && isNaN(value)) value = 0;
+
+        if (value != props.model.Value){
+            dispatch(coreActions.updateDefinition({ ...model, Value: value }, true));
         };
-    }
+    },
 });
 
 // =====================================

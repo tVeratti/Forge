@@ -1,0 +1,57 @@
+﻿@import '../colors';
+
+.dictionary{
+    display: table;
+    width: 100%;
+
+    .dictionary__tooltip {
+        .input {
+            display: inline-block;
+            width: 100%;
+            overflow:hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    
+
+    .dictionary__list{
+        li {
+            display: flex;
+            margin-bottom: 10px;
+            align-items:center;
+
+            .dictionary__key{
+                width: 20%;
+            }
+
+            .dictionary__value{
+                max-width: 100%;
+                width: 70%;
+                margin: 0 10px;
+            }
+
+            .dictionary__remove{
+                width: 10%;
+            }
+        }
+        
+    }
+
+    .dictionary__add{
+        display: flex;
+        align-items:center;
+        width: 100%;
+        padding-bottom: 10px;
+        border-bottom: 1px solid $color-primary-20;
+        margin-bottom: 10px;
+
+        input {
+            margin-right: 10px;
+        }
+
+        button {
+            width: 75px;
+        }
+    }
+}

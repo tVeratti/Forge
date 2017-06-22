@@ -1,6 +1,6 @@
-﻿@import '../_colors';
+﻿@import '../colors';
 @import '../units';
-@import '../_mixins';
+@import '../mixins';
 
 @import 'designer__stage';
 
@@ -9,48 +9,47 @@ $bg-list-item--active: $color-primary-80;
 // Measure the margin offset for the
 // list toggle area (sliding panel).
 $width-toggle: 10px;
-$width-settings: 200px;
+$width-settings: 170px;
 $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
 
-// __Summary
-// ---------------------------
-.designer__summary{
-    padding: 10px;
+.designer{
+    position: relative;
 }
+
 
 // __Views
 // ---------------------------
 .designer__views{
     position: relative;
+    display: table;
+    width: 100%;
+    background: $color-primary-40;
     h3 { padding: 0 0 10px 20px; }
-
 }
 
 // __List
 // ---------------------------
 .designer__list{
-    position: absolute;
+    display: table-cell;
+    vertical-align: top;
     top: 0;
     bottom: 0;
     left: 0;
     width: 200px;
     padding: 10px;
     border: 1px solid $color-primary-60;
-    background: $color-background-menu;
-    border-top-right-radius: 3px;
+    background: $color-primary-10;
     min-height: 400px;
     z-index: 10;
+
+    overflow: visible;
 
     @include translateX(0);    
     @include transition(transform, 0.3s);
 
-    @media screen and (min-width: 721px){
-        // Stage padding so this does not overlap.
-        &~.stage:not(.stage--menu) {
-            .stage__workspace,
-            h3 { padding-left: $width-settings + 50px; }
-        }
+    @media screen and (max-width: 720px){
+        position: absolute;
     }
     
     h3 { border-top-left-radius: 3px; }
@@ -65,27 +64,40 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     &.designer__list--closed{
         // MOBILE
         @media screen and (max-width: 720px){
-            @include translateX(-90%);
+            @include translateX(-156px);
+
+            // Mini buttons to become stacked
+            // vertically on visible sidebar.
+            .designer__mini-buttons{
+                flex-direction: column;
+                align-items: flex-end;
+                margin: -10px -10px 0 0;
+                border: none !important;
+                button{
+                    width: 50px;
+                    padding: 20px 10px;
+                    border: none !important;
+                    color: $color-primary-70 !important;
+                    &:hover { color: $color-primary-80 !important; }
+                }
+            }
 
             .designer__list-items{ 
-                @include translateX(-80px);
                 visibility: hidden;
             }
 
-            // Stage padding so this does not overlap.
-            &~.stage:not(.stage--menu){ 
-                padding-left: $width-toggle + 10px;
-                .stage__menu{ padding-left: 10px; }
+            .designer__list-actions,
+            .designer__list-items {
+                padding-right: 0;
             }
         }
     }
 
     .designer__list-actions{
-        position: relative;
         margin-bottom: 10px;
 
         button {
-            height: 40px;
+            min-height: 40px;
             width: 100%;
             margin: 0;
             margin-bottom: 5px;
@@ -112,7 +124,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 &:hover{ 
                     color: $color-primary-80;
                     border-color: $color-primary-70;
-                    flex-grow: 1.5;
                 }
 
                 &.button--active{
@@ -132,67 +143,127 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     .designer__redo:after{ @include button-icon("\f064"); }
 
     .designer__toggle {
+        display: none;
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        bottom: -1px;
+        width: 20px !important;
+        height: calc(100% + 2px) !important;
+        border-radius: 0;
+        border: 1px solid $color-action-50;
+        background: $color-action-20;
         padding: 0;
-        
-        &:before{ 
-            @include button-icon("\f0c9"); 
-            text-shadow: none; 
-            font-size: 32px;
+        &:hover{
+            background: $color-action-30;
+        }
+
+        &:after{ 
+            position: absolute;
+            top: 10px;
+            right: 7px;
+            font-family: FontAwesome;
+            content: "\f142";
+            font-size: 28px;
             vertical-align: top;
+            color: white;
+            text-shadow: 1px 1px $color-action-60;
         }
     }
 
     // __Add
     // ---------------------------
     .designer__add {
-        &:before{  @include button-icon("\f067"); margin-right: 10px; }  
+        height: 40px !important;
+        margin-bottom: 10px;
+        color: white !important;
+
+        &:before{ 
+            @include button-icon("\f067");
+            margin-right: 10px;
+
+        }  
+    }
+
+    // Space for scrollbar
+    .designer__list-actions,
+    .designer__list-items {
+        padding-right: 5px;
     }
 
     // __List-Items
     // ---------------------------
     .designer__list-items{
+        overflow-y: auto;
+        max-height: calc(100% - 50px);
         @include transition(transform, 0.6s);
     }
 
     // __List-Item
     // ---------------------------
     .designer__list-item{
-        position: relative;
-        margin: 5px 0;
-
-        &:first-child{ 
-            button { border-radius: 3px 3px 0 0; }
-        }
-
-        &:last-child{ 
-            border: none;
-            button { border-radius: 0 0 3px 3px; }
-        }
-
+        border-left: 5px solid $color-primary-30;
+        &:hover{ background: $color-primary-20;}
         button {
-            position: relative;
             display: block;
             width: 100%;
             text-align: left;
             height: 40px;
             border-radius: 0;
+            border: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .setting--active{ opacity: 0.6; }
 
-        &.designer__list-item--selected{
-            button{
-                background-color: $color-primary-80;
-                //border-color: $color-primary-60;
-                /*&:after{
-                    position: absolute;
-                    top: 0;
-                    right: -19px;
-                    content: "";
-                    @include arrow-right(20px, $bg-list-item--active);
-                }*/
+        &.designer__list-item--unsaved{
+            border-color: $color-action-30 !important;
+            button {
+                font-weight: 700;
+                &:before{ content: "* "; }
             }
         }
+
+        
+        // Active List-Item
+        // (List & Search)
+        &.designer__list-item--selected{
+            border-color: $color-secondary-50 !important;
+            background: $color-secondary-70 !important;
+            .button{
+                color: white !important;
+            }
+
+            /*&:after{
+                position: absolute;
+                top: 0;
+                right: -20px;
+                content: "";
+                @include arrow-right(20px, $bg-list-item--active);
+            }*/
+        }
+
+        // Add
+        &:first-child{ border: none; }
+    }
+}
+
+
+.designer__list-header{
+   // margin-top: 10px;
+    font-weight: 600;
+    padding: 10px;
+    padding-left: 0;
+   // border-bottom: 1px solid $color-primary-50;
+   // background: $color-primary-20;
+}
+
+.designer__search{
+    input{
+        width: 100%;
+        margin-bottom: 10px;
     }
 }
 
@@ -207,7 +278,13 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 }
 
 .definition__tags {
-    .field__label{ vertical-align: top !important; }
+    
+    .field__label{ vertical-align: top !important; padding-top: 5px !important; }
+    .tags{
+        background: white;
+        border:1px solid $color-primary-60;
+        min-height: 100px;
+    }
 
     #add-tag{ 
         width: 70px;
@@ -215,42 +292,42 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     }
 
     .definition__tag {
+        position: relative;
         display: inline-block;
         padding: 5px 10px;
+        padding-right: 30px;
         margin: 5px;
-        background-color: $color-primary-20;
-        border-radius: 3px;
+        //background-color: $color-secondary-10;
+        //border-radius: 3px;
         min-height: 30px;
         cursor: pointer;
-
+        //border-color: $color-secondary-40;
         .fa-remove {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            line-height: 30px;
+            width: 20px;
             margin-left: 5px;
             cursor: pointer;
 
             &:hover {
-                color: $color-secondary-50;
+                color: $color-primary-90;
             }
         }
     }
 }
 
 .edit {
-
-    .edit__information{
-        padding: 10px;
-        background: rgba(white, 0.4);
-        border-radius: 5px;
-        border: 1px dashed $color-primary-60;
-        border-right: none;
-        border-left: none;
+    &.edit--tag .edit__information .field__label{
+         vertical-align: top;
+         padding-top: 5px;
     }
-
     .list__item a { 
         display: block;
         width: 100%;
         height: 100%;
         cursor: pointer;
-        padding: 10px;
     }
 }
 

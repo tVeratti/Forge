@@ -59,8 +59,8 @@ namespace Forge.Data.Services
                 ControlId = Definition.ControlId,
                 GroupId = Definition.GroupId,
                 CreatedById = Definition.CreatedById,
-                Tags = Definition.Tags.ToDataTable(),
-                Settings = Definition.Settings.ToDataTable()
+                Tags = (Definition.Tags ?? new List<DefinitionTagModel>()).ToDataTable(),
+                Settings = (Definition.Settings ?? new List<DefinitionSettingModel>()).ToDataTable()
             };
 
             _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);

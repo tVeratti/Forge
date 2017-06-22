@@ -42,7 +42,6 @@ $border-color: $color-background-menu;
         &:checked + label {
             color: $color-primary-80;
             background: $border-color;
-            
         }
     }
 
@@ -52,12 +51,16 @@ $border-color: $color-background-menu;
 .tab-group{
     text-align: left;
     padding: 0 10px;
-    background-color: $color-secondary-70;
+    background: none;
     border-bottom: 10px solid $border-color;
 }
 
-// DESKTOP ( >= 720px  )
-// ================================
-@media (min-width: 720px) {
-    
+@media screen and (max-width: 420px){
+    .tab-group{
+        display:flex;
+        flex-wrap: wrap-reverse;
+    }
+    .tab--checked {
+         order: -1;
+    }
 }

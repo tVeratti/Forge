@@ -8,6 +8,9 @@
         width: 100%;
     }
 
+    .expandable__label{
+        padding-left: 20px;
+    }
     .expandable__button,
     .expandable__label {
         display: table-cell;
@@ -24,8 +27,6 @@
             }
         }
     }
-
-    .expandable__button { border: 1px solid $color-primary-10; }
 
     &.expandable--closed {
         .expandable__button .expandable__icon:after {

@@ -12,7 +12,7 @@ Designer.__Stage = React.createClass({
     },
 
     // -----------------------------
-    render: function () {
+    render: function () { 
         const { tab, index, itemHistory } = this.props.designer;
         const list = this.props.core[tab] || [];
         const selectedItem = list[index];
@@ -23,7 +23,7 @@ Designer.__Stage = React.createClass({
             : this.renderStage();
 
         let headerNode = '\u00A0';
-        if (!isMenu && selectedItem) headerNode =  this.renderSelectedHeader();
+        if (!isMenu && selectedItem) headerNode = this.renderSelectedHeader();
 
         const uniqueId = selectedItem
             ? selectedItem.Id || selectedItem.TempId || selectedItem.Name
@@ -43,12 +43,11 @@ Designer.__Stage = React.createClass({
                 <div className='stage__menu'>
                     <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length}>Back</button>
                     <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled}>Save</button>
-                    <button className='button button--transparent stage__delete' disabled={menuDisabled}>Delete</button>
+                    <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled}>Delete</button>
                 </div>
 
                 <div className='stage__workspace'>
                     { instructions && <Banner>{instructions}</Banner> }
-                    <div className='separator separator--small' />
 
                     {/* Edit__* */}
                     {editView}
@@ -74,18 +73,27 @@ Designer.__Stage = React.createClass({
             if (!core[designer.tab] || !core[designer.tab].length){
                 // No items exist in this list, prompt the user to create one...
                 return (
-                    <div>
-                        <p>No {designer.tab} exist for this game yet!</p>
-                        {createButton}
+                    <div className='panel panel--centered'>
+                        No {designer.tab} exist for this game yet! {createButton}
                     </div>
                 );
 
             } else {
+                const recentNodes = core[designer.tab]
+                    .slice()
+                    .sort(x => x.updated)
+                    .reverse()
+                    .slice(0, 5)
+                    .map((x, i) => <Designer.Link key={i} model={x} dispatch={dispatch} />);
+
                 // Nothing selected yet
                 return (
-                    <div>
-                        Select an item to edit or
-                        {createButton}
+                    <div className='panel panel--centered'>
+                        Select an item to edit or {createButton}
+
+                        <div className='designer__recent'>
+                            {recentNodes}
+                        </div>
                     </div>
                 );
             }
@@ -117,6 +125,10 @@ Designer.__Stage = React.createClass({
     // -----------------------------
     save: function(){
         this.props.dispatch(designerActions.saveModel());
+    },
+
+    delete: function(){
+        this.props.dispatch(designerActions.delete());
     },
 
     // -----------------------------

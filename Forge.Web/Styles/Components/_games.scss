@@ -2,7 +2,48 @@
 @import '../units';
 @import '../_mixins';
 
-.library { background-color: $color-primary-30; }
+.library { 
+    position: relative;
+}
+
+.library__list {
+    padding: 10px;
+}
+
+.library__game {
+    padding: 0;
+
+    a {
+        display:table;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    .game__column{
+        display: table-cell;
+        padding: 10px;
+
+        &.game__column--icons{
+            background: white;
+            width: 60px;
+        }
+
+        &.game__column--summary{
+        }
+
+        &.game__column--dates{
+            white-space: nowrap;
+            text-align: right;
+            width: 1%;
+        }
+    }
+
+    .game__name{
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+}
 
 .game-summary{
     padding: 10px;

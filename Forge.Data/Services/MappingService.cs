@@ -10,12 +10,23 @@ namespace Forge.Data.Services
 {
     public static class MappingService
     {
-        public static DefinitionModel MapDefinition(CoreModel designer, DefinitionModel Model, IEnumerable<DefinitionTagModel> Tags, IEnumerable<DefinitionSettingModel> Settings)
+        public static DefinitionModel MapDefinition(
+            CoreModel designer,
+            DefinitionModel model,
+            IEnumerable<DefinitionTagModel> tags,
+            IEnumerable<DefinitionSettingModel> settings)
         {
-            Model.Tags = Tags.Where(dt => dt.DefinitionId == Model.Id);
-            Model.Settings = Settings.Where(ds => ds.DefinitionId == Model.Id);
+            model.Tags = tags.Where(dt => dt.DefinitionId == model.Id);
+            model.Settings = settings.Where(ds => ds.DefinitionId == model.Id);
+            model.Settings.ToList().ForEach(s =>
+            {
+                // Get all values for DefinitionSettings
+                s.Values = designer.DefinitionSettingsValues
+                    .Where(dsv => dsv.DefinitionSettingId == s.Id)
+                    .ToDictionary(dsv => dsv.Key, dsv => dsv.Value);
+            });
 
-            return Model;
+            return model;
         }
 
         // http://stackoverflow.com/a/18270091

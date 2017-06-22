@@ -13,7 +13,7 @@ Designer.__List = React.createClass({
 		else 					className += ' designer__list--closed';
 
 		return (
-			<div className={className}>
+			<div className={className} ref='wrapper'>
 
 				{/* Actions */}
 				{actionNodes}
@@ -32,10 +32,24 @@ Designer.__List = React.createClass({
 	},
 
 	// -----------------------------
+	componentDidMount: function(){
+		document.addEventListener('click', this.close);
+	},
+
+	// -----------------------------
 	componentWillReceiveProps: function(nextProps){
-		if (nextProps.tab !== this.props.tab &&
-			nextProps.selectedItem == null){
+		if (nextProps.designer.navigated){
+			this.setState({ open: false, listTab: 'List' });
+		}
+		else if (nextProps.designer.tab !== this.props.designer.tab){
 			this.setState({ open: true, listTab: 'List' });
+		}
+	},
+
+	// -----------------------------
+	componentDidUpdate: function(prevProps, prevState){
+		if (!prevState.open && this.state.open){
+			document.addEventListener('click', this.close);
 		}
 	},
 
@@ -61,6 +75,7 @@ Designer.__List = React.createClass({
 			// ClassName modifiers.
 			var className = 'designer__list-item';
 			if (i === index) className += ' designer__list-item--selected';
+			if (item.unsaved) className += ' designer__list-item--unsaved';
 
 			// Click Handler.
 			var onClick = () => {
@@ -70,7 +85,7 @@ Designer.__List = React.createClass({
 
 			return (
 				<li key={key} className={className}>
-					<button className='button button--primary' onClick={onClick}>{item.Name}</button>
+					<button className='button button--transparent' onClick={onClick}>{item.Name}</button>
 				</li>
 			);
 		});
@@ -103,10 +118,10 @@ Designer.__List = React.createClass({
 
 			return <button key={b} className={className} title={b} onClick={onClick} />;
 		});
-
+		//<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
 		return (
 			<div className='designer__list-actions'>
-				<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} />
+				
 				<div className='designer__mini-buttons'>
 					{miniButtons}
 				</div>
@@ -118,15 +133,25 @@ Designer.__List = React.createClass({
 	// -----------------------------
 	changeList: function(tab){
 		let open = this.state.open;
-		if (!open) open = true;
-		else if (tab === this.state.listTab) open = !open;
+		if (!open) { open = true; }
 
 		this.setState({ listTab: tab, open });
 	},
 
 	// -----------------------------
 	new: function(){
+		this.setState({ open: false });
 		this.props.dispatch(coreActions.createItem());
+	},
+
+	// -----------------------------
+	close: function(evt){
+		const $wrapper = $(this.refs.wrapper);
+		//if ($wrapper.find())
+		if (true){
+			this.setState({ open: false });
+			document.removeEventListener('click', this.close);
+		}
 	}
 });
 

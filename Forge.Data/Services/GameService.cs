@@ -91,7 +91,9 @@ namespace Forge.Data.Services
                     Settings =      multi.Read<SettingModel>(),
                     Tags =          multi.Read<TagModel>(),
                     Controls =      multi.Read<ControlModel>(),
-                    Groups =        multi.Read<GroupModel>()
+                    Groups =        multi.Read<GroupModel>(),
+
+                    DefinitionSettingsValues = multi.Read<DefinitionSettingValueModel>()
                 };
 
                 // Map Definition Properties

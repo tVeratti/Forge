@@ -4,12 +4,14 @@
 const Tab = React.createClass({
     // ----------------------------
     render: function(){
-        var props = this.props;
+        const { id, name, onChange, label, checked } = this.props;
+        let className = 'tab';
+        if (checked) className += ' tab--checked';
 
         return (
-            <span className='tab'>
-                <input className='tab__input' id={props.id} type='radio' name={props.name} onChange={props.onChange} ref='input' />
-                <label className='tab__label' htmlFor={props.id}>{props.label}</label>
+            <span className={className}>
+                <input className='tab__input' id={id} type='radio' name={name} onChange={onChange} ref='input' />
+                <label className='tab__label' htmlFor={id}>{label}</label>
             </span>
         );
     },

@@ -3,17 +3,18 @@
 @import '../mixins';
 
 .sortable{
-    border-left: 10px solid $color-primary-60;
-    border-radius: 5px 0 0 5px;
+    //border-left: 10px solid $color-primary-60;
+    //border-radius: 5px 0 0 5px;
+
     .sortable__item{
         border: 1px solid $color-primary-60;
         user-select: none;
-        background:$color-primary-30;
+        background: $color-primary-10;
 
         &:not(:last-child){ border-bottom: none; }
         &:not(.sortable__item--disabled){
             cursor: move;
-            &:hover{ background: $color-primary-50; }
+            &:hover{ background: $color-primary-20; }
             label{ cursor: move !important; }
         }
 

@@ -16,22 +16,26 @@ Designer.__EditRule = React.createClass({
         return (
             <div className='edit edit--rule field-group'>
 
-                <Field label='Tag' 
-                    id='tag'
-                    defaultValue={selectedItem.TagId}
-                    onChange={update('TagId')}
-                    options={core.Tags} />
+                <div className='panel'>
+                    <h4>General</h4>
 
-                <Field label='Setting'
-                    id='setting'
-                    defaultValue={selectedItem.SettingId}
-                    onChange={update('SettingId')}
-                    options={core.Settings} />
+                    <Field label='Tag' 
+                        id='tag'
+                        defaultValue={selectedItem.TagId}
+                        onChange={update('TagId')}
+                        options={core.Tags} />
 
-                <Field label='Value'
-                    id='value'
-                    defaultValue={selectedItem.Value}
-                    onChange={update('Value')} />
+                    <Field label='Setting'
+                        id='setting'
+                        defaultValue={selectedItem.SettingId}
+                        onChange={update('SettingId')}
+                        options={core.Settings} />
+
+                    <Field label='Value'
+                        id='value'
+                        defaultValue={selectedItem.Value}
+                        onChange={update('Value')} />
+                </div>
             </div>
         )
     },
@@ -42,15 +46,6 @@ Designer.__EditRule = React.createClass({
         const { ...model } = core.Rules[designer.index];
         
         model[prop] = ev.target.value;
-
-       
-        if (prop === 'TagId' || prop === 'SettingId') {
-            // Generate the name again based on tag/setting
-            const tag = core.Tags.filter(t => t.Id == model.TagId)[0];
-            const setting = core.Settings.filter(t => t.Id == model.SettingId)[0];
-
-            model.Name = `${tag.Name} ${setting.Name}`;
-        }
 
         dispatch(coreActions.updateRule(model));
     }

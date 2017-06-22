@@ -10,7 +10,6 @@ Designer._Menu = React.createClass({
 
                 <div className='designer__tiles'>
                     <button className='designer__tile'>Help</button>
-                    <button className='designer__tile'>Preview</button>
                 </div>
             </div>
         );

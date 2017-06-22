@@ -12,5 +12,6 @@ namespace Forge.Data.Models
         public string Name { get; set; }
         public long CreatedById { get; set; }
         public long ModifiedById { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 }

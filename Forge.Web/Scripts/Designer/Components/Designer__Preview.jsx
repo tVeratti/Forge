@@ -7,7 +7,6 @@ Designer._Preview = React.createClass({
         return (
             <div className='designer__preview'>
                 <Builder.Groups />
-
             </div>
         );
     }

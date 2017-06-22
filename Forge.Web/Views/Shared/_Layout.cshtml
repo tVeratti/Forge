@@ -26,27 +26,27 @@
 </head>
 <body>
 
-<div id="nav"></div>
+    <div id="nav"></div>
 
     <div id="content">
         @RenderBody()
     </div>
 
-<div id="footer"></div>
+    <div id="footer"></div>
 
-@Scripts.Render("~/Scripts/app-js")
-@RenderSection("scripts", required: false)
+    @Scripts.Render("~/Scripts/app-js")
+    @RenderSection("scripts", required: false)
 
-<script type="text/javascript">
-    ReactDOM.render(
-        React.createElement(Nav, @Html.Raw(user)),
-        document.getElementById('nav')
-    );
+    <script type="text/javascript">
+        ReactDOM.render(
+            React.createElement(Nav, @Html.Raw(user)),
+            document.getElementById('nav')
+        );
 
-    //ReactDOM.render(
-    //    React.createElement(Footer),
-    //    document.getElementById('footer')
-    //);
-</script>
+        ReactDOM.render(
+            React.createElement(Footer),
+            document.getElementById('footer')
+        );
+    </script>
 </body>
 </html>

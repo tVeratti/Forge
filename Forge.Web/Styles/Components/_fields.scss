@@ -17,10 +17,13 @@
         font-size: 14px;
     }
 
-    .field__value{ 
+    .field__value{
+        display: inline-block;
         width: 100%;
         vertical-align: middle;
     }
+
+    span.field__value{ padding-left: 5px; }
 
     input, select { 
         width: 100%;
@@ -32,20 +35,25 @@
     box-shadow: $color 0 0 8px 0;
 }
 
-input,
+input, .input,
 select { 
+    display: inline-block;
     height: 30px;
     line-height: 30px;
     padding-left: 5px;
     border: none;
-    border-radius: 3px;
     background: white;
-    border: 1px solid $color-primary-70;
+    border: 1px solid $color-primary-60;
+    &:hover{ border-color: $color-primary-80; }
     &:focus { 
         border-color: $color-action-50;
         @include field-glow($color-action-40);
         outline: none;
     }
+}
+
+input {
+    padding-left: 10px;
 }
 
 

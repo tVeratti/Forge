@@ -20,8 +20,7 @@ namespace Forge.Web.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var games = _context.Games.Read(User.Id);
-            return View(games);
+            return View();
         }
 
         #endregion

@@ -43,7 +43,6 @@ Library.__Filters = React.createClass({
         const tabNodes = permissionTypes.map(permission => {
             const tabHandler = this.changeFilter.bind(this, PERMISSION, permission.id);
             const checked = permission.id === this.props.library.filters[PERMISSION];
-            console.log('state', this.props.library.filters[PERMISSION])
             return <Tab key={permission.id} name='access-tab' onChange={tabHandler} checked={checked} {...permission} />;
         });
 
