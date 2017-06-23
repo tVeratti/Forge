@@ -2,17 +2,17 @@
 // <Designer />
 // 
 // =====================
-// |       a   b       |
+// |         a         |
+// |         b         |
 // =====================
-// | 1 |     2     | x |
-// |   |           |   |
-// |   |           |   |
+// | 1 |     2         |
+// |   |               |
+// |   |               |
 // =====================
 // a: Designer.Summary
 // b: Designer.Tabs
-// 1: Designer.Definitions
+// 1: Designer.List
 // 2: Designer.Stage
-// 3: Designer.Settings
 //
 // --------------------------------------------------
 // =====================================
@@ -31,16 +31,16 @@ const __Designer = React.createClass({
             <div className={className}>
                 <Designer.Dialogs />
 
+                {/* Game Information & Navigation */}
                 <div className='section section--secondary'>
                     {loading && <div className='loading-bar' />}
                     
-                    {/* Game Information & Navigation */}
                     <Designer.Summary />
                     <Designer.Tabs />
                 </div>
 
+                {/* Stage & Controls */}
                 <div className='designer__views overlay__anchor'>
-                    {/* Stage & Controls */}
                     <Designer.List />
                     <Designer.Stage />
                 </div>

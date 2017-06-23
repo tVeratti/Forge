@@ -1,7 +1,7 @@
 ﻿// =====================================
 // Presentation
 // =====================================
-Designer._Preview = React.createClass({
+Designer.__Preview = React.createClass({
     // -----------------------------
     render: function() {
         return (
@@ -17,4 +17,4 @@ Designer._Preview = React.createClass({
 // =====================================
 Designer.Preview = connect(
     state => { return { ...state }}
-)(Designer._Preview);
+)(Designer.__Preview);

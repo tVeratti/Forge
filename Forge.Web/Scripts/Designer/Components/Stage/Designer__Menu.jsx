@@ -1,4 +1,4 @@
-// =====================================
+﻿// =====================================
 // Presentation
 // =====================================
 Designer._Menu = React.createClass({
@@ -10,9 +10,6 @@ Designer._Menu = React.createClass({
 
                 <div className='designer__tiles'>
                     <button className='designer__tile'>Help</button>
-                    <div className='designer__recent'>
-                        
-                    </div>
                 </div>
             </div>
         );

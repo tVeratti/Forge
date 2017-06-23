@@ -79,11 +79,21 @@ Designer.__Stage = React.createClass({
                 );
 
             } else {
+                const recentNodes = core[designer.tab]
+                    .slice()
+                    .sort(x => x.updated)
+                    .reverse()
+                    .slice(0, 5)
+                    .map((x, i) => <Designer.Link key={i} model={x} dispatch={dispatch} />);
+
                 // Nothing selected yet
                 return (
                     <div className='panel panel--centered'>
                         Select an item to edit or {createButton}
-                        <Designer.Recent />
+
+                        <div className='designer__recent'>
+                            {recentNodes}
+                        </div>
                     </div>
                 );
             }

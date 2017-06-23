@@ -1,10 +1,7 @@
-﻿// -------------------------------------------------
-// <Designer.EditTag />
-// -------------------------------------------------
-// =====================================
+﻿// =====================================
 // Presentation
 // =====================================
-Designer.__EditTag = React.createClass({    
+Designer.__Tag = React.createClass({    
 
     // -----------------------------
     render: function(){
@@ -79,6 +76,6 @@ Designer.__EditTag = React.createClass({
 // =====================================
 // Container
 // =====================================
-Designer.EditTag = connect(
+Designer.Tag = connect(
     state => { return { ...state } }
-)(Designer.__EditTag);
+)(Designer.__Tag);

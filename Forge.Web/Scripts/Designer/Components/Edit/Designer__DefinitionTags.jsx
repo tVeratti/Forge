@@ -1,7 +1,7 @@
 ﻿// =====================================
 // Presentation
 // =====================================
-const __Definition__Tags = React.createClass({
+Designer.__DefinitionTags = React.createClass({
     // -----------------------------
     render: function () {
         
@@ -124,6 +124,6 @@ const __Definition__Tags = React.createClass({
 // =====================================
 // Container
 // =====================================
-const Definition__Tags = connect(
+Designer.DefinitionTags = connect(
     state => { return { ...state }}
-)(__Definition__Tags);
+)(Designer.__DefinitionTags);

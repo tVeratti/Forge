@@ -1,10 +1,7 @@
-﻿// -------------------------------------------------
-// <Designer.EditRule />
-// -------------------------------------------------
-// =====================================
+﻿// =====================================
 // Presentation
 // =====================================
-Designer.__EditRule = React.createClass({    
+Designer.__Rule = React.createClass({    
 
     // -----------------------------
     render: function(){
@@ -55,6 +52,6 @@ Designer.__EditRule = React.createClass({
 // =====================================
 // Container
 // =====================================
-Designer.EditRule = connect(
+Designer.Rule = connect(
     state => { return { ...state } }
-)(Designer.__EditRule);
+)(Designer.__Rule);
