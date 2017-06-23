@@ -69,7 +69,7 @@ Forge.components.controls.Dictionary = React.createClass({
 	renderList: function(flat){
 		const { Model } = this.props;
 
-		const list = Model.AdditionalValues || [];
+		const list = Model.Keys || [];
 		const listNodes = list.map((x, i) => this.renderPair(x, i, flat));
 		return listNodes.length
 			? <ul>{listNodes}</ul>

@@ -3370,7 +3370,7 @@ Forge.components.controls.Dictionary = React.createClass({
         var Model = this.props.Model;
 
 
-        var list = Model.AdditionalValues || [];
+        var list = Model.Keys || [];
         var listNodes = list.map(function (x, i) {
             return _this16.renderPair(x, i, flat);
         });

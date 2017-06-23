@@ -12,10 +12,9 @@ namespace Forge.Data.Models
         public IEnumerable<RuleModel> Rules { get; set; }
         public IEnumerable<DefinitionModel> Definitions { get; set; }
         public IEnumerable<SettingModel> Settings { get; set; }
+        public IEnumerable<SettingKeyModel> SettingsKeys { get; set; }
         public IEnumerable<TagModel> Tags { get; set; }
         public IEnumerable<ControlModel> Controls { get; set; }
         public IEnumerable<GroupModel> Groups { get; set; }
-
-        public IEnumerable<DefinitionSettingValueModel> DefinitionSettingsValues { get; set; }
     }
 }

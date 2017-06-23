@@ -13,15 +13,18 @@ namespace Forge.Data.Services
         public static DefinitionModel MapDefinition(
             CoreModel designer,
             DefinitionModel model,
-            IEnumerable<DefinitionTagModel> tags,
-            IEnumerable<DefinitionSettingModel> settings)
+            LookupValues lookupValues)
         {
-            model.Tags = tags.Where(dt => dt.DefinitionId == model.Id);
-            model.Settings = settings.Where(ds => ds.DefinitionId == model.Id);
+            model.Tags = lookupValues.DefinitionTags
+                .Where(dt => dt.DefinitionId == model.Id);
+
+            model.Settings = lookupValues.DefinitionSettings
+                .Where(ds => ds.DefinitionId == model.Id);
+
             model.Settings.ToList().ForEach(s =>
             {
                 // Get all values for DefinitionSettings
-                s.Values = designer.DefinitionSettingsValues
+                s.Values = lookupValues.DefinitionSettingsValues
                     .Where(dsv => dsv.DefinitionSettingId == s.Id)
                     .ToDictionary(dsv => dsv.Key, dsv => dsv.Value);
             });

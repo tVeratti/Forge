@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="Models\ControlModel.cs" />
+    <Compile Include="Models\LookupValues.cs" />
     <Compile Include="Models\DefinitionModel.cs" />
     <Compile Include="Models\CoreModel.cs" />
     <Compile Include="Models\DefinitionRuleModel.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Models\GroupTypeModel.cs" />
     <Compile Include="Models\DefinitionSettingModel.cs" />
     <Compile Include="Models\RuleModel.cs" />
+    <Compile Include="Models\SettingKeyModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\TagModel.cs" />
     <Compile Include="Models\UserModel.cs" />

@@ -13,5 +13,7 @@ namespace Forge.Data.Models
         public string ControlName { get; set; }
         public string LifeCycle { get; set; }
         public int Priority { get; set; }
+
+        public IEnumerable<SettingKeyModel> Keys { get; set; }
     }
 }

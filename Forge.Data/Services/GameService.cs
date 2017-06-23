@@ -91,18 +91,32 @@ namespace Forge.Data.Services
                     Settings =      multi.Read<SettingModel>(),
                     Tags =          multi.Read<TagModel>(),
                     Controls =      multi.Read<ControlModel>(),
-                    Groups =        multi.Read<GroupModel>(),
-
-                    DefinitionSettingsValues = multi.Read<DefinitionSettingValueModel>()
+                    Groups =        multi.Read<GroupModel>()
                 };
 
                 // Map Definition Properties
                 // --------------------------------------------------
-                // DefinitionTagModels, DefinitionSettingModels
-                var definitionTags =        multi.Read<DefinitionTagModel>();
-                var definitionSettings =    multi.Read<DefinitionSettingModel>();
+                var lookupValues = new LookupValues()
+                {
+                    SettingsKeys =              multi.Read<SettingKeyModel>(),
+                    DefinitionTags =            multi.Read<DefinitionTagModel>(),
+                    DefinitionSettings =        multi.Read<DefinitionSettingModel>(),
+                    DefinitionSettingsValues =  multi.Read<DefinitionSettingValueModel>()
+                };
 
-                model.Definitions = model.Definitions.Select(d => MappingService.MapDefinition(model, d, definitionTags, definitionSettings));
+                model.Settings = model.Settings.Select(setting =>
+                {
+                    setting.Keys = lookupValues.SettingsKeys.Where(k => k.SettingId == setting.Id);
+                    return setting;
+                });
+
+                model.Definitions = model.Definitions.Select(definition => 
+                    MappingService.MapDefinition(
+                        model,
+                        definition,
+                        lookupValues
+                    )
+                );
 
                 return model;
             } 
