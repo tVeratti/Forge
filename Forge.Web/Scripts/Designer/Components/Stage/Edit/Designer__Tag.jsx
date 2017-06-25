@@ -20,7 +20,7 @@ Designer.__Tag = React.createClass({
             .map(this.renderLink);
 
         return (
-            <div className='edit edit--tag'>
+            <div className='edit edit--tag' ref='wrapper'>
 
                 <div className='panel'>
                     <h4>General</h4>
@@ -52,13 +52,18 @@ Designer.__Tag = React.createClass({
     },
 
     // -----------------------------
+    componentDidMount: function(){
+        $(this.refs.wrapper).find('input')[0].focus();
+    },
+
+    // -----------------------------
     renderLink: function(item, tab){
         const { dispatch } = this.props;
         const category = item.TagId ? 'Rules' : 'Definitions';
 
         return (
             <li key={item.Name} className='list__item'>
-                <Designer.Link model={item} dispatch={dispatch} category={category} />
+                <Designer.Link model={item} dispatch={dispatch} category={category} hideCategory={true} />
             </li>
         );
     },

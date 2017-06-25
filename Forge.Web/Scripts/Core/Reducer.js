@@ -59,8 +59,6 @@ function coreReducer(state = initialCoreState, action){
                 saving: false
             };
 
-            console.log(nextState.Settings)
-
             nextState.Rules.forEach((r, i) => r.index = i);
             nextState.Tags.forEach((t, i) => t.index = i);
 
@@ -80,6 +78,12 @@ function coreReducer(state = initialCoreState, action){
             const newItem = {
                 Name: `New ${action.category.slice(0, -1)}`,
                 TempId: `t-${Math.random()}`,
+                Category: action.category,
+                Settings: [],
+                Tags: [],
+                Rules: [],
+                MergedSettings: [],
+                ModifiedDate: Date.now(),
                 unsaved: true
             };
 

@@ -8,6 +8,8 @@ namespace Forge.Data.Models
 {
     public class RuleModel
     {
+        public string Category => Categories.RULES;
+
         public long SettingId { get; set; }
         public long TagId { get; set; }
         public string SettingName { get; set; }

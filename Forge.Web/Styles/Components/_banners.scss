@@ -11,6 +11,7 @@ $color-border: rgba(black, 0.3);
     width: 100%;
     background: $color-primary-20;
     border: 1px solid $color-primary-60;
+    @include soft-shadow();
 
     .banner__content {
         display: table-cell;

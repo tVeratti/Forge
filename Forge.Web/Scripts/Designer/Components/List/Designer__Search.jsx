@@ -76,7 +76,7 @@ Designer.__Search = React.createClass({
         if (item.tab === designer.tab && item.index === designer.index) className += ' designer__list-item--selected';
 
         // Click Handler.
-        const onClick = () => dispatch(designerActions.navigate(item.tab, item.index));
+        const onClick = () => dispatch(designerActions.navigate(item));
 
         return (
             <li key={key} className={className}>

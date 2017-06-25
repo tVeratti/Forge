@@ -10,6 +10,7 @@
 function designerReducer(state = initialDesignerState, action){
     
     let nextState = Object.assign({}, state);
+    nextState.navigated = false;
 
     if (action.tab || action.index){
         // Push a new history item for the user to navigate back to.
@@ -46,13 +47,33 @@ function designerReducer(state = initialDesignerState, action){
             break;
 
         // --------------------------------
+        case FORCE_LIST:
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
             if (state.saving) return nextState;
-            nextState.navigated = !!action.tab || !!action.category;
-            nextState.tab = action.tab || action.category || state.tab;
-            nextState.index = action.index;
-            nextState.activeTagId = null;
+
+            const listOpen = action.listOpen !== undefined
+                ? action.listOpen
+                : true;
+
+            const listTab = action.listTab !== undefined
+                ? action.listTab
+                : 'List';
+
+            const index = action.index !== undefined
+                ? action.index
+                : state.index;
+
+            nextState = {
+                ...nextState,
+                listOpen,
+                listTab,
+                index,
+                navigated: action.force || !!action.category,
+                tab: action.category || state.tab,
+                activeTagId: null
+            };
+
             break;
 
         case DELETE_ITEM:

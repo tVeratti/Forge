@@ -8,6 +8,8 @@ namespace Forge.Data.Models
 {
     public class TagModel
     {
+        public string Category => Categories.TAGS;
+
         public long Id { get; set; }
         public string Name { get; set; }
         public long CreatedById { get; set; }

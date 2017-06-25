@@ -45,7 +45,7 @@ namespace Forge.Web
 
             // MINIFICATION
             // ----------------------------------------------------
-            BundleTable.EnableOptimizations = false;
+            BundleTable.EnableOptimizations = true;
         }
     }
 }

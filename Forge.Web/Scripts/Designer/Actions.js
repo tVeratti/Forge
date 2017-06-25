@@ -7,6 +7,7 @@ const BACK =                    'BACK';
 const CHANGE_TAB =              'CHANGE_TAB';
 const NAVIGATE =                'NAVIGATE';
 const SELECT_LIST_ITEM =        'SELECT_LIST_ITEM';
+const FORCE_LIST =              'FORCE_LIST';
 const ACTIVATE_TAG =            'ACTIVATE_TAG';
 const SAVE_MODEL =              'SAVE_MODEL';
 const SAVE_TAG =                'SAVE_TAG';
@@ -71,8 +72,18 @@ const designerActions = {
     },
 
     // --------------------------------
-    navigate: function(tab, index){
-        return { type: SELECT_LIST_ITEM, tab, index };
+    navigate: function(model){
+        return { type: SELECT_LIST_ITEM, category: model.Category, index: model.index };
+    },
+
+    // --------------------------------
+    closeList: function(){
+        return { type: FORCE_LIST, listOpen: false, force: true };
+    },
+
+    // --------------------------------
+    openList: function(listTab){
+        return { type: FORCE_LIST, listOpen: true, listTab, force: true};
     },
 
     // --------------------------------

@@ -62,48 +62,14 @@ Designer.__Stage = React.createClass({
         const selectedItem = this.getSelectedItem();
 
         if (!selectedItem && designer.tab !== 'Preview'){
-
-            const createItem = () => dispatch(coreActions.createItem());
-            const createButton = (
-                <button className='button button--tertiary designer__add' onClick={createItem}>
-                    Create one
-                </button>
-            );
-            
-            if (!core[designer.tab] || !core[designer.tab].length){
-                // No items exist in this list, prompt the user to create one...
-                return (
-                    <div className='panel panel--centered'>
-                        No {designer.tab} exist for this game yet! {createButton}
-                    </div>
-                );
-
-            } else {
-                const recentNodes = core[designer.tab]
-                    .slice()
-                    .sort(x => x.updated)
-                    .reverse()
-                    .slice(0, 5)
-                    .map((x, i) => <Designer.Link key={i} model={x} dispatch={dispatch} />);
-
-                // Nothing selected yet
-                return (
-                    <div className='panel panel--centered'>
-                        Select an item to edit or {createButton}
-
-                        <div className='designer__recent'>
-                            {recentNodes}
-                        </div>
-                    </div>
-                );
-            }
+            return <Designer.Recent />;
         }
 
         // Return a specific editing stage component.
         switch(designer.tab){
-            case CATEGORIES.TAGS:            return <Designer.EditTag />;
-            case CATEGORIES.RULES:           return <Designer.EditRule />;
-            case CATEGORIES.DEFINITIONS:     return <Designer.EditDefinition />;
+            case CATEGORIES.TAGS:            return <Designer.Tag />;
+            case CATEGORIES.RULES:           return <Designer.Rule />;
+            case CATEGORIES.DEFINITIONS:     return <Designer.Definition />;
             case 'Preview':                  return <Designer.Preview />;
             default:                         return <Designer.Menu />
         }

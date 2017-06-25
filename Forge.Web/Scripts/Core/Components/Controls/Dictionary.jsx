@@ -47,9 +47,7 @@ Forge.components.controls.Dictionary = React.createClass({
 				{formNode}
 
 				{/* List */}
-				<ul className='dictionary__list'>
-					{listNodes}
-				</ul>
+				{listNodes}
 			</Dialog>
 		);
 	},
@@ -72,7 +70,7 @@ Forge.components.controls.Dictionary = React.createClass({
 		const list = Model.Keys || [];
 		const listNodes = list.map((x, i) => this.renderPair(x, i, flat));
 		return listNodes.length
-			? <ul>{listNodes}</ul>
+			? <ul className='dictionary__list'>{listNodes}</ul>
 			: 'No Values';
 	},
 

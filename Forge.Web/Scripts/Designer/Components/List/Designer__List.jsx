@@ -11,10 +11,10 @@ Designer.__List = React.createClass({
 		if (!listNodes) 		className += ' designer__list--empty';
 		if (this.state.open) 	className += ' designer__list--open';
 		else 					className += ' designer__list--closed';
+		
 
 		return (
 			<div className={className} ref='wrapper'>
-
 				{/* Actions */}
 				{actionNodes}
 
@@ -28,28 +28,31 @@ Designer.__List = React.createClass({
 
 	// -----------------------------
 	getInitialState: function(){
-		return { open: true, listTab: 'List' };
-	},
-
-	// -----------------------------
-	componentDidMount: function(){
-		document.addEventListener('click', this.close);
+		return { open: false, listTab: 'List' };
 	},
 
 	// -----------------------------
 	componentWillReceiveProps: function(nextProps){
-		if (nextProps.designer.navigated){
-			this.setState({ open: false, listTab: 'List' });
+		const { designer } = nextProps;
+
+		if (designer.navigated){
+			this.setState({ 
+				open: designer.listOpen,
+				listTab: designer.listTab
+			});
 		}
-		else if (nextProps.designer.tab !== this.props.designer.tab){
-			this.setState({ open: true, listTab: 'List' });
+		else if (designer.tab !== this.props.designer.tab){
+			this.setState({
+				open: true,
+				listTab: 'List'
+			});
 		}
 	},
 
 	// -----------------------------
-	componentDidUpdate: function(prevProps, prevState){
-		if (!prevState.open && this.state.open){
-			document.addEventListener('click', this.close);
+	componentDidUpdate: function(prevProps){
+		if (this.props.designer.navigated){
+			$('#designer')[0].scrollIntoView(true);
 		}
 	},
 
@@ -59,8 +62,8 @@ Designer.__List = React.createClass({
 		const { listTab } = this.state;
 
 		switch(listTab){
-			case 'Settings': return <Designer.Settings />;
-			case 'Search': return <Designer.Search />;
+			case 'Settings': return 	<Designer.Settings />;
+			case 'Search': return 		<Designer.Search />;
 		}
 		
 		const list = this.props.core[tab];
@@ -103,18 +106,21 @@ Designer.__List = React.createClass({
 	// -----------------------------
 	renderActions: function(){
 		const { tab } = this.props.designer;
-		const { open, listTab } = this.state;
+		const { open, listTab, navigated } = this.state;
 
 		const toggleText = open ? 'Hide' : 'Show';
 		const toggle = () => this.setState({ open: !open });
 
 		let buttons = ['List', 'Search'];
-		if (tab === 'Definitions') buttons.push('Settings'); 
+		if (tab === CATEGORIES.DEFINITIONS) buttons.push('Settings'); 
 
 		const miniButtons = buttons.map(b => {
 			const onClick = this.changeList.bind(this, b);
 			let className = `button icon icon--${b.toLowerCase()}`;
-			if (b === listTab) className += ' button--active';
+			if (b === listTab){
+				className += ' button--active';
+				if (navigated) className += ' button--flash';
+			}
 
 			return <button key={b} className={className} title={b} onClick={onClick} />;
 		});
@@ -142,16 +148,6 @@ Designer.__List = React.createClass({
 	new: function(){
 		this.setState({ open: false });
 		this.props.dispatch(coreActions.createItem());
-	},
-
-	// -----------------------------
-	close: function(evt){
-		const $wrapper = $(this.refs.wrapper);
-		//if ($wrapper.find())
-		if (true){
-			this.setState({ open: false });
-			document.removeEventListener('click', this.close);
-		}
 	}
 });
 

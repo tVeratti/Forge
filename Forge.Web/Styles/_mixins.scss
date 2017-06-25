@@ -84,9 +84,9 @@
 }
 
 @mixin soft-shadow() {
-    -webkit-box-shadow: 1px 1px 7px 0 rgba(0,0,0,0.2);
-    -moz-box-shadow: 1px 1px 7px 0 rgba(0,0,0,0.2);
-    box-shadow: 1px 1px 7px 0 rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
 }
 
 @mixin bg-dots($bg: $color-primary-60){

@@ -5,6 +5,8 @@ namespace Forge.Data.Models
 {
     public class DefinitionModel
     {
+        public string Category => Categories.DEFINITIONS;
+
         public long Id { get; set; }
         public string Name { get; set; }
         public int ControlId { get; set; }

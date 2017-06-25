@@ -53,13 +53,14 @@ const coreActions = {
     },
 
     // --------------------------------
-    createItem: function() {
+    createItem: function(tab) {
         return (dispatch, getState) => {
             const { designer, core } = getState();
+            const category = tab || designer.tab;
             dispatch({ 
                 type: CREATE_ITEM,
-                category: designer.tab,
-                index: core[designer.tab].length
+                index: core[category].length,
+                category
             });
         }
     },

@@ -24,7 +24,7 @@ Designer.__Settings = React.createClass({
         return settings.map(s => {
 
             const clickHandler = this.addSetting.bind(this, s);
-            let className = 'setting';
+            let className = 'designer__list-item setting ';
             let disabled = false;
             if (contains(activeSettings, s.Name)) {
                 className += ' setting--active';
@@ -33,7 +33,7 @@ Designer.__Settings = React.createClass({
 
             return (
                 <li key={s.Name} className={className}>
-                    <button onClick={clickHandler} disabled={disabled}>
+                    <button className='button button--transparent' onClick={clickHandler} disabled={disabled}>
                         <span className='setting__icon' />
                         <span>{s.Name}</span>
                     </button>

@@ -18,7 +18,7 @@ $nav-arrow-size: 10px;
 button,
 .button{
     display: inline-block;
-    padding: 5px 10px;
+    padding: 5px 0;
     cursor: pointer;
     background: $color-secondary-70;
     color: $color-primary-10;
@@ -29,10 +29,11 @@ button,
     border-radius: 3px;
     font-family: inherit;
     min-height: 30px;
+    min-width: 75px;
 
-    &:hover{ background-color: $color-secondary-50; }
+    &:hover{ background: $color-secondary-50; }
 
-    &:active{ background-color: $color-secondary-70; }
+    &:active{ background: $color-secondary-70; }
         
     &+ button{ margin-left: 5px; }
 
@@ -40,31 +41,45 @@ button,
     // ---------------------------
 
     &.button--primary{
-        background-color: $color-primary-70;
-        &:hover{ background-color: mix($color-primary-80, $color-primary-70, 50%); }
+        background: $color-primary-70;
+        &:hover{ background: mix($color-primary-80, $color-primary-70, 50%); }
     }
 
     &.button--tertiary{
-        background-color: $color-tertiary-30;
-        &:hover{ background-color: $color-tertiary-50; }
+        background: $color-tertiary-30;
+        &:hover{ background: $color-tertiary-50; }
     }
 
     &.button--action{
-        background-color: $color-action-30;
-        &:hover{ background-color: $color-action-40; }
+        background: $color-action-30;
+        &:hover{ background: $color-action-40; }
     }
 
     &.button--transparent {
         //border: 2px solid $color-primary-80;
         color: $color-primary-80;
-        background-color: transparent;
+        background: none;
         &:hover{ color: $color-primary-90; } //border-color: $color-primary-90; }
+    }
+
+    &.button--link {
+        background: none;
+        color: $color-secondary-50;
+        &:visited,
+        &:active,
+        &:link{
+            color: $color-secondary-50;
+        }
+
+        &:hover{
+            color: $color-secondary-60;
+        }
     }
 
     &:disabled,
     &[disabled]{
         cursor: default;
-        opacity: 0.25;
+        opacity: 0.5;
         pointer-events: none;
     }
 }

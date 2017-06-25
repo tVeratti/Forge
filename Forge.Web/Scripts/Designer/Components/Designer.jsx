@@ -21,11 +21,13 @@
 const __Designer = React.createClass({
     // -----------------------------
     render: function () {
-        const { designer } = this.props;
+        const { designer, dispatch } = this.props;
         const loading = designer.saving || designer.loading;
 
         let className = 'designer';        
         if (loading) className += ' designer--loading';
+
+        const closeList = () => dispatch(designerActions.closeList());
 
         return (
             <div className={className}>
@@ -40,9 +42,10 @@ const __Designer = React.createClass({
                 </div>
 
                 {/* Stage & Controls */}
-                <div className='designer__views overlay__anchor'>
+                <div className='designer__views'>
                     <Designer.List />
                     <Designer.Stage />
+                    <div className='designer__overlay overlay' onClick={closeList} />
                 </div>
 
             </div>

@@ -1,16 +1,20 @@
 ﻿// =====================================
 // Presentation
 // =====================================
-const __Definition__Settings = React.createClass({
+Designer.__DefinitionSettings = React.createClass({
     // -----------------------------
     render: function () {
         
         const nestedSettings = this.nestRules()
             .map(this.renderSetting);
 
+        const contentNode = nestedSettings.length
+            ? <Sortable list={nestedSettings} onChange={this.updateOrder} />
+            : 'No Settings Applied';
+
         return (
             <div className='definition__settings'>
-                <Sortable list={nestedSettings} onChange={this.updateOrder} />
+                {contentNode}
             </div>
         );
     },
@@ -68,7 +72,7 @@ const __Definition__Settings = React.createClass({
                 <div key={setting.Id} className={className}>
                     {primaryNodes}
                 </div>
-            )
+            );
         }
     },
 
@@ -106,7 +110,10 @@ const __Definition__Settings = React.createClass({
     nestRules: function(){
         const { core, designer } = this.props;
         const selectedItem = core.Definitions[designer.index];
-        const { Settings, Rules } = selectedItem;
+        let { Settings, Rules } = selectedItem;
+
+        Settings = Settings || [];
+        Rules = Rules || [];
     
         let settingIds = Settings.map(s => s.Id);
         
@@ -137,7 +144,7 @@ const __Definition__Settings = React.createClass({
         const { ...model } = core.Definitions[designer.index];
 
         // Update the value of one individual setting.
-        const settings = [ ...model.Settings || [] ];
+        const settings = [ ...(model.Settings || []) ];
 
         let prop = 'Value';
         if (typeof value === 'object') prop = 'AdditionalValues';
@@ -176,6 +183,6 @@ const __Definition__Settings = React.createClass({
 // =====================================
 // Container
 // =====================================
-const Definition__Settings = connect(
+Designer.DefinitionSettings = connect(
     state => { return { ...state }}
-)(__Definition__Settings);
+)(Designer.__DefinitionSettings);

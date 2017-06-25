@@ -11,7 +11,7 @@ Designer.__Rule = React.createClass({
         const update = (prop) => this.updateModel.bind(this, prop);
 
         return (
-            <div className='edit edit--rule field-group'>
+            <div className='edit edit--rule field-group' ref='wrapper'>
 
                 <div className='panel'>
                     <h4>General</h4>
@@ -35,6 +35,11 @@ Designer.__Rule = React.createClass({
                 </div>
             </div>
         )
+    },
+
+    // -----------------------------
+    componentDidMount: function(){
+        $(this.refs.wrapper).find('select')[0].focus();
     },
 
     // -----------------------------
