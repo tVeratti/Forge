@@ -27,8 +27,9 @@ const designerActions = {
 
     // --------------------------------
     dialogTypes: {
-        LOAD_ERROR: 'LOAD_ERROR',
-        LOAD_CONFLICT: 'LOAD_CONFLICT'
+        LOAD_ERROR:     'LOAD_ERROR',
+        LOAD_CONFLICT:  'LOAD_CONFLICT',
+        EDIT_GROUPS:    'EDIT_GROUPS'
     },
 
     // Action Creators

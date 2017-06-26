@@ -1150,6 +1150,7 @@ input {
     top: 100px;
     left: 50%;
     transform: translateX(-50%);
+    min-width: 400px;
     background: whitesmoke;
     border: 1px solid #c7c7c7;
     z-index: 100;

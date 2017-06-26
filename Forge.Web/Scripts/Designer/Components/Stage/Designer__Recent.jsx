@@ -10,8 +10,7 @@ Designer.__Recent = ({ core, designer, dispatch }) => {
         .sort(x => x.ModifiedDate)
         .reverse()
         .slice(0, 5)
-        .map((x, i) => <Designer.Link key={i} model={x} dispatch={dispatch} />);
-
+        .map((x, i) => <Designer.Link key={i} model={x} />);
     
     const startNodes = categories.map(c => {
         const createItem = () => dispatch(coreActions.createItem(c));

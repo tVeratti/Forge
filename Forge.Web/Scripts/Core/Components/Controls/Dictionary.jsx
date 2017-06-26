@@ -13,12 +13,12 @@ Forge.components.controls.Dictionary = React.createClass({
 
 		return (
 			<div className='dictionary'>
-				<div className='dictionary__tooltip' onClick={editHandler}>
-					<Tooltip tip={listNodes}>
-						<div className='input'>{keyNodes}</div>
-					</Tooltip>
-				</div>
+				{/* Keys Preview / ToolTip */}
+				<Tooltip tip={listNodes} onClick={editHandler}>
+					<div className='input'>{keyNodes}</div>
+				</Tooltip>
 
+				{/* Dialog - Edit Values */}
 				{dialogNode}
 			</div>
 		);
@@ -33,16 +33,19 @@ Forge.components.controls.Dictionary = React.createClass({
 	renderEditDialog: function(){
 		const { Model, allowAdd } = this.props;
 
-		const listNodes = this.renderList();
-
-		const onClose = () => this.setState({ dialog: false });
+		const dialogProps = {
+			header: `Edit: ${Model.Name}`,
+			onClose: () => this.setState({ dialog: false })
+		};
 
 		const formNode = allowAdd
 			? this.renderAddForm()
 			: undefined;
 
+		const listNodes = this.renderList();
+
 		return (
-			<Dialog header={`Edit ${Model.Name}`} onClose={onClose}>
+			<Dialog {...dialogProps}>
 				{/* Add */}
 				{formNode}
 
@@ -86,9 +89,9 @@ Forge.components.controls.Dictionary = React.createClass({
 			? <span className='dictionary__value'>{Value}</span>
 			: this.renderControl(item);
 
-		const removeNode = flat || !allowAdd
-			? undefined
-			: <button className='button button--transparent' title='Remove'><span className='fa fa-remove'/></button>;
+		const removeNode = allowAdd && !flat
+			? <button className='button button--transparent' title='Remove'><span className='fa fa-remove'/></button>
+			: undefined;
 
 		return (
 			<li key={id}>

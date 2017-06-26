@@ -21,8 +21,8 @@ Designer._Menu = React.createClass({
                     {tileNodes}
                 </div>
 
-                {/*<div className='panel '>
-                    <h4>Designer</h4>
+                <div className='panel '>
+                    <h4>Game</h4>
 
                     <div className='field-group'>
                         <Field label='Id'>{Game.Id}</Field>
@@ -41,7 +41,7 @@ Designer._Menu = React.createClass({
                             defaultValue={1}
                             options={genres} />
                     </div>
-                </div>*/}
+                </div>
 
                 
 
@@ -50,6 +50,7 @@ Designer._Menu = React.createClass({
         );
     },
 
+    // -----------------------------
     renderTile: function(category){
         const { core, dispatch } = this.props;
         const count = core[category].length;

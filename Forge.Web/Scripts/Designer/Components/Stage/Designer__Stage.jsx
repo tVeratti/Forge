@@ -1,7 +1,4 @@
-﻿// -------------------------------------------------
-// <Designer.Stage />
-// -------------------------------------------------
-// =====================================
+﻿// =====================================
 // Presentation
 // =====================================
 Designer.__Stage = React.createClass({
@@ -12,21 +9,15 @@ Designer.__Stage = React.createClass({
     },
 
     // -----------------------------
-    render: function () { 
-        const { tab, index, itemHistory } = this.props.designer;
-        const list = this.props.core[tab] || [];
-        const selectedItem = list[index];
-        const isMenu = tab === 'Menu';
+    render: function () {
+        const { designer, core } = this.props;
+        const { tab, index, itemHistory } = designer;
 
-        const editView = isMenu
-            ? <Designer.Menu />
-            : this.renderStage();
+        const list = core[tab] || [];
+        const item = list[index];
 
-        let headerNode = '\u00A0';
-        if (!isMenu && selectedItem) headerNode = this.renderSelectedHeader();
-
-        const uniqueId = selectedItem
-            ? selectedItem.Id || selectedItem.TempId || selectedItem.Name
+        const uniqueId = item
+            ? item.Id || item.TempId || item.Name
             : '';
         
         const className = `designer__stage stage stage--${tab.toLowerCase()}`;
@@ -35,32 +26,39 @@ Designer.__Stage = React.createClass({
         const menuDisabled = !selectedItem;
         const instructions = this.instructions[tab];
 
+        const headerNode = this.renderHeader();
+        const workspaceNode = this.renderWorkspace();
+
         return (
             <div className={className} key={stageKey}>
 
                 <h3>{headerNode}</h3>
 
+                {/* Actions (Back, Save, Delete...) */}
                 <div className='stage__menu'>
                     <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length}>Back</button>
                     <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled}>Save</button>
+                    <button className='button button--transparent stage__save-all' onClick={this.saveAll}>Save All</button>
                     <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled}>Delete</button>
                 </div>
 
                 <div className='stage__workspace'>
+                    {/* Information / Tips */}
                     { instructions && <Banner>{instructions}</Banner> }
 
                     {/* Edit__* */}
-                    {editView}
+                    {workspaceNode}
                 </div>
             </div>
         );
     },
 
     // -----------------------------
-    renderStage: function(){
+    renderWorkspace: function(){
         const { designer, dispatch, core } = this.props;
         const selectedItem = this.getSelectedItem();
 
+        // Show Recent when tab is valid but nothing selected.
         if (!selectedItem && designer.tab !== 'Preview'){
             return <Designer.Recent />;
         }
@@ -70,27 +68,30 @@ Designer.__Stage = React.createClass({
             case CATEGORIES.TAGS:            return <Designer.Tag />;
             case CATEGORIES.RULES:           return <Designer.Rule />;
             case CATEGORIES.DEFINITIONS:     return <Designer.Definition />;
+            case 'Menu':                     return <Designer.Menu />;
             case 'Preview':                  return <Designer.Preview />;
             default:                         return <Designer.Menu />
         }
     },
 
     // -----------------------------
-    renderSelectedHeader: function(){
+    renderHeader: function(){
         var { designer } = this.props;
         const selectedItem = this.getSelectedItem();
 
-        return (
-            <div>
-                <span className='breadcrumb'>{designer.tab}</span>
-                <span className='emphasis'>{selectedItem && selectedItem.Name}</span>
-            </div>
-        );
+        if (tab === 'Menu' || !selectedItem) return '\u00A0';
+
+        return <span className='emphasis'>{selectedItem && selectedItem.Name}</span>;
     },
 
     // -----------------------------
     save: function(){
         this.props.dispatch(designerActions.saveModel());
+    },
+
+    // -----------------------------
+    saveAll: function(){
+        this.props.dispatch(coreActions.save());
     },
 
     delete: function(){

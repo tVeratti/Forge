@@ -1,14 +1,12 @@
-Forge.components.controls.DefinitionSelect = React.createClass({
+Forge.components.controls.Select_Definition = React.createClass({
 	// -----------------------------
 	render: function(){
 		const { Model, Value } = this.props;
 		const { core } = store.getState();
 		
-		const options = core.Definitions.map(d => { return { Id: d.Id, Label: d.Name }});
-
 		let value = Model.Value || Value || '';		
 
-		return <Select options={options} value={value} onChange={this.change} />;
+		return <Select options={core.Definitions} value={value} onChange={this.change} />;
 	},
 
 	// -----------------------------

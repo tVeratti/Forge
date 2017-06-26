@@ -69,5 +69,12 @@ namespace Forge.Web.Controllers
 
             return Model.Id;
         }
+
+        [HttpPost]
+        public long Save(CoreModel Model)
+        {
+            _context.Games.Update()
+            return 0;
+        }
     }
 }

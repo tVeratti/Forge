@@ -176,6 +176,15 @@ function coreReducer(state = initialCoreState, action){
             nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
+        
+        // --------------------------------
+        case UPDATE_GAME:
+            nextState.Game = {
+                ...state.Game,
+                ...action.model
+            };
+
+            break;
     }
 
     return nextState;

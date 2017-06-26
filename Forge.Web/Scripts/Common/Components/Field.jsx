@@ -14,6 +14,7 @@ const Field = ({ ...props }) => {
         <div className='field'>
             <label className='field__label' htmlFor={props.id}>{props.label}</label>
             <span className='field__value'>{props.children || inputNode}</span>
+            {props.after}
         </div>
     );
 }

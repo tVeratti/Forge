@@ -218,7 +218,9 @@
     <Content Include="Scripts\Account\Reducer.js" />
     <Content Include="Scripts\Common\Components\Tooltip.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Dictionary.jsx" />
-    <Content Include="Scripts\Core\Components\Controls\DefinitionSelect.jsx" />
+    <Content Include="Scripts\Core\Components\Controls\Select_Definition.jsx" />
+    <Content Include="Scripts\Designer\Components\Dialogs\Designer__LoadError.jsx" />
+    <Content Include="Scripts\Designer\Components\Dialogs\Designer__Groups.jsx" />
     <Content Include="Scripts\Designer\Components\Stage\Designer__Link.jsx" />
     <Content Include="Scripts\Common\Components\Dialog.jsx" />
     <Content Include="Scripts\Common\Components\Expandable.jsx" />
@@ -242,7 +244,7 @@
     <Content Include="Scripts\Designer\Components\Stage\Edit\Designer__Tag.jsx" />
     <Content Include="Scripts\Designer\Components\Stage\Designer__Preview.jsx" />
     <Content Include="Scripts\Designer\Components\Stage\Designer__Recent.jsx" />
-    <Content Include="Scripts\Designer\Components\Designer__Dialogs.jsx" />
+    <Content Include="Scripts\Designer\Components\Dialogs\Designer__Dialogs.jsx" />
     <Content Include="Scripts\Designer\Components\List\Designer__List.jsx" />
     <Content Include="Scripts\Designer\Components\List\Designer__Search.jsx" />
     <Content Include="Scripts\Designer\Components\List\Designer__Settings.jsx" />

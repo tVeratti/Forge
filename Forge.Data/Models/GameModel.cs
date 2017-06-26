@@ -16,6 +16,7 @@ namespace Forge.Data.Models
         public long UpdatedById { get; set; }
         public int EditTypeId { get; set; }
         public int ViewTypeId { get; set; }
+        public int GenreId { get; set; }
 
         public string CreatedByUserName { get; set; }
         public string UpdatedByUserName { get; set; }

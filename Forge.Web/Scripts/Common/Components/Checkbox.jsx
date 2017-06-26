@@ -1,9 +1,13 @@
 ﻿// =====================================
 // <Checkbox />
 // =====================================
-const Checkbox = ({ id, label, name }) => (
-    <span className='checkbox'>
-        <input className='checkbox__input' id={id} type='checkbox' name={name || id}/>
-        <label className='checkbox__label' htmlFor={id}>{label}</label>
-    </span>
-)
+const Checkbox = (props) => {
+    const { id, label, name, checked, onChange } = props;
+
+    return (
+        <span className='checkbox'>
+            <input className='checkbox__input' type='checkbox' {...props} />
+            <label className='checkbox__label' htmlFor={id}>{label}</label>
+        </span>
+    );
+}

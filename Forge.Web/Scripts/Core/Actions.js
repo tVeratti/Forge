@@ -4,15 +4,15 @@
 const REQUEST_GAME =        'REQUEST_GAME';
 const RECEIVE_GAME =        'RECEIVE_GAME';
 const GET_LOCAL_GAME =      'GET_LOCAL_GAME';
+
 const CREATE_ITEM =         'CREATE_ITEM';
 const UPDATE_ITEM =         'UPDATE_ITEM';
 const DELETE_ITEM =         'DELETE_ITEM';
-
-const UPDATE_DEFINITION =   'UPDATE_DEFINITION';
 const ADD_SETTING =         'ADD_SETTING';
+const UPDATE_GAME =         'UPDATE_GAME';
 
-const UPDATE_RULE =         'UPDATE_RULE';
-const UPDATE_TAG =          'UPDATE_TAG';
+const BEGIN_SAVE_CORE =     'BEGIN_SAVE_CORE';
+const END_SAVE_CORE =       'END_SAVE_CORE';
 
 const CATEGORIES = {
     TAGS:           'Tags',
@@ -26,7 +26,8 @@ const coreActions = {
     // =====================================
     // --------------------------------
     api: {
-        FETCH_GAME: '/Core/Get'
+        FETCH_CORE: '/Core/Get',
+        SAVE_CORE:  '/Core/Save'
     },
 
     // Action Creators
@@ -35,15 +36,13 @@ const coreActions = {
     requestGame:    function()      { return { type: REQUEST_GAME }},
     receiveGame:    function(game)  { return { type: RECEIVE_GAME, game }},
     getLocalGame:   function(id)    { return { type: GET_LOCAL_GAME, id}},
-
-    // --------------------------------
-    fetchGame: function(id){
+    fetchGame:      function(id){
         return dispatch => {
             // Show loading indication.
             dispatch(this.requestGame());
 
             // Fetch games from database with state filters.
-            $.get(this.api.FETCH_GAME, { id })
+            $.get(this.api.FETCH_CORE, { id })
                 .fail(response => dispatch(this.getLocalGame(id)))
                 .done(response => {
                     const result = JSON.parse(response)
@@ -87,6 +86,9 @@ const coreActions = {
 
     // --------------------------------
     updateItem: function(model, category, saved, fromCore){
+        // 'fromCore' is true only from the Forge.Definition component itself,
+        // meaning that this update came from user input on the Builder,
+        // not from editing the Designer.
         saved = fromCore ? !model.unsaved : saved;
 
         return (dispatch, getState) => {
@@ -97,6 +99,26 @@ const coreActions = {
 
             dispatch({ type: UPDATE_ITEM, category, index, model, saved, fromCore });
         }
+    },
+
+    // --------------------------------
+    updateGame: function(model){
+        return { type: UPDATE_GAME, model };
+    },
+
+    // --------------------------------
+    save: function(){
+        return (dispatch, getState) => {
+
+            dispatch({ type: BEGIN_SAVE_CORE });
+
+            const { core } = getState();
+
+            // Fetch games from database with state filters.
+            $.get(this.api.SAVE_CORE, core)
+                //.fail(response => dispatch(this.getLocalGame(id)))
+                .done(r => dispatch({ type: END_SAVE_CORE }));
+        };
     }
 }
 

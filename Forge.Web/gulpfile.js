@@ -1,8 +1,7 @@
 ﻿const gulp =        require('gulp');
 const concat =      require('gulp-concat');		// Merge files.
 const babel =       require('gulp-babel');		// Transpile from ES6 to ES5.
-const plumber = require('gulp-plumber');
-const minify = require('gulp-minify');
+const plumber =     require('gulp-plumber');
 
 const sourceJS = [
     // Global & Utilities
@@ -41,7 +40,6 @@ gulp.task('build', function () {
         .pipe(plumber())
 	    .pipe(concat('scripts.js'))
 	    .pipe(babel(babelOptions))
-        //.pipe(minify({ noSource: true }))
 	    .pipe(gulp.dest('Content'));
 });
 
@@ -52,27 +50,6 @@ gulp.task('build-tests', function () {
 	    .pipe(babel(babelOptions))
 	    .pipe(gulp.dest('Content'));
 });
-
-
-gulp.task('build-vendor', function () {
-    return gulp.src([
-            //"Scripts/Vendor/jquery-1.10.2.js",
-            //"Scripts/Vendor/moment.js",
-            //"Scripts/Vendor/pubsub.js",
-            //"Scripts/Vendor/react-with-addons-15.3.2.js",
-            //"Scripts/Vendor/react-dom-15.3.2.js",
-            //"Scripts/Vendor/redux-3.6.0.js",
-            //"Scripts/Vendor/redux-thunk-2.0.1.js",
-            "Scripts/Vendor/redux-debounced-0.3.0.js",
-            //"Scripts/Vendor/react-redux-4.4.5.js"
-        ])
-        .pipe(plumber())
-	    .pipe(concat('vendor.js'))
-	    .pipe(babel(babelOptions))
-        //.pipe(minify({ noSource: true }))
-	    .pipe(gulp.dest('Content'));
-});
-
 
 gulp.task('watch', ['build', 'build-tests'], function () {
     gulp.watch(sourceJS, ['build']);
