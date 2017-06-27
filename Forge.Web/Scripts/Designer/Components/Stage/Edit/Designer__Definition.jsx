@@ -77,11 +77,6 @@ Designer.__Definition = React.createClass({
     },
 
     // -----------------------------
-    componentDidMount: function(){
-        $(this.refs.wrapper).find('input')[0].focus();
-    },
-
-    // -----------------------------
     updateModel: function(prop, ev){
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Definitions[designer.index];

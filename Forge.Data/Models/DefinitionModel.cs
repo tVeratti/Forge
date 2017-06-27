@@ -1,31 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Forge.Data.Models
 {
-    public class DefinitionModel : TableDefinitionModel
+    public class DefinitionModel
     {
         public string Category => Categories.DEFINITIONS;
 
-        public long CreatedById { get; set; }
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public long GroupId { get; set; }
+        public int ControlId { get; set; }
+        public string ControlName { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
-
-        public string ControlName { get; set; }
-
         public IEnumerable<DefinitionTagModel> Tags { get; set; }
         public IEnumerable<DefinitionSettingModel> Settings { get; set; }
         public IEnumerable<DefinitionRuleModel> Rules { get; set; }
 
-        public TableDefinitionModel Flatten()
+        public static explicit operator TableDefinitionModel(DefinitionModel d)
         {
             return new TableDefinitionModel()
             {
-                Id = this.Id,
-                Name = this.Name,
-                GroupId = this.GroupId,
-                ControlId = this.ControlId
+                Id = d.Id,
+                Name = d.Name,
+                GroupId = d.GroupId,
+                ControlId = d.ControlId
             };
+        }
+
+        public IEnumerable<IdKeyValuePairModel> GetSettingsValues()
+        {
+            return Settings?.SelectMany(s => s.Values ?? new List<IdKeyValuePairModel>()) ?? new List<IdKeyValuePairModel>();
         }
     }
 

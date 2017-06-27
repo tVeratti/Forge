@@ -744,8 +744,6 @@ h5 {
     border-top-left-radius: 3px; }
   .designer__list.designer__list--empty {
     display: none; }
-    .designer__list.designer__list--empty ~ .designer__stage .stage__menu {
-      display: none; }
   @media screen and (max-width: 720px) {
     .designer__list.designer__list--closed {
       -moz-transform: translateX(-156px);
@@ -909,7 +907,6 @@ h5 {
 
 .designer__tiles {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap; }
   .designer__tiles .designer__tile {
     text-align: center;
@@ -917,6 +914,8 @@ h5 {
     margin: 10px;
     line-height: 1;
     width: 150px; }
+    .designer__tiles .designer__tile:first-child {
+      margin-left: 0; }
     .designer__tiles .designer__tile.designer__tile--access .designer__tile-title:after {
       font-family: FontAwesome;
       content: "\f13e"; }
@@ -1196,7 +1195,8 @@ input {
     transform: translateX(-50%);
     padding: 10px;
     background: white;
-    border: 1px solid #6f6f6f; }
+    border: 1px solid #6f6f6f;
+    z-index: 10; }
     .tooltip .tooltip__value:after, .tooltip .tooltip__value:before {
       position: absolute;
       left: 50%;
@@ -1222,7 +1222,7 @@ input {
 .dictionary {
   display: table;
   width: 100%; }
-  .dictionary .dictionary__tooltip .input {
+  .dictionary .tooltip .input {
     display: inline-block;
     width: 100%;
     overflow: hidden;

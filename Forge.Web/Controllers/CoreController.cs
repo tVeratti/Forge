@@ -57,14 +57,12 @@ namespace Forge.Web.Controllers
             if (Model.Id == 0)
             {
                 // INSERT
-                Model.CreatedById = User.Id;
-                return _context.Definitions.Create(Model, GameId);
+                return _context.Definitions.Create(Model, GameId, User.Id);
             }
             else
             {
                 // UPDATE
-                Model.ModifiedById = User.Id;
-                _context.Definitions.Update(Model);
+                _context.Definitions.Update(Model, User.Id);
             }
 
             return Model.Id;
@@ -73,7 +71,8 @@ namespace Forge.Web.Controllers
         [HttpPost]
         public long Save(CoreModel Model)
         {
-            _context.Games.Update()
+            Model.Game.ModifiedById = User.Id;
+            _context.Core.Update(Model);
             return 0;
         }
     }

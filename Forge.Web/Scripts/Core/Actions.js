@@ -26,8 +26,11 @@ const coreActions = {
     // =====================================
     // --------------------------------
     api: {
-        FETCH_CORE: '/Core/Get',
-        SAVE_CORE:  '/Core/Save'
+        FETCH_CORE:         '/Core/Get',
+        SAVE_CORE:          '/Core/Save',
+        SAVE_RULE:          '/Core/SaveRule',
+        SAVE_TAG:           '/Core/SaveTag',
+        SAVE_DEFINITION:    '/Core/SaveDefinition'
     },
 
     // Action Creators
@@ -52,15 +55,30 @@ const coreActions = {
     },
 
     // --------------------------------
-    createItem: function(tab) {
+    createItem: function(tab){
         return (dispatch, getState) => {
-            const { designer, core } = getState();
+
+            dispatch({ type: SAVE_MODEL });
+
+            // Get the current state data.
+            const { core, designer } = getState();
+            const gameId = core.Game.Id;
             const category = tab || designer.tab;
-            dispatch({ 
-                type: CREATE_ITEM,
-                index: core[category].length,
-                category
-            });
+
+            let api;
+            switch(category){
+                case CATEGORIES.TAGS: api = this.api.SAVE_TAG; break;
+                case CATEGORIES.RULES: api = this.api.SAVE_RULE; break;
+                case CATEGORIES.DEFINITIONS: api = this.api.SAVE_DEFINITION; break;
+            }
+            
+            // Send model data to database.
+            $.post(api, { model: {}, gameId })
+                //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                .success(response => JSON.parse(response))
+                .then(id => {
+                    dispatch({ type: CREATE_ITEM, id, index: core[category].length, category });
+                });
         }
     },
 
@@ -115,7 +133,7 @@ const coreActions = {
             const { core } = getState();
 
             // Fetch games from database with state filters.
-            $.get(this.api.SAVE_CORE, core)
+            $.post(this.api.SAVE_CORE, core)
                 //.fail(response => dispatch(this.getLocalGame(id)))
                 .done(r => dispatch({ type: END_SAVE_CORE }));
         };

@@ -11,6 +11,6 @@ namespace Forge.Data.Models
         public IEnumerable<SettingKeyModel> SettingsKeys { get; set; }
         public IEnumerable<DefinitionTagModel> DefinitionTags { get; set; }
         public IEnumerable<DefinitionSettingModel> DefinitionSettings { get; set; }
-        public IEnumerable<DefinitionSettingValueModel> DefinitionSettingsValues { get; set; }
+        public IEnumerable<IdKeyValuePairModel> DefinitionSettingsValues { get; set; }
     }
 }

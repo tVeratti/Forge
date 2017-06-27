@@ -50,7 +50,6 @@ function designerReducer(state = initialDesignerState, action){
         case FORCE_LIST:
         case SELECT_LIST_ITEM:
         case CREATE_ITEM:
-            if (state.saving) return nextState;
 
             const listOpen = action.listOpen !== undefined
                 ? action.listOpen
@@ -71,7 +70,9 @@ function designerReducer(state = initialDesignerState, action){
                 index,
                 navigated: action.force || !!action.category,
                 tab: action.category || state.tab,
-                activeTagId: null
+                activeTagId: null,
+                saving: false,
+                loading: false
             };
 
             break;

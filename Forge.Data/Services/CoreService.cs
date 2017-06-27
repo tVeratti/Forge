@@ -18,72 +18,41 @@ namespace Forge.Data.Services
 
         public CoreService(IDbConnection cnx) { this._cnx = cnx; }
 
-        public void Update(CoreModel Model, long userId)
+        public void Update(CoreModel Model)
         {
             var spr_name = "[Verspyre].[Update_Core]";
 
-            var definitions = Model.Definitions.Select(d => d as TableDefinitionModel);
-            var tags = Model.Tags.Select(t => t as TableTagModel);
-            var rules = Model.Rules.Select(flattenRule);
-            var groups = Model.Groups.Select(flattenGroup);
+            // Flatten Models
+            var definitions = Model.Definitions.Select(d => (TableDefinitionModel)d);
+            var tags = Model.Tags.Select(t => (TableTagModel)t);
+            var rules = Model.Rules.Select(r => (TableRuleModel)r);
+            var groups = Model.Groups.Select(g => (TableGroupModel)g);
 
-            var definitionSettings = Model.Definitions.SelectMany(flattenDefinitionSetting);
+            var definitionSettings = Model.Definitions.SelectMany(d => d.Settings);
+            var definitionSettingValues = Model.Definitions.SelectMany(d => d.GetSettingsValues());
 
-            var spr_prms = new
-            {
-                ModifiedById = userId,
+            //var spr_prms = new
+            //{
+            //    ModifiedById = userId,
 
-                // Game
-                Name = Model.Game.Name,
-                GenreId = Model.Game.GenreId,
+            //    // Game
+            //    Name = Model.Game.Name,
+            //    GenreId = Model.Game.GenreId,
 
-                // DataTables
-                Tags = tags.ToDataTable(),
-                Rules = rules.ToDataTable(),
-                Definitions = definitions.ToDataTable(),
-                Groups = groups.ToDataTable(),
+            //    // DataTables
+            //    Tags = tags.ToDataTable(),
+            //    Rules = rules.ToDataTable(),
+            //    Definitions = definitions.ToDataTable(),
+            //    Groups = groups.ToDataTable(),
 
-                // LookUps
+            //    // LookUps
 
-            };
+            //};
 
-            _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
+            //_cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
         }
 
-        
-
-        private object flattenTag(TagModel tag)
-        {
-            return new
-            {
-                tag.Id,
-                tag.Name
-            };
-        }
-
-        private object flattenRule(RuleModel rule)
-        {
-            return new
-            {
-                rule.TagId,
-                rule.SettingId,
-                rule.Name,
-                rule.Value
-            };
-        }
-
-        private object flattenGroup(GroupModel group)
-        {
-            return new
-            {
-                group.Id,
-                group.Name,
-                group.ParentId,
-                group.TypeId
-            };
-        }
-
-        private object flattenDefinitionSetting(DefinitionModel definition)
+        private object getSettings(DefinitionModel definition)
         {
             return definition.Settings.Select(s => new
             {

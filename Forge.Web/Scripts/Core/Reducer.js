@@ -75,17 +75,35 @@ function coreReducer(state = initialCoreState, action){
         // --------------------------------
         case CREATE_ITEM:
             // New item with temporary Id
-            const newItem = {
-                Name: `New ${action.category.slice(0, -1)}`,
-                TempId: `t-${Math.random()}`,
-                Category: action.category,
-                Settings: [],
-                Tags: [],
-                Rules: [],
-                MergedSettings: [],
-                ModifiedDate: Date.now(),
-                unsaved: true
+            let newItem = {
+                Id: action.id,
+                Name: `New ${action.category.slice(0, -1)}`
             };
+
+            switch(action.category){
+                case CATEGORIES.RULES:
+                    newItem = {
+                        ...newItem,
+                        TagId: state.Tags[0].Id,
+                        SettingId: state.Settings[0].Id
+                    };
+                    break;
+
+                case CATEGORIES.DEFINITIONS:
+                    newItem = {
+                        ...newItem,
+                        Category: action.category,
+                        ControlId: state.Controls[0].Id,
+                        GroupId: state.Groups[0].Id,
+                        Settings: [],
+                        Tags: [],
+                        Rules: [],
+                        MergedSettings: [],
+                        ModifiedDate: Date.now(),
+                        unsaved: true
+                    };
+                break;
+            }
 
             nextState[action.category] = [ 
                 ...nextState[action.category],
@@ -162,10 +180,16 @@ function coreReducer(state = initialCoreState, action){
             const { ...definitionSetting } = action.setting;
            
             // Only add the setting if the new setting is unique.
-            const settingExists = (definition.Settings || []).filter(s => s.Name === action.setting.Name)[0];
+            const settingExists = (definition.Settings || []).filter(s => s.SettingId === action.setting.Id)[0];
 
             if (!settingExists) {
-                definition.Settings = [ ...definition.Settings || [], definitionSetting ];
+                definition.Settings = [ ...definition.Settings || [], {
+                    ...definitionSetting,
+                    Id: null,
+                    DefinitionId: definition.Id,
+                    SettingId: definitionSetting.Id,
+                    Priority: 0
+                 }];
             }
 
             definition.unsaved = true;

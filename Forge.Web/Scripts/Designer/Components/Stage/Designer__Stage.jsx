@@ -1,4 +1,7 @@
-﻿// =====================================
+﻿// -------------------------------------------------
+// <Designer.Stage />
+// -------------------------------------------------
+// =====================================
 // Presentation
 // =====================================
 Designer.__Stage = React.createClass({
@@ -9,12 +12,9 @@ Designer.__Stage = React.createClass({
     },
 
     // -----------------------------
-    render: function () {
-        const { designer, core } = this.props;
-        const { tab, index, itemHistory } = designer;
-
-        const list = core[tab] || [];
-        const item = list[index];
+    render: function () { 
+        const { tab, index, itemHistory } = this.props.designer;
+        const item = this.getSelectedItem();
 
         const uniqueId = item
             ? item.Id || item.TempId || item.Name
@@ -23,30 +23,28 @@ Designer.__Stage = React.createClass({
         const className = `designer__stage stage stage--${tab.toLowerCase()}`;
         const stageKey = `${tab}-${index}-${uniqueId}`;
 
-        const menuDisabled = !selectedItem;
+        const menuDisabled = !item;
         const instructions = this.instructions[tab];
 
+        const workspaceNode = this.renderStage();
         const headerNode = this.renderHeader();
-        const workspaceNode = this.renderWorkspace();
 
         return (
             <div className={className} key={stageKey}>
 
                 <h3>{headerNode}</h3>
 
-                {/* Actions (Back, Save, Delete...) */}
+                {/* Actions */}
                 <div className='stage__menu'>
                     <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length}>Back</button>
                     <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled}>Save</button>
-                    <button className='button button--transparent stage__save-all' onClick={this.saveAll}>Save All</button>
+                    <button className='button button--transparent stage__save' onClick={this.saveAll}>Save All</button>
                     <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled}>Delete</button>
                 </div>
 
+                {/* Workspace */}
                 <div className='stage__workspace'>
-                    {/* Information / Tips */}
-                    { instructions && <Banner>{instructions}</Banner> }
-
-                    {/* Edit__* */}
+                    {instructions && <Banner>{instructions}</Banner>}
                     {workspaceNode}
                 </div>
             </div>
@@ -54,12 +52,13 @@ Designer.__Stage = React.createClass({
     },
 
     // -----------------------------
-    renderWorkspace: function(){
-        const { designer, dispatch, core } = this.props;
+    renderStage: function(){
+        const { designer } = this.props;
         const selectedItem = this.getSelectedItem();
 
-        // Show Recent when tab is valid but nothing selected.
-        if (!selectedItem && designer.tab !== 'Preview'){
+        if (!selectedItem 
+            && designer.tab !== 'Preview'
+            && designer.tab !== 'Menu'){
             return <Designer.Recent />;
         }
 
@@ -68,20 +67,18 @@ Designer.__Stage = React.createClass({
             case CATEGORIES.TAGS:            return <Designer.Tag />;
             case CATEGORIES.RULES:           return <Designer.Rule />;
             case CATEGORIES.DEFINITIONS:     return <Designer.Definition />;
-            case 'Menu':                     return <Designer.Menu />;
             case 'Preview':                  return <Designer.Preview />;
+            
             default:                         return <Designer.Menu />
         }
     },
 
     // -----------------------------
     renderHeader: function(){
-        var { designer } = this.props;
         const selectedItem = this.getSelectedItem();
+        if (!selectedItem) return '\u00A0';
 
-        if (tab === 'Menu' || !selectedItem) return '\u00A0';
-
-        return <span className='emphasis'>{selectedItem && selectedItem.Name}</span>;
+        return <span className='emphasis'>{selectedItem.Name}</span>;
     },
 
     // -----------------------------
@@ -94,6 +91,7 @@ Designer.__Stage = React.createClass({
         this.props.dispatch(coreActions.save());
     },
 
+    // -----------------------------
     delete: function(){
         this.props.dispatch(designerActions.delete());
     },

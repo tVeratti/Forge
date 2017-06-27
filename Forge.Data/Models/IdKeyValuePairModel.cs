@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Forge.Data.Models
 {
-    public class DefinitionSettingValueModel
+    public class IdKeyValuePairModel
     {
-        public long DefinitionSettingId { get; set; }
+        public long Id { get; set; }
         public string Key { get; set; }
         public string Value { get; set; }
     }

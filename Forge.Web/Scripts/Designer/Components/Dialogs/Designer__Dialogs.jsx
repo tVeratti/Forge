@@ -1,8 +1,8 @@
 ﻿// =====================================
 // Presentation
 // =====================================
-Designer.__Dialogs = () => {
-    const { dialogType } = this.props;
+Designer.__Dialogs = (props) => {
+    const { dialogType } = props;
 
     const { 
         LOAD_ERROR,

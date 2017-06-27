@@ -52,11 +52,6 @@ Designer.__Tag = React.createClass({
     },
 
     // -----------------------------
-    componentDidMount: function(){
-        $(this.refs.wrapper).find('input')[0].focus();
-    },
-
-    // -----------------------------
     renderLink: function(item, tab){
         const { dispatch } = this.props;
         const category = item.TagId ? 'Rules' : 'Definitions';

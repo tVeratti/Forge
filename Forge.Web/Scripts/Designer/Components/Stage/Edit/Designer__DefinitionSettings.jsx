@@ -60,7 +60,7 @@ Designer.__DefinitionSettings = React.createClass({
             });
 
             return (
-                <div key={setting.Id || setting.SettingId} className={className}>
+                <div key={setting.SettingId} className={className}>
                     <Expandable header={primaryNodes}>
                         <ul className='definition__overrides field-group'>{ruleNodes}</ul>
                     </Expandable>
@@ -69,7 +69,7 @@ Designer.__DefinitionSettings = React.createClass({
         } else {
             // Basic single setting row (no associated rules).
             return (
-                <div key={setting.Id} className={className}>
+                <div key={setting.SettingId} className={className}>
                     {primaryNodes}
                 </div>
             );
@@ -82,7 +82,7 @@ Designer.__DefinitionSettings = React.createClass({
         const controlProps = {
             Model: setting,
             Value: setting.Value || undefined,
-            onChange: this.valueChange.bind(this, setting.Id)
+            onChange: this.valueChange.bind(this, setting.SettingId)
         };
 
         // Dynamically create the component based on Control name.
@@ -99,7 +99,15 @@ Designer.__DefinitionSettings = React.createClass({
 
         // Update the value of one individual setting.
         let settings = [ ...model.Settings || [] ];
-        const index = model.Settings.indexOf(setting);
+        let index = -1;
+
+        model.Settings.some((s, i) => {
+            if (s.SettingId == setting.SettingId) {
+                index = i;
+                return true;
+            }
+        });
+        
         settings.splice(index, 1);
         model.Settings = settings;
 
@@ -115,21 +123,21 @@ Designer.__DefinitionSettings = React.createClass({
         Settings = Settings || [];
         Rules = Rules || [];
     
-        let settingIds = Settings.map(s => s.Id);
+        let settingIds = Settings.map(s => s.SettingId);
         
         let flatSettings = Forge.utilities
             .sortSettings([ ...Settings, ...Rules ])
             .map(s => {
                 const subRules = Rules.filter(r => {
                     return (!r.TagId || r.TagId != s.TagId)
-                        && (r.SettingId == s.Id || r.SettingId == s.SettingId)
+                        && (r.SettingId == s.SettingId)
                 });
                 return { ...s, rules: subRules };
             });
         
         return flatSettings.filter(s => {
             // Only show 1 rule per setting (rest are nested).
-            if (s.SettingId) {
+            if (s.TagId) {
                 const index = settingIds.indexOf(s.SettingId);
                 if (index === -1) settingIds.push(s.SettingId);
                 return index === -1;
@@ -149,7 +157,7 @@ Designer.__DefinitionSettings = React.createClass({
         let prop = 'Value';
         if (typeof value === 'object') prop = 'AdditionalValues';
 
-        settings.filter(s => s.Id === settingId)[0][prop] = value;
+        settings.filter(s => s.SettingId === settingId)[0][prop] = value;
 
         model.Settings = settings;
 

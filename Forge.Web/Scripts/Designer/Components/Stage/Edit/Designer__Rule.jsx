@@ -38,11 +38,6 @@ Designer.__Rule = React.createClass({
     },
 
     // -----------------------------
-    componentDidMount: function(){
-        $(this.refs.wrapper).find('select')[0].focus();
-    },
-
-    // -----------------------------
     updateModel: function(prop, ev){
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Rules[designer.index];

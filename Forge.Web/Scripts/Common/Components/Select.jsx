@@ -12,7 +12,7 @@ const Select = ({ ...props }) => {
     });
 
     return (
-        <select className='select__input' id={props.id} onChange={props.onChange} defaultValue={props.defaultValue}>
+        <select className='select__input' {...props}>
             {optionNodes}
         </select>
     );
