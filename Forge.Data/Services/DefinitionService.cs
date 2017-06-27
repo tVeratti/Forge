@@ -26,27 +26,13 @@ namespace Forge.Data.Services
         public long Create(DefinitionModel Definition, long GameId, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Definition]";
-
-            var settings = Definition.Settings?.Select(s => (TableDefinitionSettingModel)s);
-            var definitionSettings = Definition.GetSettingsValues();
-
             var spr_prms = new
             {
-                Name = Definition.Name,
                 GameId = GameId,
-                ControlId = Definition.ControlId,
-                GroupId = Definition.GroupId,
-                CreatedById = UserId,
-                Tags = Definition.Tags.ToDataTable(),
-                Settings = settings.ToDataTable(),
-                SettingsValues = definitionSettings.ToDataTable()
+                CreatedById = UserId
             };
 
-            using (var multi = _cnx.QueryMultiple(spr_name, spr_prms, commandType: CommandType.StoredProcedure))
-            {
-                DefinitionModel Model = multi.Read<DefinitionModel>().FirstOrDefault();
-                return Model?.Id ?? 0;
-            }
+            return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
         }
 
         /// <summary>

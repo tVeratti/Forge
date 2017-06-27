@@ -10,14 +10,13 @@ namespace Forge.Data.Models
     {
         public string Category => Categories.RULES;
 
-        public long SettingId { get; set; }
+        public long Id { get; set; }
         public long TagId { get; set; }
+        public long SettingId { get; set; }
         public string SettingName { get; set; }
         public string Name { get; set; }
-        public string Value { get; set; }
+        public IEnumerable<IdKeyValuePairModel> Values { get; set; }
         public string LifeCycle { get; set; }
-        public long CreatedById { get; set; }
-        public DateTime CreatedDate { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
 
@@ -25,19 +24,19 @@ namespace Forge.Data.Models
         {
             return new TableRuleModel()
             {
+                Id = t.Id,
                 SettingId = t.SettingId,
                 TagId = t.TagId,
-                Name = t.Name,
-                Value = t.Value
+                Name = t.Name
             };
         }
     }
 
     public class TableRuleModel
     {
+        public long Id { get; set; }
         public long SettingId { get; set; }
         public long TagId { get; set; }
         public string Name { get; set; }
-        public string Value { get; set; }
     }
 }

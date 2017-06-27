@@ -10,11 +10,8 @@ namespace Forge.Data.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public long CreatedById { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
-        public long UpdatedById { get; set; }
         public int EditTypeId { get; set; }
         public int ViewTypeId { get; set; }
         public int GenreId { get; set; }

@@ -28,8 +28,16 @@ namespace Forge.Web.Controllers
         public long SaveRule(RuleModel Model, long GameId)
         {
             Model.ModifiedById = User.Id;
-            _context.Rules.Create(Model);
-            return 0;
+            if (Model.Id == 0)
+            {
+                return _context.Rules.Create(Model, GameId);
+            }
+            else
+            {
+                _context.Rules.Update(Model);
+            }
+
+            return Model.Id;
         }
 
         [HttpPost]

@@ -15,6 +15,7 @@ namespace Forge.Data.Models
         public string ControlName { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
+
         public IEnumerable<DefinitionTagModel> Tags { get; set; }
         public IEnumerable<DefinitionSettingModel> Settings { get; set; }
         public IEnumerable<DefinitionRuleModel> Rules { get; set; }

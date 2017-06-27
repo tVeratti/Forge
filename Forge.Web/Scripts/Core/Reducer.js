@@ -99,7 +99,6 @@ function coreReducer(state = initialCoreState, action){
                         Tags: [],
                         Rules: [],
                         MergedSettings: [],
-                        ModifiedDate: Date.now(),
                         unsaved: true
                     };
                 break;
@@ -111,8 +110,6 @@ function coreReducer(state = initialCoreState, action){
             ];
 
             nextState[action.category].forEach((x, i) => x.index = i);
-
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
 
             break;
@@ -123,8 +120,7 @@ function coreReducer(state = initialCoreState, action){
             items[action.index] = {
                 ...items[action.index],
                 ...action.model,
-                unsaved: !action.saved,
-                ModifiedDate: Date.now()
+                unsaved: !action.saved
             };
 
             nextState[action.category] = items;
@@ -158,7 +154,6 @@ function coreReducer(state = initialCoreState, action){
                     break;
             }
             
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
 
@@ -197,7 +192,6 @@ function coreReducer(state = initialCoreState, action){
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
         
