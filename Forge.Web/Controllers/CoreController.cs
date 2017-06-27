@@ -73,7 +73,7 @@ namespace Forge.Web.Controllers
         [HttpPost]
         public long Save(CoreModel Model)
         {
-            _context.Games.Update()
+            _context.Games.Update(Model, User.Id);
             return 0;
         }
     }

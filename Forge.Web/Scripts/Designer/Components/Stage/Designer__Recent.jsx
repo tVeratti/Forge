@@ -7,7 +7,7 @@ Designer.__Recent = ({ core, designer, dispatch }) => {
 
     const recentNodes = sourceItems
         .slice()
-        .sort(x => x.ModifiedDate)
+        .sort((a, b) => { return new Date(b.ModifiedDate) - new Date(a.ModifiedDate) })
         .reverse()
         .slice(0, 5)
         .map((x, i) => <Designer.Link key={i} model={x} />);
@@ -16,7 +16,11 @@ Designer.__Recent = ({ core, designer, dispatch }) => {
         const createItem = () => dispatch(coreActions.createItem(c));
         const label = c.slice(0, -1);
         const disabled = core.Game.IsLocked;
-        return <li key={c}><button className='button button--link' onClick={createItem} disabled={disabled}>New {label}</button></li>;
+        return (
+            <li key={c}>
+                <button className='button button--link' onClick={createItem} disabled={disabled}>New {label}</button>
+            </li>
+        );
     });
 
     return (
@@ -36,7 +40,6 @@ Designer.__Recent = ({ core, designer, dispatch }) => {
                     <li><button className='button button--link'>Getting Started</button></li>
                     <li><button className='button button--link'>Publish Your Game</button></li>
                     <li><button className='button button--link'>FAQ</button></li>
-                    
                 </ul>
             </div>
         </div>

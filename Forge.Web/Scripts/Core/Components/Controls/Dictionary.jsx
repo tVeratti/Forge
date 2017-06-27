@@ -83,11 +83,10 @@ Forge.components.controls.Dictionary = React.createClass({
 		const { Key, Value, ControlName } = item;
 
 		const id = `k-${Key}`;
-		const onChange = this.changePair.bind(this, index);
 
 		const valueNode = flat
 			? <span className='dictionary__value'>{Value}</span>
-			: this.renderControl(item);
+			: this.renderControl(item, index);
 
 		const removeNode = allowAdd && !flat
 			? <button className='button button--transparent' title='Remove'><span className='fa fa-remove'/></button>
@@ -103,7 +102,9 @@ Forge.components.controls.Dictionary = React.createClass({
 	},
 
 	// -----------------------------
-	renderControl: function(item, onChange){
+	renderControl: function(item, index){
+		const onChange = this.changePair.bind(this, index);
+
 		// Dynamically create the component based on Control name.
         return React.createElement(
             Forge.components.controls[item.Control || item.ControlName || 'Text'], 
@@ -113,7 +114,8 @@ Forge.components.controls.Dictionary = React.createClass({
 
 	// -----------------------------
 	changePair: function(index, value){
-		const { ...list } = this.props.Model.AdditionalValues;
+		const { Keys } = this.props.Model;
+		const list = Keys && [ ...Keys ];
 
 		list[index].Value = value;
 
@@ -122,8 +124,8 @@ Forge.components.controls.Dictionary = React.createClass({
 
 	// -----------------------------
 	add: function(){
-		const { ...list } = this.props.Model.AdditionalValues;
-		const { key, value, form } = this.refs;
+		const { Keys } = this.props.Model;
+		const list = Keys && [ ...Keys ];
 
 		list.push({ Key: key.value, Value: value.value });
 		this.reportChange(list);
@@ -133,9 +135,9 @@ Forge.components.controls.Dictionary = React.createClass({
 
 	// -----------------------------
 	reportChange: function(list) {
-		const onChange = this.props.onChange;
-		if (typeof onChange === 'function'){
-			onChange(list);
-		}
+		const { onChange } = this.props;
+		const { value } = ev.target;
+		
+		onChange && onChange(list);
 	}
 });

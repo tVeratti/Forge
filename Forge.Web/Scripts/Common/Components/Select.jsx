@@ -11,8 +11,10 @@ const Select = ({ ...props }) => {
         return <option key={`${id}-${index}`} value={id}>{label}</option>;
     });
 
+    const onChange = (ev) => props.onChange && props.onChange(ev.target.value);
+
     return (
-        <select className='select__input' id={props.id} onChange={props.onChange} defaultValue={props.defaultValue}>
+        <select className='select__input' id={props.id} onChange={onChange} value={props.value}>
             {optionNodes}
         </select>
     );

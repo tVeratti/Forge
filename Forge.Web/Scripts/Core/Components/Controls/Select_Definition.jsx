@@ -8,18 +8,12 @@ Forge.components.controls.Select_Definition = React.createClass({
 
 		return <Select options={core.Definitions} value={value} onChange={this.change} />;
 	},
-
-	// -----------------------------
-	getDefaultProps: function(){
-		return { Model: {} };
-	},
-
+	
 	// -----------------------------
 	change: function(ev) {
-		const onChange = this.props.onChange;
-		const value = ev.target.value;
-		if (typeof onChange === 'function'){
-			onChange(value, ev);
-		}
+		const { onChange } = this.props;
+		const { value } = ev.target;
+		
+		onChange && onChange(+value);
 	}
 });

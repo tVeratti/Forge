@@ -25,19 +25,21 @@ Forge.__Definition = React.createClass({
     // -----------------------------
     componentWillMount: function(){
         // Trigger Lifecycle: Initialize
+        const { core, model } = this.props;
         const { stages } = Forge.lifeCycle;
-        this.valueChange(this.props.model.Value, null, stages.init);
+        this.valueChange(tmodel.Value, stages.init);
     },
 
     // -----------------------------
     componentWillReceiveProps: function(nextProps){
+        // Trigger Lifecycle: Update
         const { core, model } = nextProps;
         const { stages } = Forge.lifeCycle;
-        this.valueChange(model.Value, null, stages.update, nextProps);
+        this.valueChange(model.Value, stages.update, nextProps);
     },
 
     // -----------------------------
-    valueChange: function(value, ev, stage, props) {
+    valueChange: function(value, stage, props) {
         const { lifeCycle, settings } = Forge;
         
         // Defaults (event triggered == null)

@@ -24,7 +24,7 @@ Designer.__Tag = React.createClass({
 
                 <div className='panel'>
                     <h4>General</h4>
-                    <Field label='Name' id='tag-name' type='text' defaultValue={selectedItem.Name} onChange={this.updateTagName} />
+                    <Field label='Name' id='tag-name' type='text' value={selectedItem.Name} onChange={this.updateTagName} />
                 </div>
 
                 <div className='panel edit__information'>
@@ -52,11 +52,6 @@ Designer.__Tag = React.createClass({
     },
 
     // -----------------------------
-    componentDidMount: function(){
-        $(this.refs.wrapper).find('input')[0].focus();
-    },
-
-    // -----------------------------
     renderLink: function(item, tab){
         const { dispatch } = this.props;
         const category = item.TagId ? 'Rules' : 'Definitions';
@@ -69,10 +64,10 @@ Designer.__Tag = React.createClass({
     },
 
     // -----------------------------
-    updateTagName: function(ev){
+    updateTagName: function(value){
         const { designer, core, dispatch } = this.props;
         const { ...tag } = core.Tags[designer.index];
-        tag.Name = ev.target.value;
+        tag.Name = value;
 
         dispatch(coreActions.updateTag(tag));
     }
