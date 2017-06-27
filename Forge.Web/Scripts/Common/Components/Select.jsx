@@ -11,6 +11,8 @@ const Select = ({ ...props }) => {
         return <option key={`${id}-${index}`} value={id}>{label}</option>;
     });
 
+    optionNodes.unshift(<option key='none' value={0}>-- Select --</option>);
+
     return (
         <select className='select__input' {...props}>
             {optionNodes}

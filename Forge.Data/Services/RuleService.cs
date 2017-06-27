@@ -31,7 +31,8 @@ namespace Forge.Data.Services
                 model.ModifiedById
             };
 
-            return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
+            var id =_cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
+            return id;
         }
 
         public void Update(RuleModel model)

@@ -10,6 +10,7 @@ const UPDATE_ITEM =         'UPDATE_ITEM';
 const DELETE_ITEM =         'DELETE_ITEM';
 const ADD_SETTING =         'ADD_SETTING';
 const UPDATE_GAME =         'UPDATE_GAME';
+const UPDATE_ID =           'UPDATE_ID';
 
 const BEGIN_SAVE_CORE =     'BEGIN_SAVE_CORE';
 const END_SAVE_CORE =       'END_SAVE_CORE';
@@ -55,15 +56,20 @@ const coreActions = {
     },
 
     // --------------------------------
+    updateItemId: function(oldId, newId, tab){
+        return { type: UPDATE_ID, oldId, newId, tab };
+    },
+
+    // --------------------------------
     createItem: function(tab){
         return (dispatch, getState) => {
-
-            dispatch({ type: SAVE_MODEL });
 
             // Get the current state data.
             const { core, designer } = getState();
             const gameId = core.Game.Id;
             const category = tab || designer.tab;
+
+            const tempId = `tempId-${Math.random()}`;
 
             let api;
             switch(category){
@@ -71,14 +77,20 @@ const coreActions = {
                 case CATEGORIES.RULES: api = this.api.SAVE_RULE; break;
                 case CATEGORIES.DEFINITIONS: api = this.api.SAVE_DEFINITION; break;
             }
+
+            // Create item locally before DB insert.
+            dispatch({ 
+                 type: CREATE_ITEM,
+                 id: tempId,
+                 index: core[category].length,
+                 category
+            });
             
             // Send model data to database.
             $.post(api, { model: {}, gameId })
                 //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
                 .success(response => JSON.parse(response))
-                .then(id => {
-                    dispatch({ type: CREATE_ITEM, id, index: core[category].length, category });
-                });
+                .then(id => dispatch(coreActions.updateItemId(tempId, id, category)));
         }
     },
 

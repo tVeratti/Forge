@@ -81,20 +81,10 @@ function coreReducer(state = initialCoreState, action){
             };
 
             switch(action.category){
-                case CATEGORIES.RULES:
-                    newItem = {
-                        ...newItem,
-                        TagId: state.Tags[0].Id,
-                        SettingId: state.Settings[0].Id
-                    };
-                    break;
-
                 case CATEGORIES.DEFINITIONS:
                     newItem = {
                         ...newItem,
                         Category: action.category,
-                        ControlId: state.Controls[0].Id,
-                        GroupId: state.Groups[0].Id,
                         Settings: [],
                         Tags: [],
                         Rules: [],
@@ -115,8 +105,18 @@ function coreReducer(state = initialCoreState, action){
             break;
 
         // --------------------------------
+        case UPDATE_ID:
+        console.log(action.tab)
+            var index, items = [ ...state[action.tab] ];
+            items.forEach((x, i) => index = x.Id === action.oldId ? i : index);
+            items[index].Id = action.newId;
+            
+            nextState[action.tab] = items;
+            break;
+
+        // --------------------------------
         case UPDATE_ITEM:
-            const items = [ ...state[action.category] ];
+            var items = [ ...state[action.category] ];
             items[action.index] = {
                 ...items[action.index],
                 ...action.model,

@@ -88,6 +88,7 @@ Designer.__List = React.createClass({
 
 			return (
 				<li key={key} className={className}>
+					{item.Id}
 					<button className='button button--transparent' onClick={onClick}>{item.Name}</button>
 				</li>
 			);

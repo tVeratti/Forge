@@ -27,8 +27,7 @@ namespace Forge.Data.Services
             var spr_name = "[Verspyre].[Insert_Tag]";
             var spr_prms = new { model.Name, model.CreatedById, GameId};
 
-            var tag = _cnx.Query<TagModel>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
-            return tag?.Id ?? 0;
+            return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
         }
 
         /// <summary>

@@ -81,6 +81,7 @@ var UPDATE_ITEM = 'UPDATE_ITEM';
 var DELETE_ITEM = 'DELETE_ITEM';
 var ADD_SETTING = 'ADD_SETTING';
 var UPDATE_GAME = 'UPDATE_GAME';
+var UPDATE_ID = 'UPDATE_ID';
 
 var BEGIN_SAVE_CORE = 'BEGIN_SAVE_CORE';
 var END_SAVE_CORE = 'END_SAVE_CORE';
@@ -134,21 +135,25 @@ var coreActions = {
     },
 
     // --------------------------------
+    updateItemId: function updateItemId(oldId, newId, tab) {
+        return { type: UPDATE_ID, oldId: oldId, newId: newId, tab: tab };
+    },
+
+    // --------------------------------
     createItem: function createItem(tab) {
         var _this2 = this;
 
         return function (dispatch, getState) {
 
-            dispatch({ type: SAVE_MODEL });
-
             // Get the current state data.
-
             var _getState = getState(),
                 core = _getState.core,
                 designer = _getState.designer;
 
             var gameId = core.Game.Id;
             var category = tab || designer.tab;
+
+            var tempId = 'tempId-' + Math.random();
 
             var api = void 0;
             switch (category) {
@@ -160,13 +165,21 @@ var coreActions = {
                     api = _this2.api.SAVE_DEFINITION;break;
             }
 
+            // Create item locally before DB insert.
+            dispatch({
+                type: CREATE_ITEM,
+                id: tempId,
+                index: core[category].length,
+                category: category
+            });
+
             // Send model data to database.
             $.post(api, { model: {}, gameId: gameId })
             //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
             .success(function (response) {
                 return JSON.parse(response);
             }).then(function (id) {
-                dispatch({ type: CREATE_ITEM, id: id, index: core[category].length, category: category });
+                return dispatch(coreActions.updateItemId(tempId, id, category));
             });
         };
     },
@@ -372,23 +385,13 @@ function coreReducer() {
             };
 
             switch (action.category) {
-                case CATEGORIES.RULES:
-                    newItem = _extends({}, newItem, {
-                        TagId: state.Tags[0].Id,
-                        SettingId: state.Settings[0].Id
-                    });
-                    break;
-
                 case CATEGORIES.DEFINITIONS:
                     newItem = _extends({}, newItem, {
                         Category: action.category,
-                        ControlId: state.Controls[0].Id,
-                        GroupId: state.Groups[0].Id,
                         Settings: [],
                         Tags: [],
                         Rules: [],
                         MergedSettings: [],
-                        ModifiedDate: Date.now(),
                         unsaved: true
                     });
                     break;
@@ -399,18 +402,28 @@ function coreReducer() {
             nextState[action.category].forEach(function (x, i) {
                 return x.index = i;
             });
-
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
 
+            break;
+
+        // --------------------------------
+        case UPDATE_ID:
+            console.log(action.tab);
+            var index,
+                items = [].concat(_toConsumableArray(state[action.tab]));
+            items.forEach(function (x, i) {
+                return index = x.Id === action.oldId ? i : index;
+            });
+            items[index].Id = action.newId;
+
+            nextState[action.tab] = items;
             break;
 
         // --------------------------------
         case UPDATE_ITEM:
             var items = [].concat(_toConsumableArray(state[action.category]));
             items[action.index] = _extends({}, items[action.index], action.model, {
-                unsaved: !action.saved,
-                ModifiedDate: Date.now()
+                unsaved: !action.saved
             });
 
             nextState[action.category] = items;
@@ -448,7 +461,6 @@ function coreReducer() {
                     break;
             }
 
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
 
@@ -495,7 +507,6 @@ function coreReducer() {
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
 
@@ -1831,6 +1842,12 @@ var Select = function Select(_ref5) {
         );
     });
 
+    optionNodes.unshift(React.createElement(
+        'option',
+        { key: 'none', value: 0 },
+        '-- Select --'
+    ));
+
     return React.createElement(
         'select',
         _extends({ className: 'select__input' }, props),
@@ -3070,6 +3087,7 @@ Designer.__List = React.createClass({
             return React.createElement(
                 'li',
                 { key: key, className: className },
+                item.Id,
                 React.createElement(
                     'button',
                     { className: 'button button--transparent', onClick: onClick },
