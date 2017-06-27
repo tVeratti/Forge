@@ -44,7 +44,7 @@ namespace Forge.Data.Services
                 model.SettingId,
                 model.TagId,
                 model.ModifiedById,
-                Values = model.Values.ToDataTable()
+                Values = model.Keys.ToDataTable()
             };
 
             _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);

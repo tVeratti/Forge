@@ -15,6 +15,9 @@ namespace Forge.Data.Services
             DefinitionModel model,
             LookupValues lookupValues)
         {
+            model.Keys = lookupValues.DefinitionValues
+                .Where(dv => dv.Id == model.Id);
+
             model.Tags = lookupValues.DefinitionTags
                 .Where(dt => dt.DefinitionId == model.Id);
 
@@ -24,7 +27,7 @@ namespace Forge.Data.Services
             model.Settings.ToList().ForEach(s =>
             {
                 // Get all values for DefinitionSettings
-                s.Values = lookupValues.DefinitionSettingsValues.Where(dsv => dsv.Id == s.Id);
+                s.Keys = lookupValues.DefinitionSettingsValues.Where(dsv => dsv.Id == s.Id);
             });
 
             return model;

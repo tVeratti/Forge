@@ -8,10 +8,12 @@ Designer.__Tag = React.createClass({
         const { core, designer } = this.props;
         const selectedItem = core.Tags[designer.index];
         
+        // Tags linked to Rules.
         const ruleNodes = core.Rules
             .filter(rule => rule.TagId && rule.TagId === selectedItem.Id)
             .map(this.renderLink);
 
+        // Tags linked to Definitions.
         const definitionNodes = core.Definitions
             .filter(d => {
                 const defTags = (d.Tags || []).map(t => t.Id);

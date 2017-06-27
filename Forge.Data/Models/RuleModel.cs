@@ -15,10 +15,11 @@ namespace Forge.Data.Models
         public long SettingId { get; set; }
         public string SettingName { get; set; }
         public string Name { get; set; }
-        public IEnumerable<IdKeyValuePairModel> Values { get; set; }
         public string LifeCycle { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
+
+        public IEnumerable<IdKeyValuePairModel> Keys { get; set; }
 
         public static explicit operator TableRuleModel(RuleModel t)
         {

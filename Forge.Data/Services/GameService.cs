@@ -98,16 +98,28 @@ namespace Forge.Data.Services
                 // --------------------------------------------------
                 var lookupValues = new LookupValues()
                 {
+                    // IdKVP
+                    RulesValues =               multi.Read<IdKeyValuePairModel>(),
+                    DefinitionValues =          multi.Read<IdKeyValuePairModel>(),
+                    DefinitionSettingsValues =  multi.Read<IdKeyValuePairModel>(),
+
                     SettingsKeys =              multi.Read<SettingKeyModel>(),
                     DefinitionTags =            multi.Read<DefinitionTagModel>(),
-                    DefinitionSettings =        multi.Read<DefinitionSettingModel>(),
-                    DefinitionSettingsValues =  multi.Read<IdKeyValuePairModel>()
+                    DefinitionSettings =        multi.Read<DefinitionSettingModel>()
                 };
 
-                model.Settings = model.Settings.Select(setting =>
+                // Settings Values
+                model.Settings.ToList().ForEach(setting =>
                 {
-                    setting.Keys = lookupValues.SettingsKeys.Where(k => k.SettingId == setting.Id);
-                    return setting;
+                    setting.Keys = lookupValues.SettingsKeys
+                        .Where(k => k.SettingId == setting.Id);
+                });
+
+                // Rules Values
+                model.Rules.ToList().ForEach(rule =>
+                {
+                    rule.Keys = lookupValues.RulesValues
+                        .Where(rv => rv.Id == rule.Id);
                 });
 
                 model.Definitions = model.Definitions.Select(definition => 
