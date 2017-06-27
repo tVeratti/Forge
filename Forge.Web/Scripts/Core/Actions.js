@@ -10,6 +10,7 @@ const UPDATE_ITEM =         'UPDATE_ITEM';
 const DELETE_ITEM =         'DELETE_ITEM';
 const ADD_SETTING =         'ADD_SETTING';
 const UPDATE_GAME =         'UPDATE_GAME';
+const UPDATE_ID =           'UPDATE_ID';
 
 const BEGIN_SAVE_CORE =     'BEGIN_SAVE_CORE';
 const END_SAVE_CORE =       'END_SAVE_CORE';
@@ -26,8 +27,11 @@ const coreActions = {
     // =====================================
     // --------------------------------
     api: {
-        FETCH_CORE: '/Core/Get',
-        SAVE_CORE:  '/Core/Save'
+        FETCH_CORE:         '/Core/Get',
+        SAVE_CORE:          '/Core/Save',
+        SAVE_RULE:          '/Core/SaveRule',
+        SAVE_TAG:           '/Core/SaveTag',
+        SAVE_DEFINITION:    '/Core/SaveDefinition'
     },
 
     // Action Creators
@@ -52,15 +56,41 @@ const coreActions = {
     },
 
     // --------------------------------
-    createItem: function(tab) {
+    updateItemId: function(oldId, newId, tab){
+        return { type: UPDATE_ID, oldId, newId, tab };
+    },
+
+    // --------------------------------
+    createItem: function(tab){
         return (dispatch, getState) => {
-            const { designer, core } = getState();
+
+            // Get the current state data.
+            const { core, designer } = getState();
+            const gameId = core.Game.Id;
             const category = tab || designer.tab;
+
+            const tempId = `tempId-${Math.random()}`;
+
+            let api;
+            switch(category){
+                case CATEGORIES.TAGS: api = this.api.SAVE_TAG; break;
+                case CATEGORIES.RULES: api = this.api.SAVE_RULE; break;
+                case CATEGORIES.DEFINITIONS: api = this.api.SAVE_DEFINITION; break;
+            }
+
+            // Create item locally before DB insert.
             dispatch({ 
-                type: CREATE_ITEM,
-                index: core[category].length,
-                category
+                 type: CREATE_ITEM,
+                 id: tempId,
+                 index: core[category].length,
+                 category
             });
+            
+            // Send model data to database.
+            $.post(api, { model: {}, gameId })
+                //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                .success(response => JSON.parse(response))
+                .then(id => dispatch(coreActions.updateItemId(tempId, id, category)));
         }
     },
 
@@ -115,7 +145,7 @@ const coreActions = {
             const { core } = getState();
 
             // Fetch games from database with state filters.
-            $.get(this.api.SAVE_CORE, core)
+            $.post(this.api.SAVE_CORE, core)
                 //.fail(response => dispatch(this.getLocalGame(id)))
                 .done(r => dispatch({ type: END_SAVE_CORE }));
         };

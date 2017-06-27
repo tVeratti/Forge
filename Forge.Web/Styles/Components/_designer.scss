@@ -62,7 +62,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     // --Empty
     &.designer__list--empty{ 
         display: none;
-        &~.designer__stage .stage__menu { display: none; }
+        //&~.designer__stage .stage__menu { display: none; }
     }
 
     // --Closed
@@ -288,7 +288,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 // ---------------------------
 .designer__tiles{
     display: flex;
-    justify-content: center;
     flex-wrap:wrap;
 
     .designer__tile{
@@ -297,6 +296,8 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         margin: 10px;
         line-height: 1;
         width: 150px;
+
+        &:first-child{ margin-left: 0; }
 
         &.designer__tile--access{
             .designer__tile-title:after{

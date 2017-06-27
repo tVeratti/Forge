@@ -26,6 +26,7 @@ Designer._Menu = React.createClass({
 
                     <div className='field-group'>
                         <Field label='Id'>{Game.Id}</Field>
+                        <div className='separator separator--small' />
 
                         <Field label='Name' 
                             id='name'

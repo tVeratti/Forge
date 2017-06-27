@@ -23,34 +23,28 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Definition properties.</param>
         /// <returns>The newly created Definition model.</returns>
-        public long Create(DefinitionModel Definition, long GameId)
+        public long Create(DefinitionModel Definition, long GameId, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Definition]";
             var spr_prms = new
             {
-                Name = Definition.Name,
                 GameId = GameId,
-                ControlId = Definition.ControlId,
-                GroupId = Definition.GroupId,
-                CreatedById = Definition.CreatedById,
-                Tags = Definition.Tags.ToDataTable(),
-                Settings = Definition.Settings.ToDataTable()
+                CreatedById = UserId
             };
 
-            using (var multi = _cnx.QueryMultiple(spr_name, spr_prms, commandType: CommandType.StoredProcedure))
-            {
-                DefinitionModel Model = multi.Read<DefinitionModel>().FirstOrDefault();
-                return Model?.Id ?? 0;
-            }
+            return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
         }
 
         /// <summary>
         /// Read one Definition record from the database by Id.
         /// </summary>
         /// <returns>The Definition model that matches the given Id's.</returns>
-        public void Update(DefinitionModel Definition)
+        public void Update(DefinitionModel Definition, long UserId)
         {
             var spr_name = "[Verspyre].[Update_Definition]";
+
+            var settings = Definition.Settings?.Select(s => (TableDefinitionSettingModel)s);
+            var definitionSettings = Definition.GetSettingsValues();
 
             var spr_prms = new
             {
@@ -58,23 +52,13 @@ namespace Forge.Data.Services
                 Name = Definition.Name,
                 ControlId = Definition.ControlId,
                 GroupId = Definition.GroupId,
-                CreatedById = Definition.CreatedById,
-                Tags = (Definition.Tags ?? new List<DefinitionTagModel>()).ToDataTable(),
-                Settings = (Definition.Settings ?? new List<DefinitionSettingModel>()).ToDataTable()
+                ModifiedById = UserId,
+                Tags = Definition.Tags.ToDataTable(),
+                Settings = settings.ToDataTable(),
+                SettingsValues = definitionSettings.ToDataTable()
             };
 
             _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
-
-            //using (var multi = _cnx.QueryMultiple(spr_name, spr_prms, commandType: CommandType.StoredProcedure))
-            //{
-            //    DefinitionModel Model = multi.Read<DefinitionModel>().FirstOrDefault();
-            //    var definitionTags = multi.Read<DefinitionTagModel>();
-            //    var definitionSettings = multi.Read<DefinitionSettingModel>();
-
-            //    Model = MappingService.MapDefinition(Model, definitionTags, definitionSettings);
-
-            //    return Model;
-            //}
         }
     }
 }

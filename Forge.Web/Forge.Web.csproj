@@ -343,7 +343,7 @@
     <Content Include="Styles\Components\_overlay.scss" />
     <Content Include="Styles\Components\_dialogs.scss" />
     <Content Include="Styles\Components\_tooltips.scss" />
-    <Content Include="Styles\Components\_pushList.scss" />
+    <Content Include="Styles\Components\_dictionary.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

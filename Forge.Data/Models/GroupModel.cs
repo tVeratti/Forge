@@ -13,5 +13,24 @@ namespace Forge.Data.Models
         public long ParentId { get; set; }
         public int TypeId { get; set; }
         public string Type { get; set; }
+
+        public static explicit operator TableGroupModel(GroupModel g)
+        {
+            return new TableGroupModel()
+            {
+                Id = g.Id,
+                Name = g.Name,
+                ParentId = g.ParentId,
+                TypeId = g.TypeId
+            };
+        }
+    }
+
+    public class TableGroupModel
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public long ParentId { get; set; }
+        public int TypeId { get; set; }
     }
 }

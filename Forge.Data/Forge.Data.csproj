@@ -52,11 +52,11 @@
     <Compile Include="Categories.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="Models\ControlModel.cs" />
+    <Compile Include="Models\IdKeyValuePairModel.cs" />
     <Compile Include="Models\LookupValues.cs" />
     <Compile Include="Models\DefinitionModel.cs" />
     <Compile Include="Models\CoreModel.cs" />
     <Compile Include="Models\DefinitionRuleModel.cs" />
-    <Compile Include="Models\DefinitionSettingValue.cs" />
     <Compile Include="Models\GameModel.cs" />
     <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Models\GroupTypeModel.cs" />

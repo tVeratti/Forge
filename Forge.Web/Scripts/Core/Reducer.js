@@ -75,17 +75,24 @@ function coreReducer(state = initialCoreState, action){
         // --------------------------------
         case CREATE_ITEM:
             // New item with temporary Id
-            const newItem = {
-                Name: `New ${action.category.slice(0, -1)}`,
-                TempId: `t-${Math.random()}`,
-                Category: action.category,
-                Settings: [],
-                Tags: [],
-                Rules: [],
-                MergedSettings: [],
-                ModifiedDate: Date.now(),
-                unsaved: true
+            let newItem = {
+                Id: action.id,
+                Name: `New ${action.category.slice(0, -1)}`
             };
+
+            switch(action.category){
+                case CATEGORIES.DEFINITIONS:
+                    newItem = {
+                        ...newItem,
+                        Category: action.category,
+                        Settings: [],
+                        Tags: [],
+                        Rules: [],
+                        MergedSettings: [],
+                        unsaved: true
+                    };
+                break;
+            }
 
             nextState[action.category] = [ 
                 ...nextState[action.category],
@@ -93,20 +100,27 @@ function coreReducer(state = initialCoreState, action){
             ];
 
             nextState[action.category].forEach((x, i) => x.index = i);
-
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
 
             break;
 
         // --------------------------------
+        case UPDATE_ID:
+        console.log(action.tab)
+            var index, items = [ ...state[action.tab] ];
+            items.forEach((x, i) => index = x.Id === action.oldId ? i : index);
+            items[index].Id = action.newId;
+            
+            nextState[action.tab] = items;
+            break;
+
+        // --------------------------------
         case UPDATE_ITEM:
-            const items = [ ...state[action.category] ];
+            var items = [ ...state[action.category] ];
             items[action.index] = {
                 ...items[action.index],
                 ...action.model,
-                unsaved: !action.saved,
-                ModifiedDate: Date.now()
+                unsaved: !action.saved
             };
 
             nextState[action.category] = items;
@@ -140,7 +154,6 @@ function coreReducer(state = initialCoreState, action){
                     break;
             }
             
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
 
@@ -162,10 +175,16 @@ function coreReducer(state = initialCoreState, action){
             const { ...definitionSetting } = action.setting;
            
             // Only add the setting if the new setting is unique.
-            const settingExists = (definition.Settings || []).filter(s => s.Name === action.setting.Name)[0];
+            const settingExists = (definition.Settings || []).filter(s => s.SettingId === action.setting.Id)[0];
 
             if (!settingExists) {
-                definition.Settings = [ ...definition.Settings || [], definitionSetting ];
+                definition.Settings = [ ...definition.Settings || [], {
+                    ...definitionSetting,
+                    Id: null,
+                    DefinitionId: definition.Id,
+                    SettingId: definitionSetting.Id,
+                    Priority: 0
+                 }];
             }
 
             definition.unsaved = true;
@@ -173,7 +192,6 @@ function coreReducer(state = initialCoreState, action){
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
-            nextState.Game.ModifiedDate = Date.now();
             setGameToLocalStorage(nextState);
             break;
         

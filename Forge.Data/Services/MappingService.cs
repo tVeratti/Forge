@@ -24,9 +24,7 @@ namespace Forge.Data.Services
             model.Settings.ToList().ForEach(s =>
             {
                 // Get all values for DefinitionSettings
-                s.Values = lookupValues.DefinitionSettingsValues
-                    .Where(dsv => dsv.DefinitionSettingId == s.Id)
-                    .ToDictionary(dsv => dsv.Key, dsv => dsv.Value);
+                s.Values = lookupValues.DefinitionSettingsValues.Where(dsv => dsv.Id == s.Id);
             });
 
             return model;
@@ -35,6 +33,7 @@ namespace Forge.Data.Services
         // http://stackoverflow.com/a/18270091
         public static DataTable ToDataTable<T>(this IEnumerable<T> iList)
         {
+
             DataTable dataTable = new DataTable();
             PropertyDescriptorCollection propertyDescriptorCollection =
                 TypeDescriptor.GetProperties(typeof(T));
@@ -49,6 +48,9 @@ namespace Forge.Data.Services
 
                 dataTable.Columns.Add(propertyDescriptor.Name, type);
             }
+
+            if (iList == null) return dataTable;
+
             object[] values = new object[propertyDescriptorCollection.Count];
             foreach (T iListItem in iList)
             {

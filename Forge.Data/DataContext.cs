@@ -13,6 +13,7 @@ namespace Forge.Data
         // Private Services
         // ---------------------------------
         private UserService _users;
+        private CoreService _core;
         private GameService _games;
         private RuleService _rules;
         private TagService _tags;
@@ -27,6 +28,15 @@ namespace Forge.Data
                 return _users == null ? _users = new UserService(_cnx) : _users;
             }
         }
+
+        public CoreService Core
+        {
+            get
+            {
+                return _core == null ? _core = new CoreService(_cnx) : _core;
+            }
+        }
+
         public GameService Games
         {
             get

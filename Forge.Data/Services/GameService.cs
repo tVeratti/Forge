@@ -101,7 +101,7 @@ namespace Forge.Data.Services
                     SettingsKeys =              multi.Read<SettingKeyModel>(),
                     DefinitionTags =            multi.Read<DefinitionTagModel>(),
                     DefinitionSettings =        multi.Read<DefinitionSettingModel>(),
-                    DefinitionSettingsValues =  multi.Read<DefinitionSettingValueModel>()
+                    DefinitionSettingsValues =  multi.Read<IdKeyValuePairModel>()
                 };
 
                 model.Settings = model.Settings.Select(setting =>

@@ -12,6 +12,7 @@
         padding: 10px;
         background: white;
         border: 1px solid $color-primary-80;
+        z-index: 10;
 
         &:after,
         &:before {

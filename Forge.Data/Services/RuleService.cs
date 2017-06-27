@@ -22,12 +22,32 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Rule properties.</param>
         /// <returns>The newly created Rule model.</returns>
-        public RuleModel Create(RuleModel model)
+        public long Create(RuleModel model, long GameId)
         {
             var spr_name = "[Verspyre].[Insert_Rule]";
-            var spr_prms = new { model.SettingId, model.TagId, model.Value, model.CreatedById };
+            var spr_prms = new
+            {
+                GameId,
+                model.ModifiedById
+            };
 
-            return _cnx.Query<RuleModel>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
+            var id =_cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
+            return id;
+        }
+
+        public void Update(RuleModel model)
+        {
+            var spr_name = "[Verspyre].[Update_Rule]";
+            var spr_prms = new
+            {
+                model.Id,
+                model.SettingId,
+                model.TagId,
+                model.ModifiedById,
+                Values = model.Values.ToDataTable()
+            };
+
+            _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
         }
 
         /// <summary>
