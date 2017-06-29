@@ -12,7 +12,7 @@ Designer.__Rule = React.createClass({
 
         const setting = core.Settings.fitler(s => s.Id === selectedItem.SettingId)[0];
         const controlNode = setting
-            ? Forge.utilities.renderControl(setting, update('Values'))
+            ? Forge.utilities.renderControl(setting, update('Keys'))
             : 'Choose a Setting type';
 
         return (
@@ -30,12 +30,14 @@ Designer.__Rule = React.createClass({
                         id='tag'
                         value={selectedItem.TagId}
                         onChange={update('TagId')}
+                        tooltip='Anything with this tag will receive the setting logic below.'
                         options={core.Tags} />
 
                     <Field label='Setting'
                         id='setting'
                         value={selectedItem.SettingId}
                         onChange={update('SettingId')}
+                        tooltip='The logic which is applied to anything with the above tag.'
                         options={core.Settings} />
 
                     <Field label='Value' id='value'>

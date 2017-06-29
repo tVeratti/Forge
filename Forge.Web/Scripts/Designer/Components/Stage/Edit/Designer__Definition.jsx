@@ -34,7 +34,7 @@ Designer.__Definition = React.createClass({
                     <div className='field-group'>
                         <Field label='Name' 
                             id='name' 
-                            value={selectedItem.Name} 
+                            value={selectedItem.Name}
                             onChange={update('Name')} />
 
                         <Field label='Group' 
@@ -42,12 +42,14 @@ Designer.__Definition = React.createClass({
                             value={selectedItem.GroupId} 
                             onChange={update('GroupId')}
                             options={core.Groups}
+                            tooltip='Display group that this will be rendered inside of (Layout).'
                             after={groupEditnode} />                        
 
                         <Field label='Control' 
                             id='control' 
                             value={selectedItem.ControlId} 
                             onChange={update('ControlId')}
+                            tooltip='Control that the user will use to modify the value(s).'
                             options={core.Controls} />
                     </div>
                 </div>

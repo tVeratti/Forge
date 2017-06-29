@@ -1,9 +1,12 @@
-﻿const initialDesignerState = {
+﻿// Default navigation information based on 
+// potential hash values to allow linking/refreshing.
+const hash = (location.hash || '').split('/');
+const initialDesignerState = {
     loading: true,
     saving: false,
-    tab: 'Menu',
+    tab: hash[0] || 'Menu',
+    index: hash[1] || -1,
     listTab: 'List',
-    index: -1,
     itemHistory: []
 }
 
@@ -95,6 +98,8 @@ function designerReducer(state = initialDesignerState, action){
         case UPDATE_ITEM:
             nextState.saving = false;
     }
+
+    window.location.hash = `${nextState.tab}/${nextState.index}`;
 
     return nextState;
 }

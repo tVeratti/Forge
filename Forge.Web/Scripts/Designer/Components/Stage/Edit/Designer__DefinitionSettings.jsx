@@ -81,7 +81,6 @@ Designer.__DefinitionSettings = React.createClass({
         const controlName = setting.ControlName || setting.Control || 'Number';
         const controlProps = {
             Model: setting,
-            Value: setting.Value || undefined,
             onChange: this.valueChange.bind(this, setting.SettingId)
         };
 
@@ -154,10 +153,7 @@ Designer.__DefinitionSettings = React.createClass({
         // Update the value of one individual setting.
         const settings = [ ...(model.Settings || []) ];
 
-        let prop = 'Value';
-        if (typeof value === 'object') prop = 'AdditionalValues';
-
-        settings.filter(s => s.SettingId === settingId)[0][prop] = value;
+        settings.filter(s => s.SettingId === settingId)[0]['Keys'] = value;
 
         model.Settings = settings;
 
