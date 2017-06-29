@@ -18,7 +18,7 @@ namespace Forge.Data.Services
 
         public CoreService(IDbConnection cnx) { this._cnx = cnx; }
 
-        public void Update(CoreModel Model)
+        public void Update(CoreModel Model, long UserId)
         {
             var spr_name = "[Verspyre].[Update_Core]";
 
@@ -28,38 +28,34 @@ namespace Forge.Data.Services
             var rules = Model.Rules.Select(r => (TableRuleModel)r);
             var groups = Model.Groups.Select(g => (TableGroupModel)g);
 
+            var definitionValues = Model.Definitions.SelectMany(d => d.Keys);
             var definitionSettings = Model.Definitions.SelectMany(d => d.Settings);
             var definitionSettingValues = Model.Definitions.SelectMany(d => d.GetSettingsValues());
+            var rulesValues = Model.Rules.SelectMany(r => r.Keys);
 
-            //var spr_prms = new
-            //{
-            //    ModifiedById = userId,
+            var spr_prms = new
+            {
+                ModifiedById = UserId,
 
-            //    // Game
-            //    Name = Model.Game.Name,
-            //    GenreId = Model.Game.GenreId,
+                // Game
+                Name = Model.Game.Name,
+                GenreId = Model.Game.GenreId,
 
-            //    // DataTables
-            //    Tags = tags.ToDataTable(),
-            //    Rules = rules.ToDataTable(),
-            //    Definitions = definitions.ToDataTable(),
-            //    Groups = groups.ToDataTable(),
+                // DataTables
+                Tags = tags.ToDataTable(),
+                Rules = rules.ToDataTable(),
+                Definitions = definitions.ToDataTable(),
+                Groups = groups.ToDataTable(),
 
-            //    // LookUps
+                // LookUps
+                DefinitionValues = definitionSettingValues.ToDataTable(),
+                DefinitionSettings = definitionSettings.ToDataTable(),
+                DefinitionSettingsValues = definitionSettingValues.ToDataTable(),
+                RulesValues = rulesValues.ToDataTable()
 
-            //};
+            };
 
             //_cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
-        }
-
-        private object getSettings(DefinitionModel definition)
-        {
-            return definition.Settings.Select(s => new
-            {
-                s.Id,
-                s.DefinitionId,
-                s.Priority
-            });
         }
     }
 }

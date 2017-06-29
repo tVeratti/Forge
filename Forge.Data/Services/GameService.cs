@@ -98,14 +98,14 @@ namespace Forge.Data.Services
                 // --------------------------------------------------
                 var lookupValues = new LookupValues()
                 {
-                    // IdKVP
-                    RulesValues =               multi.Read<IdKeyValuePairModel>(),
-                    DefinitionValues =          multi.Read<IdKeyValuePairModel>(),
-                    DefinitionSettingsValues =  multi.Read<IdKeyValuePairModel>(),
-
                     SettingsKeys =              multi.Read<SettingKeyModel>(),
                     DefinitionTags =            multi.Read<DefinitionTagModel>(),
-                    DefinitionSettings =        multi.Read<DefinitionSettingModel>()
+                    DefinitionSettings =        multi.Read<DefinitionSettingModel>(),
+
+                    // IdKeyValuePairs
+                    RulesValues =               multi.Read<IdKeyValuePairModel>(),
+                    DefinitionValues =          multi.Read<IdKeyValuePairModel>(),
+                    DefinitionSettingsValues =  multi.Read<IdKeyValuePairModel>()
                 };
 
                 // Settings Values

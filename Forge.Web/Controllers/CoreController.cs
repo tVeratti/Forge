@@ -77,11 +77,9 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public long Save(CoreModel Model)
+        public void Save(CoreModel Model)
         {
-            Model.Game.ModifiedById = User.Id;
-            _context.Core.Update(Model);
-            return 0;
+            _context.Core.Update(Model, User.Id);
         }
     }
 }

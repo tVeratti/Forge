@@ -34,7 +34,7 @@ namespace Forge.Data.Services
         }
 
         // http://stackoverflow.com/a/18270091
-        public static DataTable ToDataTable<T>(this IEnumerable<T> iList)
+        public static DataTable ToDataTable<T>(this IEnumerable<T> TList)
         {
 
             DataTable dataTable = new DataTable();
@@ -52,18 +52,32 @@ namespace Forge.Data.Services
                 dataTable.Columns.Add(propertyDescriptor.Name, type);
             }
 
-            if (iList == null) return dataTable;
+            if (TList == null) return dataTable;
 
             object[] values = new object[propertyDescriptorCollection.Count];
-            foreach (T iListItem in iList)
+            TList.ToList().ForEach(x =>
             {
                 for (int i = 0; i < values.Length; i++)
                 {
-                    values[i] = propertyDescriptorCollection[i].GetValue(iListItem);
+                    values[i] = propertyDescriptorCollection[i].GetValue(x);
                 }
                 dataTable.Rows.Add(values);
-            }
+            });
+
+            //foreach (T iListItem in TList ?? new T[0])
+            //{
+            //    for (int i = 0; i < values.Length; i++)
+            //    {
+            //        values[i] = propertyDescriptorCollection[i].GetValue(iListItem);
+            //    }
+            //    dataTable.Rows.Add(values);
+            //}
             return dataTable;
         }
+
+        //public static IEnumerable<TB> ToTableModel<T, TB>(this IEnumerable<T> iList)
+        //{
+        //    return iList.Select(x => (TB)x);
+        //}
     }
 }
