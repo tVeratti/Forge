@@ -1269,6 +1269,121 @@ Account.Provider = function (props) {
 };
 
 // =====================================
+// Presentation
+// =====================================
+var __Builder = React.createClass({
+    displayName: '__Builder',
+
+    // -----------------------------
+    render: function render() {
+
+        return React.createElement('div', { className: 'builder' });
+    },
+
+    // -----------------------------
+    componentWillMount: function componentWillMount() {
+        // Model comes from C# -
+        // Set data into store with dispatch.
+        var _props = this.props,
+            dispatch = _props.dispatch,
+            id = _props.id;
+
+        dispatch(coreActions.fetchGame(id));
+    },
+
+    // -----------------------------
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        var game = nextProps.Game;
+        if (game && game.Name) document.title = game.Name + ' - Forge | Builder';
+    }
+});
+
+// =====================================
+// Container
+// =====================================
+var Builder = connect(function (state) {
+    return _extends({}, state.core);
+})(__Builder);
+
+// =====================================
+// Root
+// =====================================
+Builder.Provider = function (props) {
+    return React.createElement(
+        Provider,
+        { store: store },
+        React.createElement(Builder, props)
+    );
+};
+
+// =====================================
+// Presentation
+// =====================================
+Builder._Groups = function (props) {
+    var core = props.core;
+
+    var topGroups = core.Groups.filter(function (g) {
+        return !g.ParentId;
+    });
+    var groupNodes = topGroups.map(function (g) {
+        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
+    });
+
+    return React.createElement(
+        'div',
+        { className: 'builder__groups' },
+        groupNodes
+    );
+};
+
+// =====================================
+// Container
+// =====================================
+Builder.Groups = connect(function (state) {
+    return _extends({}, state);
+})(Builder._Groups);
+
+// =====================================
+// <Builder.Group />
+// =====================================
+Builder.Group = function (props) {
+    var core = props.core,
+        model = props.model;
+
+
+    var childNodes = core.Groups.filter(function (g) {
+        return g.ParentId == model.Id;
+    }).map(function (g) {
+        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
+    });
+
+    var definitionNodes = core.Definitions.filter(function (d) {
+        return d.GroupId == model.Id;
+    }).map(function (d, i) {
+        return React.createElement(Forge.Definition, { key: i, model: d });
+    });
+
+    return React.createElement(
+        'div',
+        { className: 'builder__group group panel' },
+        React.createElement(
+            'h4',
+            null,
+            model.Name
+        ),
+        React.createElement(
+            'div',
+            { className: 'group__definitions' },
+            definitionNodes
+        ),
+        React.createElement(
+            'div',
+            { className: 'group__children' },
+            childNodes
+        )
+    );
+};
+// =====================================
 // <Banner />
 // =====================================
 var Banner = function Banner(_ref) {
@@ -1393,9 +1508,9 @@ var Expandable = React.createClass({
     render: function render() {
         var _this10 = this;
 
-        var _props = this.props,
-            children = _props.children,
-            header = _props.header;
+        var _props2 = this.props,
+            children = _props2.children,
+            header = _props2.header;
         var open = this.state.open;
 
 
@@ -1442,15 +1557,13 @@ var Expandable = React.createClass({
 var Field = function Field(_ref2) {
     var props = _objectWithoutProperties(_ref2, []);
 
-    var inputNode = props.children || props.options ? React.createElement(Select, props) : React.createElement('input', props);
+    var controlNode = props.children || (props.options ? React.createElement(Select, props) : React.createElement('input', props));
 
-    if (props.tooltip) {
-        inputNode = React.createElement(
-            Tooltip,
-            { tip: props.tooltip, icon: true },
-            inputNode
-        );
-    }
+    var tooltipNode = props.tooltip ? React.createElement(
+        Tooltip,
+        { tip: props.tooltip, icon: true },
+        '?'
+    ) : undefined;
 
     var afterNode = props.after ? React.createElement(
         'span',
@@ -1469,7 +1582,7 @@ var Field = function Field(_ref2) {
         React.createElement(
             'span',
             { className: 'field__value' },
-            inputNode
+            controlNode
         ),
         afterNode
     );
@@ -1895,9 +2008,9 @@ var Sortable = React.createClass({
         var _state = this.state,
             initialIndex = _state.initialIndex,
             index = _state.index;
-        var _props2 = this.props,
-            list = _props2.list,
-            onChange = _props2.onChange;
+        var _props3 = this.props,
+            list = _props3.list,
+            onChange = _props3.onChange;
 
 
         var handler = function handler(arr, i, i2) {
@@ -1926,12 +2039,12 @@ var Tab = React.createClass({
 
     // ----------------------------
     render: function render() {
-        var _props3 = this.props,
-            id = _props3.id,
-            name = _props3.name,
-            onChange = _props3.onChange,
-            label = _props3.label,
-            checked = _props3.checked;
+        var _props4 = this.props,
+            id = _props4.id,
+            name = _props4.name,
+            onChange = _props4.onChange,
+            label = _props4.label,
+            checked = _props4.checked;
 
         var className = 'tab';
         if (checked) className += ' tab--checked';
@@ -1986,121 +2099,6 @@ var Tooltip = function Tooltip(_ref6) {
         )
     );
 };
-// =====================================
-// Presentation
-// =====================================
-var __Builder = React.createClass({
-    displayName: '__Builder',
-
-    // -----------------------------
-    render: function render() {
-
-        return React.createElement('div', { className: 'builder' });
-    },
-
-    // -----------------------------
-    componentWillMount: function componentWillMount() {
-        // Model comes from C# -
-        // Set data into store with dispatch.
-        var _props4 = this.props,
-            dispatch = _props4.dispatch,
-            id = _props4.id;
-
-        dispatch(coreActions.fetchGame(id));
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-        var game = nextProps.Game;
-        if (game && game.Name) document.title = game.Name + ' - Forge | Builder';
-    }
-});
-
-// =====================================
-// Container
-// =====================================
-var Builder = connect(function (state) {
-    return _extends({}, state.core);
-})(__Builder);
-
-// =====================================
-// Root
-// =====================================
-Builder.Provider = function (props) {
-    return React.createElement(
-        Provider,
-        { store: store },
-        React.createElement(Builder, props)
-    );
-};
-
-// =====================================
-// Presentation
-// =====================================
-Builder._Groups = function (props) {
-    var core = props.core;
-
-    var topGroups = core.Groups.filter(function (g) {
-        return !g.ParentId;
-    });
-    var groupNodes = topGroups.map(function (g) {
-        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
-    });
-
-    return React.createElement(
-        'div',
-        { className: 'builder__groups' },
-        groupNodes
-    );
-};
-
-// =====================================
-// Container
-// =====================================
-Builder.Groups = connect(function (state) {
-    return _extends({}, state);
-})(Builder._Groups);
-
-// =====================================
-// <Builder.Group />
-// =====================================
-Builder.Group = function (props) {
-    var core = props.core,
-        model = props.model;
-
-
-    var childNodes = core.Groups.filter(function (g) {
-        return g.ParentId == model.Id;
-    }).map(function (g) {
-        return React.createElement(Builder.Group, { key: g.Id, core: core, model: g });
-    });
-
-    var definitionNodes = core.Definitions.filter(function (d) {
-        return d.GroupId == model.Id;
-    }).map(function (d, i) {
-        return React.createElement(Forge.Definition, { key: i, model: d });
-    });
-
-    return React.createElement(
-        'div',
-        { className: 'builder__group group panel' },
-        React.createElement(
-            'h4',
-            null,
-            model.Name
-        ),
-        React.createElement(
-            'div',
-            { className: 'group__definitions' },
-            definitionNodes
-        ),
-        React.createElement(
-            'div',
-            { className: 'group__children' },
-            childNodes
-        )
-    );
-};
 // --------------------------------------------------
 // <Forge.Definition />
 
@@ -2144,7 +2142,7 @@ Forge.__Definition = React.createClass({
             model = _props5.model;
         var stages = Forge.lifeCycle.stages;
 
-        this.valueChange(tmodel.Value, stages.init);
+        this.valueChange(model.Value, stages.init);
     },
 
     // -----------------------------
@@ -3001,7 +2999,6 @@ Designer.__List = React.createClass({
             return React.createElement(
                 'li',
                 { key: key, className: className },
-                item.Id,
                 React.createElement(
                     'button',
                     { className: 'button button--transparent', onClick: onClick },
@@ -4415,7 +4412,7 @@ Designer.__Rule = React.createClass({
             return _this22.updateModel.bind(_this22, prop);
         };
 
-        var setting = core.Settings.fitler(function (s) {
+        var setting = core.Settings.filter(function (s) {
             return s.Id === selectedItem.SettingId;
         })[0];
         var controlNode = setting ? Forge.utilities.renderControl(setting, update('Keys')) : 'Choose a Setting type';

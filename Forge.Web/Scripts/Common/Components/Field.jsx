@@ -3,14 +3,14 @@
 // =====================================
 const Field = ({ ...props }) => {
 
-    let inputNode = props.children ||
-        props.options
+    const controlNode = props.children ||
+        (props.options
             ? <Select {...props} />
-            : <input {...props} />;
+            : <input {...props} />);
 
-    if (props.tooltip) {
-        inputNode = <Tooltip tip={props.tooltip} icon={true}>{inputNode}</Tooltip>;
-    }
+    const tooltipNode = props.tooltip
+        ? <Tooltip tip={props.tooltip} icon={true}>?</Tooltip>
+        : undefined;
 
     const afterNode = props.after
         ?  <span className='field__after'>{props.after}</span>
@@ -19,8 +19,8 @@ const Field = ({ ...props }) => {
     return (
         <div className='field'>
             <label className='field__label' htmlFor={props.id}>{props.label}</label>
-            <span className='field__value'>{inputNode}</span>
-           {afterNode}
+            <span className='field__value'>{controlNode}</span>
+            {afterNode}
         </div>
     );
 }

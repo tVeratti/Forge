@@ -10,7 +10,7 @@ Designer.__Rule = React.createClass({
 
         const update = (prop) => this.updateModel.bind(this, prop);
 
-        const setting = core.Settings.fitler(s => s.Id === selectedItem.SettingId)[0];
+        const setting = core.Settings.filter(s => s.Id === selectedItem.SettingId)[0];
         const controlNode = setting
             ? Forge.utilities.renderControl(setting, update('Keys'))
             : 'Choose a Setting type';

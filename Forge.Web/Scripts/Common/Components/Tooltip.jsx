@@ -10,7 +10,6 @@ const Tooltip = ({ children, tip, onClick, icon }) => {
         <div className='tooltip' onClick={onClick}>
             {children}
             {icon}
-
             <div className='tooltip__value'>
                 {tip}
             </div>

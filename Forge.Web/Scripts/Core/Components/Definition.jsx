@@ -27,7 +27,7 @@ Forge.__Definition = React.createClass({
         // Trigger Lifecycle: Initialize
         const { core, model } = this.props;
         const { stages } = Forge.lifeCycle;
-        this.valueChange(tmodel.Value, stages.init);
+        this.valueChange(model.Value, stages.init);
     },
 
     // -----------------------------
