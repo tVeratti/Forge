@@ -31,7 +31,8 @@ const coreActions = {
         SAVE_CORE:          '/Core/Save',
         SAVE_RULE:          '/Core/SaveRule',
         SAVE_TAG:           '/Core/SaveTag',
-        SAVE_DEFINITION:    '/Core/SaveDefinition'
+        SAVE_DEFINITION:    '/Core/SaveDefinition',
+        SAVE_GROUP:         '/Core/SaveGroup'
     },
 
     // Action Creators

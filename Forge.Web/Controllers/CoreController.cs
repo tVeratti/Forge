@@ -25,12 +25,13 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public long SaveRule(RuleModel Model, long GameId)
+        public long SaveRule(RuleModel Model)
         {
             Model.ModifiedById = User.Id;
+
             if (Model.Id == 0)
             {
-                return _context.Rules.Create(Model, GameId);
+                return _context.Rules.Create(Model);
             }
             else
             {
@@ -41,13 +42,14 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public long SaveTag(TagModel Model, long GameId)
+        public long SaveTag(TagModel Model)
         {
+
             if (Model.Id == 0)
             {
                 // INSERT
                 Model.CreatedById = User.Id;
-                return _context.Tags.Create(Model, GameId);
+                return _context.Tags.Create(Model);
             }
             else
             {
@@ -60,17 +62,34 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public long SaveDefinition(DefinitionModel Model, long GameId)
+        public long SaveDefinition(DefinitionModel Model)
         {
             if (Model.Id == 0)
             {
                 // INSERT
-                return _context.Definitions.Create(Model, GameId, User.Id);
+                return _context.Definitions.Create(Model, User.Id);
             }
             else
             {
                 // UPDATE
                 _context.Definitions.Update(Model, User.Id);
+            }
+
+            return Model.Id;
+        }
+
+        [HttpPost]
+        public long SaveGroup(GroupModel Model)
+        {
+            if (Model.Id == 0)
+            {
+                // INSERT
+                return _context.Core.CreateGroup(Model, User.Id);
+            }
+            else
+            {
+                // UPDATE
+                _context.Core.UpdateGroup(Model, User.Id);
             }
 
             return Model.Id;

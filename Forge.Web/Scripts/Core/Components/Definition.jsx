@@ -49,11 +49,12 @@ Forge.__Definition = React.createClass({
         const { model, core, dispatch } = props;
 
         // Apply all settings that match the current lifecycle
-        model.MergedSettings
-            .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
-            .forEach(s => value = settings.apply(value, s));
+        // model.MergedSettings
+        //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
+        //     .forEach(s => value = settings.apply(value, s));
 
         if (typeof value == 'number' && isNaN(value)) value = 0;
+        console.log(value)
 
         if (value != props.model.Value){
             dispatch(coreActions.updateDefinition({ ...model, Value: value }, true));

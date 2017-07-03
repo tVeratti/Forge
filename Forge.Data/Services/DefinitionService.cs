@@ -23,12 +23,12 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Definition properties.</param>
         /// <returns>The newly created Definition model.</returns>
-        public long Create(DefinitionModel Definition, long GameId, long UserId)
+        public long Create(DefinitionModel Model, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Definition]";
             var spr_prms = new
             {
-                GameId = GameId,
+                Model.GameId,
                 CreatedById = UserId
             };
 

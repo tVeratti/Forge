@@ -11,6 +11,7 @@ namespace Forge.Data.Models
         public string Category => Categories.TAGS;
         public long Id { get; set; }
         public string Name { get; set; }
+        public long GameId { get; set; }
         public long CreatedById { get; set; }
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
@@ -29,5 +30,6 @@ namespace Forge.Data.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public long GameId { get; set; }
     }
 }

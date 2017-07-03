@@ -22,10 +22,10 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Tag properties.</param>
         /// <returns>The newly created Tag model.</returns>
-        public long Create(TagModel model, long GameId)
+        public long Create(TagModel model)
         {
             var spr_name = "[Verspyre].[Insert_Tag]";
-            var spr_prms = new { model.Name, model.CreatedById, GameId};
+            var spr_prms = new { model.Name, model.CreatedById, model.GameId};
 
             return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
         }

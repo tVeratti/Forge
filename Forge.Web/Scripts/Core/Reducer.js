@@ -106,7 +106,6 @@ function coreReducer(state = initialCoreState, action){
 
         // --------------------------------
         case UPDATE_ID:
-        console.log(action.tab)
             var index, items = [ ...state[action.tab] ];
             items.forEach((x, i) => index = x.Id === action.oldId ? i : index);
             items[index].Id = action.newId;

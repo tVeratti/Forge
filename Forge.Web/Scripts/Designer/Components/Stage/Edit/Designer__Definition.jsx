@@ -80,6 +80,7 @@ Designer.__Definition = React.createClass({
 
     // -----------------------------
     updateModel: function(prop, value){
+        
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Definitions[designer.index];
         model[prop] = value;

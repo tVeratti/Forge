@@ -115,7 +115,10 @@ const designerActions = {
             const { core, designer } = getState();
             const { tab, index } = designer;
             const gameId = core.Game.Id;
-            const model = { ...core[tab][index] };
+            const model = { 
+                ...core[tab][index],
+                gameId,
+             };
             
             let api;
             switch(designer.tab){
@@ -128,7 +131,7 @@ const designerActions = {
             }
             
             // Send model data to database.
-            $.post(api, { model, gameId })
+            $.post(api, { model })
                 .fail(response => dispatch(coreActions.updateItem(model, tab, true)))
                 .success(response => JSON.parse(response))
                 .then(id => {

@@ -57,5 +57,38 @@ namespace Forge.Data.Services
 
             //_cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
         }
+
+        public long CreateGroup(GroupModel Model, long UserId)
+        {
+            var spr_name = "[Verspyre].[Insert_Group]";
+
+            var spr_prms = new
+            {
+                Model.GameId,
+                Model.Name,
+                Model.ParentId,
+                Model.TypeId,
+                ModifiedById = UserId
+            };
+
+            return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
+        }
+
+        public void UpdateGroup(GroupModel Model, long UserId)
+        {
+            var spr_name = "[Verspyre].[Update_Group]";
+
+            var spr_prms = new
+            {
+                Model.Id,
+                Model.Name,
+                Model.ParentId,
+                Model.TypeId,
+                ModifiedById = UserId
+            };
+
+            _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
+        }
+
     }
 }

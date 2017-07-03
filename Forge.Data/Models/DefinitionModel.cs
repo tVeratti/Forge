@@ -10,6 +10,7 @@ namespace Forge.Data.Models
 
         public long Id { get; set; }
         public string Name { get; set; }
+        public long GameId { get; set; }
         public long GroupId { get; set; }
         public int ControlId { get; set; }
         public string ControlName { get; set; }
@@ -43,6 +44,7 @@ namespace Forge.Data.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public long GameId { get; set; }
         public long GroupId { get; set; }
         public int ControlId { get; set; }
 

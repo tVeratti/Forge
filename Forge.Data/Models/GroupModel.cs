@@ -13,6 +13,7 @@ namespace Forge.Data.Models
         public long ParentId { get; set; }
         public int TypeId { get; set; }
         public string Type { get; set; }
+        public long GameId { get; set; }
 
         public static explicit operator TableGroupModel(GroupModel g)
         {
@@ -32,5 +33,6 @@ namespace Forge.Data.Models
         public string Name { get; set; }
         public long ParentId { get; set; }
         public int TypeId { get; set; }
+        public long GameId { get; set; }
     }
 }

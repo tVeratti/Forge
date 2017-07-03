@@ -13,6 +13,7 @@ namespace Forge.Data.Models
         public long Id { get; set; }
         public long TagId { get; set; }
         public long SettingId { get; set; }
+        public long GameId { get; set; }
         public string SettingName { get; set; }
         public string Name { get; set; }
         public string LifeCycle { get; set; }

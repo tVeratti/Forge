@@ -22,12 +22,12 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Rule properties.</param>
         /// <returns>The newly created Rule model.</returns>
-        public long Create(RuleModel model, long GameId)
+        public long Create(RuleModel model)
         {
             var spr_name = "[Verspyre].[Insert_Rule]";
             var spr_prms = new
             {
-                GameId,
+                model.GameId,
                 model.ModifiedById
             };
 

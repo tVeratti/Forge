@@ -9,8 +9,7 @@ Designer.__Rule = React.createClass({
         const selectedItem = core.Rules[designer.index];
 
         const update = (prop) => this.updateModel.bind(this, prop);
-
-        const setting = core.Settings.filter(s => s.Id === selectedItem.SettingId)[0];
+        const setting = core.Settings.filter(s => s.Id == selectedItem.SettingId)[0];
         const controlNode = setting
             ? Forge.utilities.renderControl(setting, update('Keys'))
             : 'Choose a Setting type';
@@ -53,7 +52,7 @@ Designer.__Rule = React.createClass({
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Rules[designer.index];
         
-        model[prop] = value
+        model[prop] = value;
 
         dispatch(coreActions.updateRule(model));
     }
