@@ -41,7 +41,7 @@
         }
 
         .recent__header{
-            font-size: 20px;
+            font-size: 22px;
             margin-bottom: 10px;
         }
 
@@ -75,6 +75,10 @@
         }
     }
 
+    .definition__settings{
+        padding-left: 5px;
+    }
+
     .definition__setting{
         position: relative;
         padding: 10px 0;
@@ -91,16 +95,26 @@
             .field__value { padding-left: 30px;}
         }
 
-        .definition__setting-remove {
+        .definition__setting-remove,
+        .definition__rule-tag {
             position: absolute;
-            font-family: FontAwesome;
+            font-family: "Ionicons";
             right: 0;
             top: 50%;
             transform: translateY(-50%);
+            font-size: 22px;
             cursor: pointer !important;
-            padding: 10px;
-            &:after{ content: "\f00d"; }
-            &:hover{ color: $color-secondary-50; }
+            padding: 5px 10px;
+        }
+
+        .definition__rule-tag{
+            color: $color-primary-60;
+             &:after{ content: "\f48c"; }
+        }
+
+        .definition__setting-remove{
+             &:after{ content: "\f2d7"; }
+             &:hover{ color: $color-red; }
         }
     }
 
@@ -109,25 +123,11 @@
     .definition__nested-rule--active { 
         background-color: $color-action-10 !important;
         color: $color-action-70 !important;
-        
     }
 
     .definition__setting--active,
     .definition__nested-rule--active {
         transition: background-color 0.3s ease-in-out;
-    }
-
-    .definition__rule {
-        .expandable__label > .field .field__value{ opacity: 0.8; }
-        &:after{
-            position: absolute;
-            font-family: FontAwesome;
-            content: "\f02b";
-            right: 10px;
-            padding: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
     }
 
     .expandable__header { 
@@ -149,8 +149,8 @@
 
     .definition__overrides{
         padding-left: 8px;
-        opacity: 0.7;
-        border-left: 2px solid $color-primary-60;
+        //opacity: 0.7;
+        border-left: 1px dotted $color-primary-60;
 
         li {
             .field__label,
@@ -164,22 +164,43 @@
 }
 
 .stage__menu{
+    display: flex;
+    align-items: stretch;
     background-color: $color-background-menu-2;
-    border-bottom: 1px solid $color-primary-60;
-    @include soft-shadow();
+    border-bottom: 1px solid $color-primary-30;
+    //@include soft-shadow();
+
     .button{
+        position: relative;
         line-height: 1.2;
-        padding: 10px 20px;
-        &:before{ 
+        padding: 10px;
+        min-width: 50px;
+        &:before,
+        &:after { 
             display: block;
-            font-family: FontAwesome;
-            font-size: 20px;
+            font-family: "Ionicons";
+            font-size: 24px;
         }
     }
 
-    .stage__back:before{ content: "\f060"; }
-    .stage__save:before{ content: "\f0c7"; }
-    .stage__delete:before{ content: "\f014"; }
+    .divider{
+        display: inline-block;
+        margin: 10px;
+        border-right: 1px solid $color-primary-40;
+    }
+
+    @mixin menu-button($icon, $color){
+        &:before{ content: $icon; }
+        &:hover{ color: $color; }
+    }
+    .stage__back { @include menu-button("\f2ca", $color-primary-80); } 
+    .stage__save { @include menu-button("\f383", $color-tertiary-50); }
+
+    .stage__save-all { @include menu-button("\f382", $color-tertiary-50); }
+    .stage__delete { @include menu-button("\f2d7", $color-red); }
+    .stage__fav { @include menu-button("\f3ae", $color-primary-80); }
 }
+
+
 
 

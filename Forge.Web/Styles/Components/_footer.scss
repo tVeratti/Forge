@@ -7,25 +7,22 @@
     height: $size-footer-height;
     width: 100%;
     max-width: 100%;
-    background-color: $color-primary-90;
-    color: $color-primary-10 !important;
+    //background-color: $color-primary-90;
+    //color: $color-primary-10 !important;
     text-align: center;
     font-size: 12px;
     margin-top: -1px;
 
     .footer__nav{
         padding: 10px;
-    }
 
-    .footer__nav{
-        
         li {
             display: inline-block;
             &:after{content: "|"; }
             &:last-child:after{ content: ""; }
 
         }
-        .footer__link{ color: white; padding: 5px; }
+        //.footer__link{ color: white; padding: 5px; }
 
         @media screen and (max-width: 420px){
             li{ width: 50%; }

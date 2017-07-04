@@ -17,12 +17,12 @@ Designer._Menu = React.createClass({
 
         return (
             <div className='designer__menu'>
-                <div className='designer__tiles'>
+                {/*<div className='designer__tiles'>
                     {tileNodes}
-                </div>
+                </div>*/}
 
                 <div className='panel '>
-                    <h4>Game</h4>
+                    <h4>Game Settings</h4>
 
                     <div className='field-group'>
                         <Field label='Id'>{Game.Id}</Field>

@@ -11,8 +11,8 @@ const Nav = React.createClass({
         const toggleSiteHandler = this.toggleList.bind(this, 'siteOpen');
         const toggleAccountHandler = this.toggleList.bind(this, 'accountOpen');
 
-        const toggleSiteClassName = 'toggle fa fa-navicon t-'// + siteUlClass;
-        const toggleAccountClassName = 'toggle fa fa-user t-'// + accountUlClass;
+        const toggleSiteClassName = 'toggle nav__menu t-'// + siteUlClass;
+        const toggleAccountClassName = 'toggle nav__user t-'// + accountUlClass;
 
         // Arrow decoration template
         const arrowNode = <span className="arrow" />;

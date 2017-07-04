@@ -7,6 +7,9 @@
         display: table;
         width: 100%;
     }
+    .expandable__button{
+        
+    }
 
     .expandable__label{
         padding-left: 30px;
@@ -17,15 +20,25 @@
         vertical-align: middle;
 
         .expandable__icon {
-            font-family: FontAwesome;
+            font-family: "Ionicons";
             min-width: 0;
-            padding: 10px;
+            padding: 0 10px;
+            color: $color-primary-80;
+            background: $color-primary-10;
+            border: 1px solid $color-primary-70;
+
+            &:hover{
+                color: $color-primary-90;
+                border-color: $color-primary-80;
+            }
 
             &:after {
                 display: inline-block;
-                content: "\f0d7";
+                content: "\f3d0";
                 transform: rotate(0deg);
                 transition: transform 0.3s ease-in-out;
+                font-size: 16px;
+                font-weight: bold;
             }
         }
     }

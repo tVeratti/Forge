@@ -431,18 +431,6 @@ function coreReducer() {
                 case CATEGORIES.TAGS:
                 case CATEGORIES.RULES:
                     calculateAll = true;
-                    nextState.Rules = nextState.Rules.map(function (r) {
-                        var tag = nextState.Tags.filter(function (t) {
-                            return t.Id == r.TagId;
-                        })[0] || {};
-                        var setting = nextState.Settings.filter(function (s) {
-                            return s.Id == r.SettingId;
-                        })[0] || {};
-                        return _extends({}, r, {
-                            Name: (tag.Name || '-') + ' ' + (setting.Name || '-'),
-                            error: !tag.Name || !setting.Name
-                        });
-                    });
 
                 // NO BREAK
                 case CATEGORIES.DEFINITIONS:
@@ -1723,8 +1711,8 @@ var Nav = React.createClass({
         var toggleSiteHandler = this.toggleList.bind(this, 'siteOpen');
         var toggleAccountHandler = this.toggleList.bind(this, 'accountOpen');
 
-        var toggleSiteClassName = 'toggle fa fa-navicon t-'; // + siteUlClass;
-        var toggleAccountClassName = 'toggle fa fa-user t-'; // + accountUlClass;
+        var toggleSiteClassName = 'toggle nav__menu t-'; // + siteUlClass;
+        var toggleAccountClassName = 'toggle nav__user t-'; // + accountUlClass;
 
         // Arrow decoration template
         var arrowNode = React.createElement('span', { className: 'arrow' });
@@ -3454,16 +3442,11 @@ Designer._Menu = React.createClass({
             { className: 'designer__menu' },
             React.createElement(
                 'div',
-                { className: 'designer__tiles' },
-                tileNodes
-            ),
-            React.createElement(
-                'div',
                 { className: 'panel ' },
                 React.createElement(
                     'h4',
                     null,
-                    'Game'
+                    'Game Settings'
                 ),
                 React.createElement(
                     'div',
@@ -3691,7 +3674,7 @@ Designer.__Stage = React.createClass({
         var stageKey = tab + '-' + index + '-' + uniqueId;
 
         var menuDisabled = !item;
-        var instructions = this.instructions[tab];
+        //const instructions = this.instructions[tab];
 
         var workspaceNode = this.renderStage();
         var headerNode = this.renderHeader();
@@ -3700,42 +3683,17 @@ Designer.__Stage = React.createClass({
             'div',
             { className: className, key: stageKey },
             React.createElement(
-                'h3',
-                null,
-                headerNode
-            ),
-            React.createElement(
                 'div',
                 { className: 'stage__menu' },
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length },
-                    'Back'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled },
-                    'Save'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__save', onClick: this.saveAll },
-                    'Save All'
-                ),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled },
-                    'Delete'
-                )
+                React.createElement('button', { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length, title: 'Back' }),
+                React.createElement('button', { className: 'button button--transparent stage__save-all', onClick: this.saveAll, title: 'Save All' }),
+                React.createElement('span', { className: 'divider' }),
+                React.createElement('button', { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled, title: 'Save' }),
+                React.createElement('button', { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled, title: 'Delete' })
             ),
             React.createElement(
                 'div',
                 { className: 'stage__workspace' },
-                instructions && React.createElement(
-                    Banner,
-                    null,
-                    instructions
-                ),
                 workspaceNode
             )
         );
@@ -3870,10 +3828,6 @@ Designer.__Definition = React.createClass({
                     null,
                     'General'
                 ),
-                React.createElement(Checkbox, { label: 'Active',
-                    id: 'active',
-                    value: selectedItem.Active,
-                    onChange: update('Active') }),
                 React.createElement(
                     'div',
                     { className: 'field-group' },
@@ -4007,7 +3961,7 @@ Designer.__DefinitionSettings = React.createClass({
         // settings are added by whic tags.
         var className = 'definition__setting';
         var removeNode = void 0;
-        if (activeTagId === setting.TagId) className += ' definition__setting--active';
+        if (activeTagId && activeTagId === setting.TagId) className += ' definition__setting--active';
         if (setting.TagId) className += ' definition__rule';else removeNode = React.createElement('span', { className: 'definition__setting-remove', onClick: removeHandler });
 
         var controlNode = setting.TagId ? setting.Value : this.renderControl(setting, index);
@@ -4026,18 +3980,19 @@ Designer.__DefinitionSettings = React.createClass({
                 { className: 'field__value' },
                 controlNode
             ),
-            removeNode
+            removeNode || React.createElement('span', { className: 'definition__rule-tag', title: 'Tagged Rule' })
         );
 
         if (setting.rules && setting.rules.length) {
+            if (setting.rules.length > 1) className += ' definition__rule--many';
             // Map relevant rules underneath this setting so that
             // they can be displayed as children of this setting.
             var ruleNodes = setting.rules.map(function (r) {
-                var className = 'definition__nested-rule';
-                if (activeTagId === r.TagId) className += ' definition__nested-rule--active';
+                var ruleClassName = 'definition__nested-rule';
+                if (activeTagId && activeTagId === r.TagId) ruleClassName += ' definition__nested-rule--active';
                 return React.createElement(
                     'li',
-                    { key: r.Name, className: className },
+                    { key: r.Name, className: ruleClassName },
                     React.createElement(
                         Field,
                         { label: r.Name },
@@ -4564,7 +4519,7 @@ Designer.__Tag = React.createClass({
 
         return React.createElement(
             'li',
-            { key: item.Name, className: 'list__item' },
+            { key: item.Id, className: 'list__item' },
             React.createElement(Designer.Link, { model: item, dispatch: dispatch, category: category, hideCategory: true })
         );
     },

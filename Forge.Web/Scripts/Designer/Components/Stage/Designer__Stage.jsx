@@ -24,7 +24,7 @@ Designer.__Stage = React.createClass({
         const stageKey = `${tab}-${index}-${uniqueId}`;
 
         const menuDisabled = !item;
-        const instructions = this.instructions[tab];
+        //const instructions = this.instructions[tab];
 
         const workspaceNode = this.renderStage();
         const headerNode = this.renderHeader();
@@ -32,19 +32,17 @@ Designer.__Stage = React.createClass({
         return (
             <div className={className} key={stageKey}>
 
-                <h3>{headerNode}</h3>
-
                 {/* Actions */}
                 <div className='stage__menu'>
-                    <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length}>Back</button>
-                    <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled}>Save</button>
-                    <button className='button button--transparent stage__save' onClick={this.saveAll}>Save All</button>
-                    <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled}>Delete</button>
+                    <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length} title='Back' />
+                    <button className='button button--transparent stage__save-all' onClick={this.saveAll} title='Save All' />
+                    <span className='divider' />
+                    <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled} title='Save' />
+                    <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled} title='Delete' />
                 </div>
 
                 {/* Workspace */}
                 <div className='stage__workspace'>
-                    {instructions && <Banner>{instructions}</Banner>}
                     {workspaceNode}
                 </div>
             </div>

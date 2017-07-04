@@ -26,11 +26,6 @@ Designer.__Definition = React.createClass({
                 <div className='panel'>
                     <h4>General</h4>
 
-                    <Checkbox label='Active'
-                        id='active' 
-                        value={selectedItem.Active}
-                        onChange={update('Active')} />
-
                     <div className='field-group'>
                         <Field label='Name' 
                             id='name' 

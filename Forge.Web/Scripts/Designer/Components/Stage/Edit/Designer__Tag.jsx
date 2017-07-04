@@ -59,7 +59,7 @@ Designer.__Tag = React.createClass({
         const category = item.TagId ? 'Rules' : 'Definitions';
 
         return (
-            <li key={item.Name} className='list__item'>
+            <li key={item.Id} className='list__item'>
                 <Designer.Link model={item} dispatch={dispatch} category={category} hideCategory={true} />
             </li>
         );

@@ -24,7 +24,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     position: relative;
     display: table;
     width: 100%;
-    background: $color-primary-40;
     h3 { padding: 0 0 10px 20px; }
 }
 
@@ -40,8 +39,8 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     left: 0;
     width: 200px;
     padding: 10px;
-    border: 1px solid $color-primary-60;
-    background: $color-primary-10;
+    border: 1px solid $color-primary-30;
+    background: white;
     min-height: 400px;
     z-index: 10;
 
@@ -49,7 +48,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
     @include translateX(0);    
     @include transition(transform, 0.3s);
-    @include soft-shadow();
+    //@include soft-shadow();
 
     @media screen and (max-width: 720px){
         position: absolute;
@@ -80,6 +79,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 align-items: flex-end;
                 margin: -10px -10px 0 0;
                 border: none !important;
+
                 button{
                     width: 50px;
                     padding: 20px 10px;
@@ -143,42 +143,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         }
     }
 
-    
-
-    // __Toggle
-    // ---------------------------
-    .designer__undo:after{ @include button-icon("\f112"); }
-    .designer__redo:after{ @include button-icon("\f064"); }
-
-    .designer__toggle {
-        display: none;
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        bottom: -1px;
-        width: 20px !important;
-        height: calc(100% + 2px) !important;
-        border-radius: 0;
-        border: 1px solid $color-action-50;
-        background: $color-action-20;
-        padding: 0;
-        &:hover{
-            background: $color-action-30;
-        }
-
-        &:after{ 
-            position: absolute;
-            top: 10px;
-            right: 7px;
-            font-family: FontAwesome;
-            content: "\f142";
-            font-size: 28px;
-            vertical-align: top;
-            color: white;
-            text-shadow: 1px 1px $color-action-60;
-        }
-    }
-
     // __Add
     // ---------------------------
     .designer__add {
@@ -187,7 +151,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         color: white !important;
 
         &:before{ 
-            @include button-icon("\f067");
+            @include button-icon("\f218");
             margin-right: 10px;
 
         }  
@@ -229,8 +193,8 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             //opacity: 0.9;
 
             .setting__icon:after{
-                font-family: FontAwesome;
-                content: "\f058";
+                font-family: "Ionicons";
+                content: "\f375";
                 margin-right: 5px; 
             }
         }
@@ -336,6 +300,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     #add-tag{ 
         width: 70px;
         min-width: 0;
+        padding: 5px;
     }
 
     .definition__tag {

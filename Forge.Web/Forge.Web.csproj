@@ -207,6 +207,9 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\cubes.png" />
+    <Content Include="Content\Images\cubes_dark.png" />
+    <Content Include="Content\Images\hexellence.png" />
     <Content Include="Content\scripts.js" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\Account\Components\Account.jsx" />
@@ -289,6 +292,8 @@
     <Content Include="Scripts\Vendor\moment.js" />
     <Content Include="Scripts\Vendor\pubsub.js" />
     <Content Include="Styles\Fonts\fontawesome-webfont.svg" />
+    <Content Include="Styles\Fonts\Ionicons\ionicons.min.css" />
+    <Content Include="Styles\Fonts\Ionicons\ionicons.svg" />
     <Content Include="Styles\site.css">
       <DependentUpon>site.scss</DependentUpon>
     </Content>
@@ -344,6 +349,9 @@
     <Content Include="Styles\Components\_dialogs.scss" />
     <Content Include="Styles\Components\_tooltips.scss" />
     <Content Include="Styles\Components\_dictionary.scss" />
+    <Content Include="Styles\Fonts\Ionicons\ionicons.eot" />
+    <Content Include="Styles\Fonts\Ionicons\ionicons.ttf" />
+    <Content Include="Styles\Fonts\Ionicons\ionicons.woff" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

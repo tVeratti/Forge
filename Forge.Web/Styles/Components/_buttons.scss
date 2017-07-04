@@ -24,9 +24,9 @@ button,
     color: $color-primary-10;
     border: none;
     outline: none;
-    font-size: 14px;
-    line-height: 14px;
-    border-radius: 3px;
+    //font-size: 14px;
+    line-height: 12px;
+    //border-radius: 3px;
     font-family: inherit;
     min-height: 30px;
     min-width: 75px;
@@ -57,9 +57,9 @@ button,
 
     &.button--transparent {
         //border: 2px solid $color-primary-80;
-        color: $color-primary-80;
+        color: $color-primary-70;
         background: none;
-        &:hover{ color: $color-primary-90; } //border-color: $color-primary-90; }
+        &:hover{ color: $color-primary-80; } //border-color: $color-primary-90; }
     }
 
     &.button--link {

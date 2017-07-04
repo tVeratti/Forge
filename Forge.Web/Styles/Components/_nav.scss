@@ -24,8 +24,8 @@ $nav-arrow-size: 10px;
     z-index: 1000;
     font-size: $font-size-medium;
     background-color: $color-secondary-50;
-    border-bottom: 2px solid $color-secondary-50;
-    @include linear-gradient-vertical-2($color-secondary-60, 0, mix($color-secondary-50, $color-secondary-60, 50%), 100%);
+    border-bottom: 1px solid $color-secondary-40;
+    //@include linear-gradient-vertical-2($color-secondary-60, 0,$color-secondary-50, 100%);
     @include soft-shadow();
 
     &.sticky{
@@ -60,10 +60,11 @@ $nav-arrow-size: 10px;
 
         // Mobile-ONLY
         .toggle {
+            font-family: "Ionicons";
             display: inline-block;
             color: $nav-font-color;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 38px;
             padding: 0 15px;
             vertical-align: middle;
             line-height: $size-nav-height;
@@ -74,12 +75,16 @@ $nav-arrow-size: 10px;
                 color: $nav-hover-font-color;
             }
             // Toggle Site Menu
-            &.fa-navicon {
+            &.nav__menu {
                 float: left;
+                &:after{
+                    content: "\f394";
+                }
             }
             // Toggle Account Menu
-            &.fa-user {
+            &.nav__user {
                 float: right;
+                &:after{ content: "\f3a0"; }
             }
         }
 

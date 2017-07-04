@@ -10,7 +10,7 @@ $temp-gray-20: mix(black, white, 20%); //   V
 $temp-gray-10: mix(black, white, 10%); // LIGHTER
 
 // Primary -------------------------------------------
-$color-primary: #DDD;
+$color-primary: #ddd;
 $color-primary-90: mix($color-primary, black, 30%);
 $color-primary-80: mix($color-primary, black, 50%);
 $color-primary-70: mix($color-primary, black, 80%);
@@ -19,7 +19,7 @@ $color-primary-50: $color-primary;
 $color-primary-40: mix($color-primary, white, 90%);
 $color-primary-30: mix($color-primary, white, 80%);
 $color-primary-20: mix($color-primary, white, 50%);
-$color-primary-10: mix($color-primary, white, 30%);
+$color-primary-10: mix($color-primary, white, 20%);
 
 // Secondary -------------------------------------------
 $color-secondary: #1088b6;//#31ae39; ////#bd4635;
@@ -57,11 +57,13 @@ $color-action-30: mix($color-action, white, 80%);
 $color-action-20: mix($color-action, white, 50%);
 $color-action-10: mix($color-action, white, 30%);
 
+$color-red: #cc4949;
+
 
 // Font Colors --------------------------------------
 $font-color-body: $color-primary-20;
 $font-color-header: $color-primary-80;
 $font-color-placeholder: $color-primary-20;
 
-$color-background-menu: $color-primary-10;
-$color-background-menu-2: $color-primary-20;
+$color-background-menu: white;
+$color-background-menu-2: white;

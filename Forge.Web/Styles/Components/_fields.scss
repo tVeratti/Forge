@@ -12,7 +12,7 @@
     .field__label{
         display: block;
         margin: 3px 0;
-        font-weight: bold;
+        //font-weight: bold;
         vertical-align: middle;
         word-break: break-word;
         font-size: 14px;
@@ -64,14 +64,18 @@ input {
         display: table;
         width: 100%;
 
-        .field__label { 
-            min-width: 100px;
-        }
+        
 
         .field__label,
-        .field__value{
+        .field__value,
+        .field__after {
             display: table-cell;
             margin: 0;
+            padding: 5px;
+        }
+
+        .field__label { 
+            min-width: 100px;
             padding: 5px 0;
         }
     }

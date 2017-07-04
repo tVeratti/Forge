@@ -1,4 +1,5 @@
 ﻿@import 'Fonts/font-awesome.min.css';
+@import 'Fonts/Ionicons/ionicons.min.css';
 
 @import 'reset';
 @import 'units';
@@ -15,16 +16,21 @@ html {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    font-family: 'Work Sans', sans-serif;
+    font-family: 'Droid Sans', sans-serif;
+    font-kerning:normal;
+    font-size: 12px;
     color: $color-primary-80;
     overflow-x: hidden;
 
     body {
         position: relative;
         padding-top: $size-nav-height;
-        background-color: $color-primary-40;
+        background-color: $color-primary-20;
         overflow-x: hidden;
+        background-color: #eee;
+        background-image: url(../Content/Images/cubes_dark.png);
     }
+
 }
 
 // Sticky Footer

@@ -60,11 +60,12 @@
 // Common Styles
 // -----------------------------------------
 @mixin button-icon($content){
-    font-family: FontAwesome;
+    font-family: "Ionicons";
     content: $content;
-    font-size: 22px;
+    font-size: 28px;
+    vertical-align: middle;
     //color: white;
-    text-shadow: 2px 2px rgba(black, 0.2);
+    //text-shadow: 2px 2px rgba(black, 0.2);
 }
 
 @mixin arrow-up($size, $color){
@@ -84,9 +85,9 @@
 }
 
 @mixin soft-shadow() {
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
-    -moz-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.05);
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 @mixin bg-dots($bg: $color-primary-60){

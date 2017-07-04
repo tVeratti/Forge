@@ -129,15 +129,6 @@ function coreReducer(state = initialCoreState, action){
                 case CATEGORIES.TAGS:
                 case CATEGORIES.RULES:
                     calculateAll = true;
-                    nextState.Rules = nextState.Rules.map(r => {
-                        const tag = nextState.Tags.filter(t => t.Id == r.TagId)[0] || {};
-                        const setting = nextState.Settings.filter(s => s.Id == r.SettingId)[0] || {};
-                        return {
-                            ...r,
-                            Name: `${tag.Name || '-'} ${setting.Name || '-'}`,
-                            error: !tag.Name || !setting.Name
-                        }
-                    });
 
                 // NO BREAK
                 case CATEGORIES.DEFINITIONS:

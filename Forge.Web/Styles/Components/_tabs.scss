@@ -19,19 +19,19 @@ $border-color: $color-background-menu;
     display: inline-block;
     margin-right: 1px;
     background: none;
-    color: $color-primary-50;
+    color: rgba(white, 0.7);
     border: none;
     outline: none;
     user-select: none;
-    //text-shadow: 1px 1px rgba(black, 0.2);
+    text-shadow: 1px 1px rgba(black, 0.3);
+    font-size: 16px;
 
     label {
-        font-weight: bold;
         position: relative;
         display: inline-block;
         padding: 10px;
         cursor: pointer;
-        border-radius: 3px 3px 0 0;
+        border-radius: 6px 6px 0 0;
     }
 
     input {
@@ -42,6 +42,7 @@ $border-color: $color-background-menu;
         &:checked + label {
             color: $color-primary-80;
             background: $border-color;
+            text-shadow: none;
         }
     }
 

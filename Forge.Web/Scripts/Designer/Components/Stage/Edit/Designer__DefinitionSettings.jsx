@@ -29,9 +29,10 @@ Designer.__DefinitionSettings = React.createClass({
         // settings are added by whic tags.
         let className = 'definition__setting';
         let removeNode;
-        if (activeTagId === setting.TagId) className += ' definition__setting--active';
+        if (activeTagId && activeTagId === setting.TagId) className += ' definition__setting--active';
         if (setting.TagId) className += ' definition__rule';
         else removeNode = <span className='definition__setting-remove' onClick={removeHandler} />;
+
 
         const controlNode = setting.TagId
             ? setting.Value
@@ -42,18 +43,19 @@ Designer.__DefinitionSettings = React.createClass({
             <div className='field'>
                 <label className='field__label'>{setting.Name}</label>
                 <span className='field__value'>{controlNode}</span>
-                {removeNode}
+                {removeNode || <span className='definition__rule-tag' title={'Tagged Rule'} />}
             </div>
         );
 
         if (setting.rules && setting.rules.length){
+            if (setting.rules.length > 1) className += ' definition__rule--many';
             // Map relevant rules underneath this setting so that
             // they can be displayed as children of this setting.
             const ruleNodes = setting.rules.map(r => {
-                let className = 'definition__nested-rule';
-                if (activeTagId === r.TagId) className += ' definition__nested-rule--active';
+                let ruleClassName = 'definition__nested-rule';
+                if (activeTagId && activeTagId === r.TagId) ruleClassName += ' definition__nested-rule--active';
                 return (
-                    <li key={r.Name} className={className}>
+                    <li key={r.Name} className={ruleClassName}>
                         <Field label={r.Name}>{r.Value}</Field>
                     </li>
                 );
