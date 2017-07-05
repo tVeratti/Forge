@@ -90,8 +90,7 @@ function coreReducer(state = initialCoreState, action){
                         Settings: [],
                         Tags: [],
                         Rules: [],
-                        MergedSettings: [],
-                        unsaved: true
+                        MergedSettings: []
                     };
                 break;
             }

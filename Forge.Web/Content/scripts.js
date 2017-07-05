@@ -412,8 +412,7 @@ function coreReducer() {
                         Settings: [],
                         Tags: [],
                         Rules: [],
-                        MergedSettings: [],
-                        unsaved: true
+                        MergedSettings: []
                     });
                     break;
             }
