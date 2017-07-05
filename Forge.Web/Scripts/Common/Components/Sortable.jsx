@@ -34,6 +34,7 @@ const Sortable = React.createClass({
         const { renderHandler } = this.props;
         const { initialIndex } = this.state;
 
+        let handleNode;
         let className = 'sortable__item';
         let itemProps = {
             key: `item-${content.Id || content.Name}`,
@@ -47,19 +48,21 @@ const Sortable = React.createClass({
         if (!content.DisableDrag){
             if (initialIndex === index) className += ' sortable__item--dragging';
 
-            // HTML 5 Drag & Drop Events
-            itemProps = {
-                ...itemProps,
-                draggable: true,
-                onDragStart: this.beginDrag.bind(this, index),
-                onDragEnd: this.endDrag
-            };    
+            handleNode= (
+                <span className='sortable__handle'
+                    draggable={true}
+                    onDragStart={this.beginDrag.bind(this, index)}
+                    onDragEnd={this.endDrag} />
+            );
 
         } else className += ' sortable__item--disabled';
 
         return [
             slotNode,
-            <li {...itemProps} className={className}>{content}</li>
+            <li {...itemProps} className={className}>
+                {handleNode}
+                <span className='sortable__content'>{content}</span>
+            </li>
         ];
     },
 

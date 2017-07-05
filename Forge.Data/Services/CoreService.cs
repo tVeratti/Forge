@@ -75,20 +75,19 @@ namespace Forge.Data.Services
             return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
         }
 
-        public void UpdateGroup(GroupModel Model, long UserId)
+        public IEnumerable<GroupModel> UpdateGroups(IEnumerable<GroupModel> Models, long GameId, long UserId)
         {
-            var spr_name = "[Verspyre].[Update_Group]";
+            var spr_name = "[Verspyre].[Update_Groups]";
+            var groups = Models.Select(g => (TableGroupModel)g);
 
             var spr_prms = new
             {
-                Model.Id,
-                Model.Name,
-                Model.ParentId,
-                Model.TypeId,
-                UserId
+                GameId,
+                UserId,
+                Groups = groups.ToDataTable()
             };
 
-            _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
+            return _cnx.Query<GroupModel>(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
         }
 
     }

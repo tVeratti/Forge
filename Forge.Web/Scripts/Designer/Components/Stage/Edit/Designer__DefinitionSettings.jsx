@@ -28,10 +28,15 @@ Designer.__DefinitionSettings = React.createClass({
         // to display with some emphasis and allow the user to see which
         // settings are added by whic tags.
         let className = 'definition__setting';
-        let removeNode;
+        let afterNode;
         if (activeTagId && activeTagId === setting.TagId) className += ' definition__setting--active';
         if (setting.TagId) className += ' definition__rule';
-        else removeNode = <span className='definition__setting-remove' onClick={removeHandler} />;
+        else afterNode = <span className='definition__setting-remove' onClick={removeHandler} />;
+
+        if (!afterNode) {
+            const tagActivate = () => this.props.dispatch(designerActions.activateTag(setting.TagId));
+            afterNode = <span className='definition__rule-tag' title={'Tagged Rule'} onClick={tagActivate} />
+        }
 
 
         const controlNode = setting.TagId
@@ -43,7 +48,7 @@ Designer.__DefinitionSettings = React.createClass({
             <div className='field'>
                 <label className='field__label'>{setting.Name}</label>
                 <span className='field__value'>{controlNode}</span>
-                {removeNode || <span className='definition__rule-tag' title={'Tagged Rule'} />}
+                {afterNode}
             </div>
         );
 
@@ -56,7 +61,7 @@ Designer.__DefinitionSettings = React.createClass({
                 if (activeTagId && activeTagId === r.TagId) ruleClassName += ' definition__nested-rule--active';
                 return (
                     <li key={r.Name} className={ruleClassName}>
-                        <Field label={r.Name}>{r.Value}</Field>
+                        <Field label={r.Name}><span>{r.Value}</span></Field>
                     </li>
                 );
             });

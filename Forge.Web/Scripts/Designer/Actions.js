@@ -22,7 +22,10 @@ const designerActions = {
         FETCH_DESIGNER:     '/Designer/GetDesigner',
         SAVE_RULE:          '/Core/SaveRule',
         SAVE_TAG:           '/Core/SaveTag',
-        SAVE_DEFINITION:    '/Core/SaveDefinition'
+        SAVE_DEFINITION:    '/Core/SaveDefinition',
+        DELETE_TAG:         '/Core/DeleteTag',
+        DELETE_RULE:        '/Core/DeleteRule',
+        DELETE_DEFINITION:  '/Core/DeleteDefinition'
     },
 
     // --------------------------------
@@ -95,6 +98,7 @@ const designerActions = {
     // --------------------------------
     delete: function(){
         return (dispatch, getState) => {
+
             // Get the current state data.
             const { core, designer } = getState();
             const { tab, index } = designer;
@@ -102,6 +106,15 @@ const designerActions = {
             const model = { ...core[tab][index] };
 
             dispatch({ type: DELETE_ITEM, model, tab });
+
+            let api;
+            switch(designer.tab){
+                case CATEGORIES.TAGS: api = this.api.DELETE_TAG; break;
+                case CATEGORIES.RULES: api = this.api.DELETE_RULE; break;
+                case CATEGORIES.DEFINITIONS: api = this.api.DELETE_DEFINITION; break;
+            }
+
+            $.post(api, { Id: model.Id });
         }
     },
 
@@ -122,12 +135,9 @@ const designerActions = {
             
             let api;
             switch(designer.tab){
-                case 'Tags': api = this.api.SAVE_TAG; break;
-                case 'Rules': api = this.api.SAVE_RULE; break;
-                case 'Definitions':  
-                    api = this.api.SAVE_DEFINITION;
-                    model.Settings = model.Settings.filter(s => !s.TagId);
-                    break;
+                case CATEGORIES.TAGS: api = this.api.SAVE_TAG; break;
+                case CATEGORIES.RULES: api = this.api.SAVE_RULE; break;
+                case CATEGORIES.DEFINITIONS: api = this.api.SAVE_DEFINITION; break;
             }
             
             // Send model data to database.

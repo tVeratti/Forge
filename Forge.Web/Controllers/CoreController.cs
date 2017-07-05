@@ -75,20 +75,10 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
-        public long SaveGroup(GroupModel Model)
+        public JsonResult SaveGroups(IEnumerable<GroupModel> Groups, long GameId)
         {
-            if (Model.Id == 0)
-            {
-                // INSERT
-                return _context.Core.CreateGroup(Model, User.Id);
-            }
-            else
-            {
-                // UPDATE
-                _context.Core.UpdateGroup(Model, User.Id);
-            }
-
-            return Model.Id;
+            var groups = _context.Core.UpdateGroups(Groups, GameId, User.Id);
+            return Json(groups, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

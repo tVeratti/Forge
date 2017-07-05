@@ -1,6 +1,7 @@
 ﻿const initialCoreState = {
     loading: true,
     saving: false,
+    unsaved: {},
     conflict: false,
 
     Game:           {},
@@ -59,6 +60,7 @@ function coreReducer(state = initialCoreState, action){
                 saving: false
             };
 
+            nextState.Groups = sortBy(nextState.Groups, 'Order');
             nextState.Rules.forEach((r, i) => r.index = i);
             nextState.Tags.forEach((t, i) => t.index = i);
 
@@ -124,6 +126,11 @@ function coreReducer(state = initialCoreState, action){
 
             nextState[action.category] = items;
 
+            // Update the count of total unsaved items.
+            const unsavedKey = `${action.category}-${action.model.Id}`;
+            if (!action.saved) nextState.unsaved[unsavedKey] = true;
+            else delete nextState.unsaved[unsavedKey];
+
             let calculateAll = false;
             switch(action.category){
                 case CATEGORIES.TAGS:
@@ -145,6 +152,11 @@ function coreReducer(state = initialCoreState, action){
             }
             
             setGameToLocalStorage(nextState);
+            break;
+
+        // -------------------------------- 
+        case UPDATE_GROUPS:
+            nextState.Groups = sortBy(action.result, 'Order');
             break;
 
         // --------------------------------

@@ -80,6 +80,7 @@ var DELETE_ITEM = 'DELETE_ITEM';
 var ADD_SETTING = 'ADD_SETTING';
 var UPDATE_GAME = 'UPDATE_GAME';
 var UPDATE_ID = 'UPDATE_ID';
+var UPDATE_GROUPS = 'UPDATE_GROUPS';
 
 var BEGIN_SAVE_CORE = 'BEGIN_SAVE_CORE';
 var END_SAVE_CORE = 'END_SAVE_CORE';
@@ -101,7 +102,7 @@ var coreActions = {
         SAVE_RULE: '/Core/SaveRule',
         SAVE_TAG: '/Core/SaveTag',
         SAVE_DEFINITION: '/Core/SaveDefinition',
-        SAVE_GROUP: '/Core/SaveGroup'
+        SAVE_GROUPS: '/Core/SaveGroups'
     },
 
     // Action Creators
@@ -142,6 +143,8 @@ var coreActions = {
     createItem: function createItem(tab) {
         var _this2 = this;
 
+        var model = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
         return function (dispatch, getState) {
 
             // Get the current state data.
@@ -153,6 +156,7 @@ var coreActions = {
             var category = tab || designer.tab;
 
             var tempId = 'tempId-' + Math.random();
+            model.GameId = gameId;
 
             var api = void 0;
             switch (category) {
@@ -173,12 +177,28 @@ var coreActions = {
             });
 
             // Send model data to database.
-            $.post(api, { model: {}, gameId: gameId })
+            $.post(api, { model: model, gameId: gameId })
             //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
             .success(function (response) {
                 return JSON.parse(response);
             }).then(function (id) {
                 return dispatch(coreActions.updateItemId(tempId, id, category));
+            });
+        };
+    },
+
+    updateGroups: function updateGroups(groups) {
+        var _this3 = this;
+
+        return function (dispatch, getState) {
+            var _getState2 = getState(),
+                core = _getState2.core,
+                designer = _getState2.designer;
+
+            var gameId = core.Game.Id;
+
+            $.post(_this3.api.SAVE_GROUPS, { groups: groups, gameId: gameId }).success(function (result) {
+                return dispatch({ type: UPDATE_GROUPS, result: result });
             });
         };
     },
@@ -211,9 +231,9 @@ var coreActions = {
         saved = fromCore ? !model.unsaved : saved;
 
         return function (dispatch, getState) {
-            var _getState2 = getState(),
-                designer = _getState2.designer,
-                core = _getState2.core;
+            var _getState3 = getState(),
+                designer = _getState3.designer,
+                core = _getState3.core;
 
             var index = designer.index === -1 ? model.index : designer.index;
 
@@ -228,19 +248,19 @@ var coreActions = {
 
     // --------------------------------
     save: function save() {
-        var _this3 = this;
+        var _this4 = this;
 
         return function (dispatch, getState) {
 
             dispatch({ type: BEGIN_SAVE_CORE });
 
-            var _getState3 = getState(),
-                core = _getState3.core;
+            var _getState4 = getState(),
+                core = _getState4.core;
 
             // Fetch games from database with state filters.
 
 
-            $.post(_this3.api.SAVE_CORE, core)
+            $.post(_this4.api.SAVE_CORE, core)
             //.fail(response => dispatch(this.getLocalGame(id)))
             .done(function (r) {
                 return dispatch({ type: END_SAVE_CORE });
@@ -295,6 +315,7 @@ function LifeCycle() {
 var initialCoreState = {
     loading: true,
     saving: false,
+    unsaved: {},
     conflict: false,
 
     Game: {},
@@ -356,6 +377,7 @@ function coreReducer() {
                 saving: false
             });
 
+            nextState.Groups = sortBy(nextState.Groups, 'Order');
             nextState.Rules.forEach(function (r, i) {
                 return r.index = i;
             });
@@ -426,6 +448,10 @@ function coreReducer() {
 
             nextState[action.category] = items;
 
+            // Update the count of total unsaved items.
+            var unsavedKey = action.category + '-' + action.model.Id;
+            if (!action.saved) nextState.unsaved[unsavedKey] = true;else delete nextState.unsaved[unsavedKey];
+
             var calculateAll = false;
             switch (action.category) {
                 case CATEGORIES.TAGS:
@@ -448,6 +474,11 @@ function coreReducer() {
             }
 
             setGameToLocalStorage(nextState);
+            break;
+
+        // -------------------------------- 
+        case UPDATE_GROUPS:
+            nextState.Groups = sortBy(action.result, 'Order');
             break;
 
         // --------------------------------
@@ -785,20 +816,20 @@ var libraryActions = {
 
     // --------------------------------
     fetchGames: function fetchGames() {
-        var _this4 = this;
+        var _this5 = this;
 
         var thunk = function thunk(dispatch, getState) {
             // Show loading indication.
-            dispatch(_this4.requestGames());
+            dispatch(_this5.requestGames());
 
             // Get the current filters from store state.
             var filters = getState().library.filters;
 
             // Fetch games from database with state filters.
-            $.post(_this4.api.FETCH_GAMES, filters).then(function (response) {
+            $.post(_this5.api.FETCH_GAMES, filters).then(function (response) {
                 return JSON.parse(response);
             }).then(function (result) {
-                return dispatch(_this4.receiveGames(result));
+                return dispatch(_this5.receiveGames(result));
             });
         };
 
@@ -807,28 +838,15 @@ var libraryActions = {
 
     // --------------------------------
     createGame: function createGame(name) {
-        var _this5 = this;
-
-        return function (dispatch) {
-            // Show loading indication.
-            dispatch(_this5.requestGames());
-
-            // Create game and retrieve a new list of games
-            // (including the newly created one)
-            $.post(_this5.api.CREATE_GAME, { name: name }).then(function (response) {
-                return JSON.parse(response);
-            }).then(function (result) {
-                return dispatch(_this5.receiveGames(result));
-            });
-        };
-    },
-
-    // --------------------------------
-    deleteGame: function deleteGame(id) {
         var _this6 = this;
 
         return function (dispatch) {
-            $.post(api.DELETE_GAME, id).then(function (response) {
+            // Show loading indication.
+            dispatch(_this6.requestGames());
+
+            // Create game and retrieve a new list of games
+            // (including the newly created one)
+            $.post(_this6.api.CREATE_GAME, { name: name }).then(function (response) {
                 return JSON.parse(response);
             }).then(function (result) {
                 return dispatch(_this6.receiveGames(result));
@@ -837,15 +855,28 @@ var libraryActions = {
     },
 
     // --------------------------------
-    filterGames: function filterGames(key, value) {
+    deleteGame: function deleteGame(id) {
         var _this7 = this;
+
+        return function (dispatch) {
+            $.post(api.DELETE_GAME, id).then(function (response) {
+                return JSON.parse(response);
+            }).then(function (result) {
+                return dispatch(_this7.receiveGames(result));
+            });
+        };
+    },
+
+    // --------------------------------
+    filterGames: function filterGames(key, value) {
+        var _this8 = this;
 
         return function (dispatch) {
             // Update store filters.
             dispatch({ type: FILTER_GAMES, key: key, value: value });
 
             // Fetch games with new filters.
-            dispatch(_this7.fetchGames());
+            dispatch(_this8.fetchGames());
         };
     }
 };
@@ -945,7 +976,10 @@ var designerActions = {
         FETCH_DESIGNER: '/Designer/GetDesigner',
         SAVE_RULE: '/Core/SaveRule',
         SAVE_TAG: '/Core/SaveTag',
-        SAVE_DEFINITION: '/Core/SaveDefinition'
+        SAVE_DEFINITION: '/Core/SaveDefinition',
+        DELETE_TAG: '/Core/DeleteTag',
+        DELETE_RULE: '/Core/DeleteRule',
+        DELETE_DEFINITION: '/Core/DeleteDefinition'
     },
 
     // --------------------------------
@@ -969,17 +1003,17 @@ var designerActions = {
 
     // --------------------------------
     fetchDesigner: function fetchDesigner(id) {
-        var _this8 = this;
+        var _this9 = this;
 
         return function (dispatch) {
             // Show loading indication.
-            dispatch(_this8.requestDesigner());
+            dispatch(_this9.requestDesigner());
 
             // Fetch games from database with state filters.
-            $.get(_this8.api.FETCH_DESIGNER, { id: id }).then(function (response) {
+            $.get(_this9.api.FETCH_DESIGNER, { id: id }).then(function (response) {
                 return JSON.parse(response);
             }).then(function (result) {
-                return dispatch(_this8.receiveDesigner(result));
+                return dispatch(_this9.receiveDesigner(result));
             });
         };
     },
@@ -1021,11 +1055,14 @@ var designerActions = {
 
     // --------------------------------
     delete: function _delete() {
+        var _this10 = this;
+
         return function (dispatch, getState) {
+
             // Get the current state data.
-            var _getState4 = getState(),
-                core = _getState4.core,
-                designer = _getState4.designer;
+            var _getState5 = getState(),
+                core = _getState5.core,
+                designer = _getState5.designer;
 
             var tab = designer.tab,
                 index = designer.index;
@@ -1034,12 +1071,24 @@ var designerActions = {
             var model = _extends({}, core[tab][index]);
 
             dispatch({ type: DELETE_ITEM, model: model, tab: tab });
+
+            var api = void 0;
+            switch (designer.tab) {
+                case CATEGORIES.TAGS:
+                    api = _this10.api.DELETE_TAG;break;
+                case CATEGORIES.RULES:
+                    api = _this10.api.DELETE_RULE;break;
+                case CATEGORIES.DEFINITIONS:
+                    api = _this10.api.DELETE_DEFINITION;break;
+            }
+
+            $.post(api, { Id: model.Id });
         };
     },
 
     // --------------------------------
     saveModel: function saveModel() {
-        var _this9 = this;
+        var _this11 = this;
 
         var thunk = function thunk(dispatch, getState) {
 
@@ -1047,9 +1096,9 @@ var designerActions = {
 
             // Get the current state data.
 
-            var _getState5 = getState(),
-                core = _getState5.core,
-                designer = _getState5.designer;
+            var _getState6 = getState(),
+                core = _getState6.core,
+                designer = _getState6.designer;
 
             var tab = designer.tab,
                 index = designer.index;
@@ -1061,16 +1110,12 @@ var designerActions = {
 
             var api = void 0;
             switch (designer.tab) {
-                case 'Tags':
-                    api = _this9.api.SAVE_TAG;break;
-                case 'Rules':
-                    api = _this9.api.SAVE_RULE;break;
-                case 'Definitions':
-                    api = _this9.api.SAVE_DEFINITION;
-                    model.Settings = model.Settings.filter(function (s) {
-                        return !s.TagId;
-                    });
-                    break;
+                case CATEGORIES.TAGS:
+                    api = _this11.api.SAVE_TAG;break;
+                case CATEGORIES.RULES:
+                    api = _this11.api.SAVE_RULE;break;
+                case CATEGORIES.DEFINITIONS:
+                    api = _this11.api.SAVE_DEFINITION;break;
             }
 
             // Send model data to database.
@@ -1496,7 +1541,7 @@ var Expandable = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this10 = this;
+        var _this12 = this;
 
         var _props2 = this.props,
             children = _props2.children,
@@ -1505,7 +1550,7 @@ var Expandable = React.createClass({
 
 
         var toggleOpen = function toggleOpen() {
-            return _this10.setState({ open: !open });
+            return _this12.setState({ open: !open });
         };
         var title = open ? 'Collapse' : 'Expand';
 
@@ -1902,6 +1947,7 @@ var Sortable = React.createClass({
         var initialIndex = this.state.initialIndex;
 
 
+        var handleNode = void 0;
         var className = 'sortable__item';
         var itemProps = {
             key: 'item-' + (content.Id || content.Name),
@@ -1913,18 +1959,21 @@ var Sortable = React.createClass({
         if (!content.DisableDrag) {
             if (initialIndex === index) className += ' sortable__item--dragging';
 
-            // HTML 5 Drag & Drop Events
-            itemProps = _extends({}, itemProps, {
+            handleNode = React.createElement('span', { className: 'sortable__handle',
                 draggable: true,
                 onDragStart: this.beginDrag.bind(this, index),
-                onDragEnd: this.endDrag
-            });
+                onDragEnd: this.endDrag });
         } else className += ' sortable__item--disabled';
 
         return [slotNode, React.createElement(
             'li',
             _extends({}, itemProps, { className: className }),
-            content
+            handleNode,
+            React.createElement(
+                'span',
+                { className: 'sortable__content' },
+                content
+            )
         )];
     },
 
@@ -2170,7 +2219,6 @@ Forge.__Definition = React.createClass({
         //     .forEach(s => value = settings.apply(value, s));
 
         if (typeof value == 'number' && isNaN(value)) value = 0;
-        console.log(value);
 
         if (value != props.model.Value) {
             dispatch(coreActions.updateDefinition(_extends({}, model, { Value: value }), true));
@@ -2350,7 +2398,7 @@ Designer.__Tabs = React.createClass({
 
     // -----------------------------
     renderTab: function renderTab(label, index) {
-        var _this11 = this;
+        var _this13 = this;
 
         // Active Tab Check
         var checked = label === this.props.tab || undefined;
@@ -2358,7 +2406,7 @@ Designer.__Tabs = React.createClass({
         // Click Handler
         // Dispatch action to store and update filter for tab.
         var onClick = function onClick() {
-            return _this11.props.dispatch(designerActions.changeTab(label));
+            return _this13.props.dispatch(designerActions.changeTab(label));
         };
 
         return React.createElement(Tab, { key: label, id: label, label: label, onChange: onClick, name: 'designer-tabs', checked: checked });
@@ -2465,7 +2513,7 @@ Library.__Filters = React.createClass({
 
     // --------------------------------
     renderPermissionTabs: function renderPermissionTabs() {
-        var _this12 = this;
+        var _this14 = this;
 
         // Get action types from libraryActions.
         var _libraryActions$filte = libraryActions.filters,
@@ -2480,8 +2528,8 @@ Library.__Filters = React.createClass({
 
         // Render permission options into Tab nodes.
         var tabNodes = permissionTypes.map(function (permission) {
-            var tabHandler = _this12.changeFilter.bind(_this12, PERMISSION, permission.id);
-            var checked = permission.id === _this12.props.library.filters[PERMISSION];
+            var tabHandler = _this14.changeFilter.bind(_this14, PERMISSION, permission.id);
+            var checked = permission.id === _this14.props.library.filters[PERMISSION];
             return React.createElement(Tab, _extends({ key: permission.id, name: 'access-tab', onChange: tabHandler, checked: checked }, permission));
         });
 
@@ -2649,7 +2697,7 @@ Forge.components.controls.Dictionary = React.createClass({
     displayName: 'Dictionary',
 
     render: function render() {
-        var _this13 = this;
+        var _this15 = this;
 
         var Keys = this.props.Model.Keys;
 
@@ -2662,7 +2710,7 @@ Forge.components.controls.Dictionary = React.createClass({
         var dialogNode = this.state.dialog ? this.renderEditDialog() : undefined;
 
         var editHandler = function editHandler() {
-            return _this13.setState({ dialog: true });
+            return _this15.setState({ dialog: true });
         };
 
         return React.createElement(
@@ -2688,7 +2736,7 @@ Forge.components.controls.Dictionary = React.createClass({
 
     // -----------------------------
     renderEditDialog: function renderEditDialog() {
-        var _this14 = this;
+        var _this16 = this;
 
         var _props9 = this.props,
             Model = _props9.Model,
@@ -2698,7 +2746,7 @@ Forge.components.controls.Dictionary = React.createClass({
         var dialogProps = {
             header: 'Edit: ' + Model.Name,
             onClose: function onClose() {
-                return _this14.setState({ dialog: false });
+                return _this16.setState({ dialog: false });
             }
         };
 
@@ -2731,14 +2779,14 @@ Forge.components.controls.Dictionary = React.createClass({
 
     // -----------------------------
     renderList: function renderList(flat) {
-        var _this15 = this;
+        var _this17 = this;
 
         var Model = this.props.Model;
 
 
         var list = Model.Keys || [];
         var listNodes = list.map(function (x, i) {
-            return _this15.renderPair(x, i, flat);
+            return _this17.renderPair(x, i, flat);
         });
         return listNodes.length ? React.createElement(
             'ul',
@@ -2951,37 +2999,104 @@ Designer.__Groups = React.createClass({
     // -----------------------------
     render: function render() {
         var groupNodes = this.renderGroups();
+        var buttons = [React.createElement(
+            'button',
+            { onClick: this.submitGroups },
+            'Save'
+        ), React.createElement(
+            'button',
+            { onClick: this.close },
+            'Cancel'
+        )];
 
         return React.createElement(
             Dialog,
-            { header: 'Edit Groups' },
+            { header: 'Edit Groups', buttons: buttons },
             React.createElement(
-                'form',
-                { className: 'designer__add-group', ref: 'form' },
-                React.createElement('input', { type: 'text', ref: 'key', placeholder: 'Key' }),
-                React.createElement('input', { type: 'text', ref: 'value', placeholder: 'Value' }),
+                'div',
+                { className: 'designer__add-group' },
+                React.createElement('input', { type: 'text', ref: 'name', placeholder: 'Name' }),
                 React.createElement(
                     'button',
-                    { type: 'submit', className: 'button button--tertiary', onClick: this.add },
+                    { className: 'button button--tertiary', onClick: this.addGroup },
                     'Add'
                 )
             ),
-            React.createElement(Sortable, { list: groupNodes })
+            React.createElement(Sortable, { list: groupNodes, onChange: this.updateOrder })
         );
     },
 
     // -----------------------------
-    renderGroups: function renderGroups() {
-        var _this16 = this;
+    getInitialState: function getInitialState() {
+        return { groups: this.props.Groups || [] };
+    },
 
-        return this.props.Groups.map(function (g) {
+    // -----------------------------
+    renderGroups: function renderGroups() {
+        var _this18 = this;
+
+        return this.state.groups.map(function (g, i) {
+
+            var updateHandler = _this18.updateGroup.bind(_this18, i);
+            var removeHandler = _this18.removeGroup.bind(_this18, i);
+
             return React.createElement(
                 'div',
-                { key: g.Id, className: 'designer__group' },
-                React.createElement('input', { value: g.Name }),
-                React.createElement('span', { className: 'fa fa-remove', onClick: _this16.remove })
+                { className: 'designer__group' },
+                React.createElement('input', { value: g.Name, onChange: updateHandler }),
+                React.createElement('span', { className: 'fa fa-remove', onClick: removeHandler })
             );
         });
+    },
+
+    // -----------------------------
+    updateOrder: function updateOrder(initialIndex, newIndex, handler) {
+        // Use the handler given by the sortable to update the base array.
+        var groups = handler(this.state.groups, initialIndex, newIndex);
+        groups.forEach(function (g, i) {
+            return g.Order = i;
+        });
+        this.setState({ groups: groups });
+    },
+
+    // -----------------------------
+    submitGroups: function submitGroups() {
+        var dispatch = this.props.dispatch;
+
+        dispatch(coreActions.updateGroups(this.state.groups));
+        this.close();
+    },
+
+    // -----------------------------
+    addGroup: function addGroup() {
+        var name = this.refs.name;
+
+
+        var model = { Name: name.value };
+
+        this.setState({
+            groups: [].concat(_toConsumableArray(this.state.groups), [model])
+        });
+    },
+
+    // -----------------------------
+    updateGroup: function updateGroup(index, ev) {
+        var groups = [].concat(_toConsumableArray(this.state.groups));
+        groups[index].Name = ev.target.value;
+        this.setState({ groups: groups });
+    },
+
+    removeGroup: function removeGroup(index) {
+        var groups = [].concat(_toConsumableArray(this.state.groups));
+        groups.slice(index, 1);
+
+        this.setState({ groups: groups });
+    },
+
+    close: function close() {
+        var dispatch = this.props.dispatch;
+
+        dispatch(commonActions.closeDialog());
     }
 });
 
@@ -3059,7 +3174,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderList: function renderList() {
-        var _this17 = this;
+        var _this19 = this;
 
         var _props$designer = this.props.designer,
             tab = _props$designer.tab,
@@ -3090,8 +3205,8 @@ Designer.__List = React.createClass({
 
             // Click Handler.
             var onClick = function onClick() {
-                _this17.setState({ open: false });
-                _this17.props.dispatch(designerActions.selectListItem(i));
+                _this19.setState({ open: false });
+                _this19.props.dispatch(designerActions.selectListItem(i));
             };
 
             return React.createElement(
@@ -3121,7 +3236,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderActions: function renderActions() {
-        var _this18 = this;
+        var _this20 = this;
 
         var tab = this.props.designer.tab;
         var _state2 = this.state,
@@ -3132,14 +3247,14 @@ Designer.__List = React.createClass({
 
         var toggleText = open ? 'Hide' : 'Show';
         var toggle = function toggle() {
-            return _this18.setState({ open: !open });
+            return _this20.setState({ open: !open });
         };
 
         var buttons = ['List', 'Search'];
         if (tab === CATEGORIES.DEFINITIONS) buttons.push('Settings');
 
         var miniButtons = buttons.map(function (b) {
-            var onClick = _this18.changeList.bind(_this18, b);
+            var onClick = _this20.changeList.bind(_this20, b);
             var className = 'button icon icon--' + b.toLowerCase();
             if (b === listTab) {
                 className += ' button--active';
@@ -3324,7 +3439,7 @@ Designer.__Settings = React.createClass({
 
     // -----------------------------
     renderSettingsList: function renderSettingsList() {
-        var _this19 = this;
+        var _this21 = this;
 
         var _props12 = this.props,
             settings = _props12.settings,
@@ -3340,7 +3455,7 @@ Designer.__Settings = React.createClass({
 
         return settings.map(function (s) {
 
-            var clickHandler = _this19.addSetting.bind(_this19, s);
+            var clickHandler = _this21.addSetting.bind(_this21, s);
             var className = 'designer__list-item setting ';
             var disabled = false;
             if (contains(activeSettings, s.Name)) {
@@ -3661,6 +3776,7 @@ Designer.__Stage = React.createClass({
 
     // -----------------------------
     render: function render() {
+        var unsaved = this.props.core.unsaved;
         var _props$designer2 = this.props.designer,
             tab = _props$designer2.tab,
             index = _props$designer2.index,
@@ -3679,6 +3795,13 @@ Designer.__Stage = React.createClass({
         var workspaceNode = this.renderStage();
         var headerNode = this.renderHeader();
 
+        var unsavedKeys = Object.keys(unsaved);
+        var unsavedCountNode = unsavedKeys.length ? React.createElement(
+            'span',
+            { className: 'stage__unsaved-count' },
+            unsavedKeys.length
+        ) : undefined;
+
         return React.createElement(
             'div',
             { className: className, key: stageKey },
@@ -3686,7 +3809,11 @@ Designer.__Stage = React.createClass({
                 'div',
                 { className: 'stage__menu' },
                 React.createElement('button', { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length, title: 'Back' }),
-                React.createElement('button', { className: 'button button--transparent stage__save-all', onClick: this.saveAll, title: 'Save All' }),
+                React.createElement(
+                    'button',
+                    { className: 'button button--transparent stage__save-all', onClick: this.saveAll, disabled: !unsavedCountNode, title: 'Save All' },
+                    unsavedCountNode
+                ),
                 React.createElement('span', { className: 'divider' }),
                 React.createElement('button', { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled, title: 'Save' }),
                 React.createElement('button', { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled, title: 'Delete' })
@@ -3783,7 +3910,7 @@ Designer.__Definition = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this20 = this;
+        var _this22 = this;
 
         var _props16 = this.props,
             designer = _props16.designer,
@@ -3797,7 +3924,7 @@ Designer.__Definition = React.createClass({
         var selectedItem = core.Definitions[designer.index];
 
         var update = function update(prop) {
-            return _this20.updateModel.bind(_this20, prop);
+            return _this22.updateModel.bind(_this22, prop);
         };
 
         var goToTags = function goToTags() {
@@ -3952,6 +4079,8 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     renderSetting: function renderSetting(setting, index) {
+        var _this23 = this;
+
         var activeTagId = this.props.designer.activeTagId;
 
         var removeHandler = this.removeSetting.bind(this, setting);
@@ -3960,9 +4089,16 @@ Designer.__DefinitionSettings = React.createClass({
         // to display with some emphasis and allow the user to see which
         // settings are added by whic tags.
         var className = 'definition__setting';
-        var removeNode = void 0;
+        var afterNode = void 0;
         if (activeTagId && activeTagId === setting.TagId) className += ' definition__setting--active';
-        if (setting.TagId) className += ' definition__rule';else removeNode = React.createElement('span', { className: 'definition__setting-remove', onClick: removeHandler });
+        if (setting.TagId) className += ' definition__rule';else afterNode = React.createElement('span', { className: 'definition__setting-remove', onClick: removeHandler });
+
+        if (!afterNode) {
+            var tagActivate = function tagActivate() {
+                return _this23.props.dispatch(designerActions.activateTag(setting.TagId));
+            };
+            afterNode = React.createElement('span', { className: 'definition__rule-tag', title: 'Tagged Rule', onClick: tagActivate });
+        }
 
         var controlNode = setting.TagId ? setting.Value : this.renderControl(setting, index);
 
@@ -3980,7 +4116,7 @@ Designer.__DefinitionSettings = React.createClass({
                 { className: 'field__value' },
                 controlNode
             ),
-            removeNode || React.createElement('span', { className: 'definition__rule-tag', title: 'Tagged Rule' })
+            afterNode
         );
 
         if (setting.rules && setting.rules.length) {
@@ -3996,7 +4132,11 @@ Designer.__DefinitionSettings = React.createClass({
                     React.createElement(
                         Field,
                         { label: r.Name },
-                        r.Value
+                        React.createElement(
+                            'span',
+                            null,
+                            r.Value
+                        )
                     )
                 );
             });
@@ -4239,7 +4379,7 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     renderTags: function renderTags() {
-        var _this21 = this;
+        var _this24 = this;
 
         var _props23 = this.props,
             core = _props23.core,
@@ -4250,7 +4390,7 @@ Designer.__DefinitionTags = React.createClass({
 
         // Map tags into spans that can be removed onClick
         return (selectedItem.Tags || []).map(function (tag, index) {
-            var removeTagHandler = _this21.removeTag.bind(_this21, index);
+            var removeTagHandler = _this24.removeTag.bind(_this24, index);
 
             var clickHandler = function clickHandler() {
                 var newId = tag.Id !== designer.activeTagId ? tag.Id : null;
@@ -4359,7 +4499,7 @@ Designer.__Rule = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this22 = this;
+        var _this25 = this;
 
         var _props27 = this.props,
             designer = _props27.designer,
@@ -4368,7 +4508,7 @@ Designer.__Rule = React.createClass({
         var selectedItem = core.Rules[designer.index];
 
         var update = function update(prop) {
-            return _this22.updateModel.bind(_this22, prop);
+            return _this25.updateModel.bind(_this25, prop);
         };
         var setting = core.Settings.filter(function (s) {
             return s.Id == selectedItem.SettingId;

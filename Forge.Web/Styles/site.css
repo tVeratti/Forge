@@ -618,8 +618,7 @@ h5 {
   .stage__workspace .definition__settings {
     padding-left: 5px; }
   .stage__workspace .definition__setting {
-    position: relative;
-    padding: 10px 0; }
+    position: relative; }
     .stage__workspace .definition__setting .field__value {
       font-size: 14px;
       padding-right: 30px; }
@@ -638,22 +637,21 @@ h5 {
       font-size: 22px;
       cursor: pointer !important;
       padding: 5px 10px; }
-    .stage__workspace .definition__setting .definition__rule-tag {
-      color: #c7c7c7; }
-      .stage__workspace .definition__setting .definition__rule-tag:after {
-        content: "\f48c"; }
+    .stage__workspace .definition__setting .definition__rule-tag:after {
+      content: "\f48d"; }
     .stage__workspace .definition__setting .definition__setting-remove:after {
       content: "\f2d7"; }
     .stage__workspace .definition__setting .definition__setting-remove:hover {
       color: #cc4949; }
-  .stage__workspace .definition__tag--active,
-  .stage__workspace .definition__setting--active,
-  .stage__workspace .definition__nested-rule--active {
+  .stage__workspace .definition__tag--active {
     background-color: #f5e7c6 !important;
     color: #b28d33 !important; }
   .stage__workspace .definition__setting--active,
   .stage__workspace .definition__nested-rule--active {
     transition: background-color 0.3s ease-in-out; }
+    .stage__workspace .definition__setting--active .field__label,
+    .stage__workspace .definition__nested-rule--active .field__label {
+      color: #c89e3a; }
   .stage__workspace .expandable__header {
     position: relative; }
   .stage__workspace .expandable__button {
@@ -664,10 +662,10 @@ h5 {
     left: -8px; }
   .stage__workspace .expandable__content {
     font-size: 10px;
-    padding: 10px; }
+    padding: 5px; }
   .stage__workspace .definition__overrides {
-    padding-left: 8px;
-    border-left: 1px dotted #c7c7c7; }
+    padding-left: 24px;
+    opacity: 0.6; }
     .stage__workspace .definition__overrides li .field__label,
     .stage__workspace .definition__overrides li .field__value {
       font-size: 12px; }
@@ -712,6 +710,11 @@ h5 {
     content: ""; }
   .stage__menu .stage__fav:hover {
     color: #6f6f6f; }
+  .stage__menu .stage__unsaved-count {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    text-shadow: 0 0 0 white; }
 
 .designer {
   position: relative; }
@@ -1042,17 +1045,17 @@ input {
     content: ""; }
 
 .sortable .sortable__item {
+  display: table;
+  width: 100%;
   border: 1px solid #c7c7c7;
   user-select: none;
   background: #f8f8f8; }
   .sortable .sortable__item:not(:last-child) {
     border-bottom: none; }
-  .sortable .sortable__item:not(.sortable__item--disabled) {
+  .sortable .sortable__item:not(.sortable__item--disabled):hover {
+    background: #eeeeee; }
+  .sortable .sortable__item:not(.sortable__item--disabled) .sortable__handle {
     cursor: move; }
-    .sortable .sortable__item:not(.sortable__item--disabled):hover {
-      background: #eeeeee; }
-    .sortable .sortable__item:not(.sortable__item--disabled) label {
-      cursor: move !important; }
   .sortable .sortable__item.sortable__item--disabled {
     cursor: default; }
 
@@ -1060,6 +1063,25 @@ input {
   display: block; }
   .sortable .sortable__slot:last-child {
     border-bottom: 1px solid #c7c7c7; }
+
+.sortable .sortable__content,
+.sortable .sortable__handle {
+  display: table-cell;
+  vertical-align: middle; }
+
+.sortable .sortable__content {
+  padding: 10px; }
+
+.sortable .sortable__handle {
+  width: 30px;
+  text-align: center;
+  background: white; }
+  .sortable .sortable__handle:hover {
+    color: #e1b853; }
+  .sortable .sortable__handle:after {
+    font-family: "Ionicons";
+    font-size: 22px;
+    content: "\f397"; }
 
 .sortable.sortable--dragging .sortable__item--dragging {
   opacity: 0.5; }
@@ -1090,20 +1112,18 @@ input {
     font-family: "Ionicons";
     min-width: 0;
     padding: 0 10px;
-    color: #6f6f6f;
-    background: #f8f8f8;
-    border: 1px solid #b1b1b1; }
+    color: #b1b1b1;
+    background: none; }
     .expandable .expandable__button .expandable__icon:hover,
     .expandable .expandable__label .expandable__icon:hover {
-      color: #424242;
-      border-color: #6f6f6f; }
+      color: #424242; }
     .expandable .expandable__button .expandable__icon:after,
     .expandable .expandable__label .expandable__icon:after {
       display: inline-block;
-      content: "\f3d0";
+      content: "\f35f";
       transform: rotate(0deg);
       transition: transform 0.3s ease-in-out;
-      font-size: 16px;
+      font-size: 20px;
       font-weight: bold; }
 
 .expandable.expandable--closed .expandable__button .expandable__icon:after {

@@ -5,32 +5,93 @@ Designer.__Groups = React.createClass({
     // -----------------------------
     render: function(){
         const groupNodes = this.renderGroups();
+        const buttons = [
+            <button onClick={this.submitGroups}>Save</button>,
+            <button onClick={this.close}>Cancel</button>
+        ];
+
 
         return (
-            <Dialog header='Edit Groups'>
+            <Dialog header='Edit Groups' buttons={buttons}>
                 {/* Add */}
-                <form className='designer__add-group' ref='form'>
-                    <input type='text' ref='key' placeholder='Key' />
-                    <input type='text' ref='value' placeholder='Value' />
-                    <button type='submit' className='button button--tertiary' onClick={this.add}>Add</button>
-			    </form>
+                <div className='designer__add-group'>
+                    <input type='text' ref='name' placeholder='Name' />
+                    <button className='button button--tertiary' onClick={this.addGroup}>Add</button>
+			    </div>
 
-                <Sortable list={groupNodes} />
+                <Sortable list={groupNodes} onChange={this.updateOrder}  />
 
             </Dialog>
         )
     },
 
     // -----------------------------
+    getInitialState: function(){
+        return { groups: this.props.Groups || [] };
+    },
+
+    // -----------------------------
     renderGroups: function(){
-        return this.props.Groups.map(g => {
+        return this.state.groups.map((g, i) => {
+
+            const updateHandler = this.updateGroup.bind(this, i);
+            const removeHandler = this.removeGroup.bind(this, i);
+
             return (
-                <div key={g.Id} className='designer__group'>
-                    <input value={g.Name} />
-                    <span className='fa fa-remove' onClick={this.remove} />
+                <div className='designer__group'>
+                    <input value={g.Name} onChange={updateHandler} />
+                    <span className='fa fa-remove' onClick={removeHandler} />
                 </div>
             );
         });
+    },
+
+    // -----------------------------
+    updateOrder: function(initialIndex, newIndex, handler){
+        // Use the handler given by the sortable to update the base array.
+        const groups = handler(this.state.groups, initialIndex, newIndex);
+        groups.forEach((g, i) => g.Order =  i);
+        this.setState({ groups });
+    },
+
+    // -----------------------------
+    submitGroups: function(){
+        const { dispatch } = this.props;
+        dispatch(coreActions.updateGroups(this.state.groups));
+        this.close();
+    },
+
+    // -----------------------------
+    addGroup: function(){
+        const { name } = this.refs;
+
+        const model = { Name: name.value };
+
+        this.setState({
+            groups: [
+                ...this.state.groups,
+                model
+            ]
+        });
+    },
+
+    // -----------------------------
+    updateGroup: function(index, ev){
+        const groups = [ ...this.state.groups ];
+        groups[index].Name = ev.target.value;
+        this.setState({ groups });
+    },
+
+    removeGroup: function(index){
+        const groups = [ ...this.state.groups ];
+        groups.slice(index, 1);
+
+        this.setState({ groups });
+    },
+
+    close: function(){
+        const { dispatch } = this.props;
+        dispatch(commonActions.closeDialog());
     }
 });
 

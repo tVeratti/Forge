@@ -54,7 +54,6 @@ Forge.__Definition = React.createClass({
         //     .forEach(s => value = settings.apply(value, s));
 
         if (typeof value == 'number' && isNaN(value)) value = 0;
-        console.log(value)
 
         if (value != props.model.Value){
             dispatch(coreActions.updateDefinition({ ...model, Value: value }, true));

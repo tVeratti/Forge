@@ -7,15 +7,17 @@
     //border-radius: 5px 0 0 5px;
 
     .sortable__item{
+        display: table;
+        width: 100%;
         border: 1px solid $color-primary-60;
         user-select: none;
         background: $color-primary-10;
 
         &:not(:last-child){ border-bottom: none; }
         &:not(.sortable__item--disabled){
-            cursor: move;
+            
             &:hover{ background: $color-primary-20; }
-            label{ cursor: move !important; }
+            .sortable__handle{ cursor: move; }
         }
 
         &.sortable__item--disabled{ cursor: default; }
@@ -24,6 +26,29 @@
     .sortable__slot{
         display: block;
         &:last-child{border-bottom: 1px solid $color-primary-60;}
+    }
+
+    .sortable__content,
+    .sortable__handle{
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .sortable__content{
+        padding: 10px; 
+    }
+    .sortable__handle{
+        width: 30px;
+        text-align: center;
+        background: white;
+
+        &:hover{
+            color: $color-action-40;
+        }
+        &:after{
+            font-family: "Ionicons";
+            font-size: 22px;
+            content: "\f397";
+        }
     }
 
     &.sortable--dragging{

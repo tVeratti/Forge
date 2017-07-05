@@ -11,6 +11,7 @@ const DELETE_ITEM =         'DELETE_ITEM';
 const ADD_SETTING =         'ADD_SETTING';
 const UPDATE_GAME =         'UPDATE_GAME';
 const UPDATE_ID =           'UPDATE_ID';
+const UPDATE_GROUPS =       'UPDATE_GROUPS';
 
 const BEGIN_SAVE_CORE =     'BEGIN_SAVE_CORE';
 const END_SAVE_CORE =       'END_SAVE_CORE';
@@ -32,7 +33,7 @@ const coreActions = {
         SAVE_RULE:          '/Core/SaveRule',
         SAVE_TAG:           '/Core/SaveTag',
         SAVE_DEFINITION:    '/Core/SaveDefinition',
-        SAVE_GROUP:         '/Core/SaveGroup'
+        SAVE_GROUPS:         '/Core/SaveGroups'
     },
 
     // Action Creators
@@ -62,7 +63,7 @@ const coreActions = {
     },
 
     // --------------------------------
-    createItem: function(tab){
+    createItem: function(tab, model = {}){
         return (dispatch, getState) => {
 
             // Get the current state data.
@@ -71,6 +72,7 @@ const coreActions = {
             const category = tab || designer.tab;
 
             const tempId = `tempId-${Math.random()}`;
+            model.GameId = gameId;
 
             let api;
             switch(category){
@@ -88,10 +90,20 @@ const coreActions = {
             });
             
             // Send model data to database.
-            $.post(api, { model: {}, gameId })
+            $.post(api, { model, gameId })
                 //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
                 .success(response => JSON.parse(response))
                 .then(id => dispatch(coreActions.updateItemId(tempId, id, category)));
+        }
+    },
+
+    updateGroups: function(groups){
+        return (dispatch, getState) => {
+            const { core, designer } = getState();
+            const gameId = core.Game.Id;
+
+            $.post(this.api.SAVE_GROUPS, { groups, gameId })
+                .success(result => dispatch({ type: UPDATE_GROUPS, result }));
         }
     },
 

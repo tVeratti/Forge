@@ -13,6 +13,7 @@ Designer.__Stage = React.createClass({
 
     // -----------------------------
     render: function () { 
+        const { unsaved } = this.props.core;
         const { tab, index, itemHistory } = this.props.designer;
         const item = this.getSelectedItem();
 
@@ -29,13 +30,18 @@ Designer.__Stage = React.createClass({
         const workspaceNode = this.renderStage();
         const headerNode = this.renderHeader();
 
+        const unsavedKeys = Object.keys(unsaved);
+        const unsavedCountNode = unsavedKeys.length
+            ? <span className='stage__unsaved-count'>{unsavedKeys.length}</span>
+            : undefined;
+
         return (
             <div className={className} key={stageKey}>
 
                 {/* Actions */}
                 <div className='stage__menu'>
                     <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length} title='Back' />
-                    <button className='button button--transparent stage__save-all' onClick={this.saveAll} title='Save All' />
+                    <button className='button button--transparent stage__save-all' onClick={this.saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>
                     <span className='divider' />
                     <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled} title='Save' />
                     <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled} title='Delete' />
