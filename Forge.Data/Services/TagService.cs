@@ -22,10 +22,10 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Tag properties.</param>
         /// <returns>The newly created Tag model.</returns>
-        public long Create(TagModel model)
+        public long Create(TagModel model, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Tag]";
-            var spr_prms = new { model.Name, model.CreatedById, model.GameId};
+            var spr_prms = new { model.Name, model.GameId, UserId };
 
             return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
         }
@@ -54,10 +54,16 @@ namespace Forge.Data.Services
         /// Read one Tag record from the database by Id.
         /// </summary>
         /// <returns>The Tag model that matches the given Id's.</returns>
-        public TagModel Update(TagModel model)
+        public TagModel Update(TagModel model, long UserId)
         {
             var spr_name = "[Verspyre].[Update_Tag]";
-            return _cnx.Query<TagModel>(spr_name, new { model.Id, model.Name, model.CreatedById }, commandType: CommandType.StoredProcedure).SingleOrDefault();
+            return _cnx.Query<TagModel>(spr_name, new { model.Id, model.Name, UserId }, commandType: CommandType.StoredProcedure).SingleOrDefault();
+        }
+
+        public void Delete(long Id, long UserId)
+        {
+            var spr_name = "[Verspyre].[Delete_Tag]";
+            _cnx.Execute(spr_name, new { Id, UserId }, commandType: CommandType.StoredProcedure);
         }
     }
 }

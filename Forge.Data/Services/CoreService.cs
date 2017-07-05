@@ -35,13 +35,14 @@ namespace Forge.Data.Services
 
             var spr_prms = new
             {
-                ModifiedById = UserId,
+                UserId,
 
                 // Game
+                GameId = Model.Game.Id,
                 Name = Model.Game.Name,
-                GenreId = Model.Game.GenreId,
 
                 // DataTables
+                GenreIds = Model.Game.GenreIds.ToDataTable(),
                 Tags = tags.ToDataTable(),
                 Rules = rules.ToDataTable(),
                 Definitions = definitions.ToDataTable(),
@@ -68,7 +69,7 @@ namespace Forge.Data.Services
                 Model.Name,
                 Model.ParentId,
                 Model.TypeId,
-                ModifiedById = UserId
+                UserId
             };
 
             return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).SingleOrDefault();
@@ -84,7 +85,7 @@ namespace Forge.Data.Services
                 Model.Name,
                 Model.ParentId,
                 Model.TypeId,
-                ModifiedById = UserId
+                UserId
             };
 
             _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);

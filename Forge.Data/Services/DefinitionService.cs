@@ -29,7 +29,7 @@ namespace Forge.Data.Services
             var spr_prms = new
             {
                 Model.GameId,
-                CreatedById = UserId
+                UserId
             };
 
             return _cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
@@ -52,13 +52,19 @@ namespace Forge.Data.Services
                 Name = Definition.Name,
                 ControlId = Definition.ControlId,
                 GroupId = Definition.GroupId,
-                ModifiedById = UserId,
+                UserId,
                 Tags = Definition.Tags.ToDataTable(),
                 Settings = settings.ToDataTable(),
                 SettingsValues = definitionSettings.ToDataTable()
             };
 
             _cnx.Execute(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
+        }
+
+        public void Delete(long Id, long UserId)
+        {
+            var spr_name = "[Verspyre].[Delete_Definition]";
+            _cnx.Execute(spr_name, new { Id, UserId }, commandType: CommandType.StoredProcedure);
         }
     }
 }

@@ -47,6 +47,7 @@ namespace Forge.Data.Models
         public long GameId { get; set; }
         public long GroupId { get; set; }
         public int ControlId { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }
