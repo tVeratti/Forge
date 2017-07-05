@@ -21,6 +21,7 @@ namespace Forge.Data.Models
             {
                 Id = g.Id,
                 Name = g.Name,
+                GameId = g.GameId,
                 ParentId = g.ParentId,
                 TypeId = g.TypeId
             };
@@ -31,8 +32,8 @@ namespace Forge.Data.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public long GameId { get; set; }
         public long ParentId { get; set; }
         public int TypeId { get; set; }
-        public long GameId { get; set; }
     }
 }

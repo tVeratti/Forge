@@ -27,15 +27,13 @@ namespace Forge.Web.Controllers
         [HttpPost]
         public long SaveRule(RuleModel Model)
         {
-            Model.ModifiedById = User.Id;
-
             if (Model.Id == 0)
             {
-                return _context.Rules.Create(Model);
+                return _context.Rules.Create(Model, User.Id);
             }
             else
             {
-                _context.Rules.Update(Model);
+                _context.Rules.Update(Model, User.Id);
             }
 
             return Model.Id;
@@ -48,14 +46,12 @@ namespace Forge.Web.Controllers
             if (Model.Id == 0)
             {
                 // INSERT
-                Model.CreatedById = User.Id;
-                return _context.Tags.Create(Model);
+                return _context.Tags.Create(Model, User.Id);
             }
             else
             {
                 // UPDATE
-                Model.ModifiedById = User.Id;
-                _context.Tags.Update(Model);
+                _context.Tags.Update(Model, User.Id);
             }
 
             return Model.Id;
@@ -96,9 +92,34 @@ namespace Forge.Web.Controllers
         }
 
         [HttpPost]
+        public void SaveGame(GameModel Model)
+        {
+            Model.ModifiedById = User.Id;
+            _context.Games.Update(Model);
+        }
+
+        [HttpPost]
         public void Save(CoreModel Model)
         {
             _context.Core.Update(Model, User.Id);
+        }
+
+        [HttpPost]
+        public void DeleteTag(long Id)
+        {
+            _context.Tags.Delete(Id, User.Id);
+        }
+
+        [HttpPost]
+        public void DeleteRule(long Id)
+        {
+            _context.Rules.Delete(Id, User.Id);
+        }
+
+        [HttpPost]
+        public void DeleteDefinition(long Id)
+        {
+            _context.Definitions.Delete(Id, User.Id);
         }
     }
 }

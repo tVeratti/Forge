@@ -22,10 +22,10 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Game properties.</param>
         /// <returns>The newly created Game model.</returns>
-        public IEnumerable<GameModel> Create(string Name, long CreatedById)
+        public IEnumerable<GameModel> Create(string Name, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Game]";
-            var spr_prms = new { Name, CreatedById };
+            var spr_prms = new { Name, UserId };
 
             return _cnx.Query<GameModel>(spr_name, spr_prms, commandType: CommandType.StoredProcedure);
         }

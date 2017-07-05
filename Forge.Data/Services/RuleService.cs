@@ -22,28 +22,29 @@ namespace Forge.Data.Services
         /// </summary>
         /// <param name="Model">A model of the Rule properties.</param>
         /// <returns>The newly created Rule model.</returns>
-        public long Create(RuleModel model)
+        public long Create(RuleModel model, long UserId)
         {
             var spr_name = "[Verspyre].[Insert_Rule]";
             var spr_prms = new
             {
                 model.GameId,
-                model.ModifiedById
+                UserId
             };
 
             var id =_cnx.Query<long>(spr_name, spr_prms, commandType: CommandType.StoredProcedure).Single();
             return id;
         }
 
-        public void Update(RuleModel model)
+        public void Update(RuleModel model, long UserId)
         {
             var spr_name = "[Verspyre].[Update_Rule]";
             var spr_prms = new
             {
                 model.Id,
+                model.Name,
                 model.SettingId,
                 model.TagId,
-                model.ModifiedById,
+                UserId,
                 Values = model.Keys.ToDataTable()
             };
 
@@ -68,6 +69,12 @@ namespace Forge.Data.Services
         {
             var spr_name = "[Verspyre].[Select_Rule]";
             return _cnx.Query<RuleModel>(spr_name, new { SettingId, TagId }, commandType: CommandType.StoredProcedure).Single();
+        }
+
+        public void Delete(long Id, long UserId)
+        {
+            var spr_name = "[Verspyre].[Delete_Rule]";
+            _cnx.Execute(spr_name, new { Id, UserId }, commandType: CommandType.StoredProcedure);
         }
     }
 }
