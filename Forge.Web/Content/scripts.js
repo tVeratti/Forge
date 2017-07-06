@@ -1145,7 +1145,7 @@ var initialDesignerState = {
     loading: true,
     saving: false,
     tab: (hash[0] || 'Menu').replace('#', ''),
-    index: hash[1] || -1,
+    index: +hash[1] || -1,
     listTab: 'List',
     itemHistory: []
 };
@@ -3043,7 +3043,7 @@ Designer.__Groups = React.createClass({
                 'div',
                 { className: 'designer__group' },
                 React.createElement('input', { value: g.Name, onChange: updateHandler }),
-                React.createElement('span', { className: 'fa fa-remove', onClick: removeHandler })
+                React.createElement('span', { className: 'designer__remove', onClick: removeHandler })
             );
         });
     },
@@ -3087,7 +3087,7 @@ Designer.__Groups = React.createClass({
 
     removeGroup: function removeGroup(index) {
         var groups = [].concat(_toConsumableArray(this.state.groups));
-        groups.slice(index, 1);
+        groups.splice(index, 1);
 
         this.setState({ groups: groups });
     },

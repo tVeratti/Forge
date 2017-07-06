@@ -208,6 +208,28 @@
     }
 }
 
+.designer__add-group{
+    margin-bottom: 10px;
+}
+.designer__group{
+    display: flex;
+    align-items: center;
+
+    &>input { width: 100%; }
+
+    .designer__remove {
+        &:hover{ color: $color-red; }
+        &:after{
+            font-family: 'Ionicons';
+            content: "\f2d7";
+            font-size: 20px;
+            padding: 5px;
+            padding-left: 10px;
+            cursor: pointer;
+        }
+        
+    }
+}
 
 
 

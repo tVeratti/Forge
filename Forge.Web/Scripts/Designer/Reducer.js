@@ -5,7 +5,7 @@ const initialDesignerState = {
     loading: true,
     saving: false,
     tab: (hash[0] || 'Menu').replace('#', ''),
-    index: hash[1] || -1,
+    index: +hash[1] || -1,
     listTab: 'List',
     itemHistory: []
 }

@@ -40,7 +40,7 @@ Designer.__Groups = React.createClass({
             return (
                 <div className='designer__group'>
                     <input value={g.Name} onChange={updateHandler} />
-                    <span className='fa fa-remove' onClick={removeHandler} />
+                    <span className='designer__remove' onClick={removeHandler} />
                 </div>
             );
         });
@@ -84,7 +84,7 @@ Designer.__Groups = React.createClass({
 
     removeGroup: function(index){
         const groups = [ ...this.state.groups ];
-        groups.slice(index, 1);
+        groups.splice(index, 1);
 
         this.setState({ groups });
     },

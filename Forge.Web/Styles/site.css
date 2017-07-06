@@ -374,6 +374,9 @@ b {
 .library__list {
   padding: 10px; }
 
+.library__create {
+  margin-bottom: 20px; }
+
 .library__game {
   padding: 0; }
   .library__game a {
@@ -715,6 +718,24 @@ h5 {
     top: 3px;
     right: 3px;
     text-shadow: 0 0 0 white; }
+
+.designer__add-group {
+  margin-bottom: 10px; }
+
+.designer__group {
+  display: flex;
+  align-items: center; }
+  .designer__group > input {
+    width: 100%; }
+  .designer__group .designer__remove:hover {
+    color: #cc4949; }
+  .designer__group .designer__remove:after {
+    font-family: 'Ionicons';
+    content: "\f2d7";
+    font-size: 20px;
+    padding: 5px;
+    padding-left: 10px;
+    cursor: pointer; }
 
 .designer {
   position: relative; }
@@ -1150,7 +1171,7 @@ input {
   left: -10px;
   right: -10px;
   bottom: -10px;
-  z-index: 10;
+  z-index: 100;
   cursor: default; }
   .dialog .dialog__container {
     position: relative;
