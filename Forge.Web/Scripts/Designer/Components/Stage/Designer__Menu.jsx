@@ -32,15 +32,24 @@ Designer._Menu = React.createClass({
                             id='name'
                             value={Game.Name} />
 
-                        <Field label='Access' 
-                            id='access'
+                        <Field label='View Access' 
+                            id='view-access'
                             defaultValue={1}
                             options={accessTypes} />
 
+                        <Field label='Edit Access' 
+                            id='edit-access'
+                            defaultValue={1}
+                            options={accessTypes} />
+
+                        {/* Genre Tags */}
                         <Field label='Genre' 
                             id='genre'
                             defaultValue={1}
-                            options={genres} />
+                            options={genres}>
+                            <Tags options={genres} tags={Game.GenreIds} />
+                        </Field>
+                        
                     </div>
                 </div>
 

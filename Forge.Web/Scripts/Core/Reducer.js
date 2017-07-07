@@ -4,6 +4,8 @@
     unsaved: {},
     conflict: false,
 
+    tree: {},
+
     Game:           {},
     Rules:          [],
     Definitions:    [],
@@ -130,26 +132,7 @@ function coreReducer(state = initialCoreState, action){
             if (!action.saved) nextState.unsaved[unsavedKey] = true;
             else delete nextState.unsaved[unsavedKey];
 
-            let calculateAll = false;
-            switch(action.category){
-                case CATEGORIES.TAGS:
-                case CATEGORIES.RULES:
-                    calculateAll = true;
-
-                // NO BREAK
-                case CATEGORIES.DEFINITIONS:
-                    if (!action.fromCore) {
-                        nextState.Definitions.forEach(d => {
-                            if (calculateAll || d.Id == action.model.Id) {
-                                d.Rules = getRules(nextState, d);
-                                d.MergedSettings = sortSettings([ ...d.Rules, ...d.Settings ])
-                                    .filter(s => !s.overridden);
-                            }
-                        });
-                    }
-                    break;
-            }
-            
+            updateAll(nextState);            
             setGameToLocalStorage(nextState);
             break;
 
@@ -193,6 +176,8 @@ function coreReducer(state = initialCoreState, action){
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
+
+            updateAll(nextState);
             setGameToLocalStorage(nextState);
             break;
         
@@ -228,4 +213,71 @@ function getGameFomLocalStorage(id){
             if (gameJSON) return JSON.parse(gameJSON);
         } catch(err) { console.warn('Error retrieving game from local storage.', err); }
     }
+}
+
+// --------------------------------
+// 1. Merge Rules & Settings.
+// 2. Build Dependency Tree.
+// 3. Apply all Settings (Recursive, tree).
+function updateAll(state, stage = Forge.lifeCycle.stages.update){
+    const { Definitions } = state;
+
+    Definitions.forEach(model =>{
+        // Build MergedSettings (Rules + Settings).
+        model.Rules = getRules(state, model);
+        model.MergedSettings = sortSettings([ 
+                ...model.Rules,
+                ...model.Settings ])
+            .filter(s => !s.overridden);
+        
+        // Prepare tree references...
+        model.MergedSettings.forEach(s => {
+            // Get any settings keys which target an 
+            // outside definitionId (Target, TargetId).
+            const targetKeys = ['Target', 'TargetId'];
+            const target = s.Keys.filter(k => targetKeys.indexOf(k.Key) > -1)[0];
+
+            if (target){
+                // Add the current definition to the tree
+                // which tracks definition dependencies.
+                tree[target.Value] = tree[target.Value] || [];
+                tree[target.Value].push(model.Id);
+            }
+        })
+    })
+
+    // Apply all Settings...
+    Definitions.forEach(applySettings.bind(this, stage, state));
+}
+
+// --------------------------------
+// Recursively apply all settings to Definitions,
+// and update all dependants thereafter.
+function applySettings(model, index, stage, state){
+    const { settings } = Forge;
+    console.log('applySettings', model.Name)
+    // Apply all settings that match the current lifecycle
+    let values = [ ...model.Values ];
+    // model.MergedSettings
+    //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
+    //     .forEach(s => values = settings.apply(value, s));
+    
+    if (arrayChanged(values, model.Values)){
+        // The value of this Definition has changed,
+        // so update any Definitions that are depending on
+        // its value (ValueIf, etc...)
+        model.dependants.forEach(applySettings);
+    }
+}
+
+function arrayChanged(a, b){
+    let changed = false;
+    a.some((x, i) => {
+        if (x == b[i]){
+            changed = true;
+            return true;
+        }
+    });
+
+    return change;
 }

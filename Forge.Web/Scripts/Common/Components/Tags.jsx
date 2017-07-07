@@ -6,31 +6,24 @@ const Tags = React.createClass({
         var addTagNode = this.renderAddTag();
 
         return (
-            <div className='tags field'>
-                <label className='field__label'>{addTagNode}</label>
-                <div className='field__value'><div className='tags'>{tagNodes}</div></div>
+            <div className='tags'>
+                <div className='tags__add'>{addTagNode}</div>
+                <div className='tags__list'>{tagNodes}</div>
             </div>
         );
     },
  
     // -----------------------------
-    getInitialState: function(){
-        return { };
-    },
-
-    // -----------------------------
     renderAddTag: function(){
-        const { core, designer } = this.props;
-        const selectedItem = core.Definitions[designer.index];
-
-        const activeIds = (selectedItem.Tags || []).map(t => t.Id);
-        const tagOptions = core.Tags
+        const { tags, options } = this.props;
+        const activeIds = tags.map(t => t.Id);
+        const tagOptions = options
             .filter(tag => activeIds.indexOf(tag.Id) === -1)
             .map(tag => <option key={tag.Id} value={tag.Id}>{tag.Name}</option>);
 
         return (
-            <select className='button button--tertiary' onChange={this.changeNewTag} value='default' id='add-tag'>
-                <option disabled value='default'>Add</option>
+            <select className='button button--tertiary' onChange={this.changeNewTag}>
+                <option disabled value='default'>-- Add --</option>
                 {tagOptions}
             </select>
         );
@@ -38,25 +31,18 @@ const Tags = React.createClass({
 
     // -----------------------------
     renderTags: function(){
-        const { core, designer, dispatch } = this.props;
-        const selectedItem = core.Definitions[designer.index];
+        const { tags } = this.props;
 
         // Map tags into spans that can be removed onClick
-        return (selectedItem.Tags || []).map((tag, index) => {
+        return tags.map((tag, index) => {
+
             const removeTagHandler = this.removeTag.bind(this, index);
-
-            const clickHandler = () => {
-                const newId = tag.Id !== designer.activeTagId ? tag.Id : null;
-                dispatch(designerActions.activateTag(newId));
-            };
-
-            let className = 'button button--secondary definition__tag';
-            if (tag.Id === designer.activeTagId) className += ' definition__tag--active';
+            const className = 'button button--secondary tags__tag';
 
             return (
-                <button className={className} onClick={clickHandler} key={tag.Id}>
-                    <span className='definition__tag-name'>{tag.Name}</span>
-                    <span className='fa fa-remove' onClick={removeTagHandler} />
+                <button className={className} key={tag.Id}>
+                    <span className='tags__name'>{tag.Name}</span>
+                    <span className='tags__remove' onClick={removeTagHandler} />
                 </button>
             );
         });
@@ -70,9 +56,7 @@ const Tags = React.createClass({
 
     // -----------------------------
     removeTag: function(index){
-        const { core, designer } = this.props;
-        const selectedItem = core.Definitions[designer.index];
-        const newTags = [ ...selectedItem.Tags || [] ];
+        const newTags = [ ...this.props.tags ];
 
         // Remove the given tag from this array
         newTags.splice(index, 1);
@@ -83,9 +67,8 @@ const Tags = React.createClass({
 
     // -----------------------------
     addTag: function(tagId){
-        const { core, designer } = this.props;
-        const selectedItem = core.Definitions[designer.index];
-        const newTags = [ ...selectedItem.Tags || [] ];
+        const { options, tags } = this.props;
+        const newTags = [ ...tags ];
 
         // Check first if this tag is already present in the array
         var tagExists = !!newTags.filter((t) => tagId == t.Id).length;
@@ -105,22 +88,7 @@ const Tags = React.createClass({
 
     // -----------------------------
     reportChange: function(tags){
-        this.updateModel(tags);
-    },
-
-    // -----------------------------
-    updateModel: function(tags){
-        const { designer, dispatch, core } = this.props;
-        const { ...model } = core.Definitions[designer.index];
-        model.Tags = tags;
-
-        dispatch(coreActions.updateDefinition(model));
+        const { onChange } = this.props;
+        onChange && onChange(tags);
     }
 });
-
-// =====================================
-// Container
-// =====================================
-Designer.DefinitionTags = connect(
-    state => { return { ...state }}
-)(Designer.__DefinitionTags);

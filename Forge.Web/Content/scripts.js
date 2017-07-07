@@ -318,6 +318,8 @@ var initialCoreState = {
     unsaved: {},
     conflict: false,
 
+    tree: {},
+
     Game: {},
     Rules: [],
     Definitions: [],
@@ -451,27 +453,7 @@ function coreReducer() {
             var unsavedKey = action.category + '-' + action.model.Id;
             if (!action.saved) nextState.unsaved[unsavedKey] = true;else delete nextState.unsaved[unsavedKey];
 
-            var calculateAll = false;
-            switch (action.category) {
-                case CATEGORIES.TAGS:
-                case CATEGORIES.RULES:
-                    calculateAll = true;
-
-                // NO BREAK
-                case CATEGORIES.DEFINITIONS:
-                    if (!action.fromCore) {
-                        nextState.Definitions.forEach(function (d) {
-                            if (calculateAll || d.Id == action.model.Id) {
-                                d.Rules = getRules(nextState, d);
-                                d.MergedSettings = sortSettings([].concat(_toConsumableArray(d.Rules), _toConsumableArray(d.Settings))).filter(function (s) {
-                                    return !s.overridden;
-                                });
-                            }
-                        });
-                    }
-                    break;
-            }
-
+            updateAll(nextState);
             setGameToLocalStorage(nextState);
             break;
 
@@ -523,6 +505,8 @@ function coreReducer() {
             // Upate the state array with the updated object.
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
+
+            updateAll(nextState);
             setGameToLocalStorage(nextState);
             break;
 
@@ -560,6 +544,77 @@ function getGameFomLocalStorage(id) {
             console.warn('Error retrieving game from local storage.', err);
         }
     }
+}
+
+// --------------------------------
+// 1. Merge Rules & Settings.
+// 2. Build Dependency Tree.
+// 3. Apply all Settings (Recursive, tree).
+function updateAll(state) {
+    var stage = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Forge.lifeCycle.stages.update;
+    var Definitions = state.Definitions;
+
+
+    Definitions.forEach(function (model) {
+        // Build MergedSettings (Rules + Settings).
+        model.Rules = getRules(state, model);
+        model.MergedSettings = sortSettings([].concat(_toConsumableArray(model.Rules), _toConsumableArray(model.Settings))).filter(function (s) {
+            return !s.overridden;
+        });
+
+        // Prepare tree references...
+        model.MergedSettings.forEach(function (s) {
+            // Get any settings keys which target an 
+            // outside definitionId (Target, TargetId).
+            var targetKeys = ['Target', 'TargetId'];
+            var target = s.Keys.filter(function (k) {
+                return targetKeys.indexOf(k.Key) > -1;
+            })[0];
+
+            if (target) {
+                // Add the current definition to the tree
+                // which tracks definition dependencies.
+                tree[target.Value] = tree[target.Value] || [];
+                tree[target.Value].push(model.Id);
+            }
+        });
+    });
+
+    // Apply all Settings...
+    Definitions.forEach(applySettings.bind(this, stage, state));
+}
+
+// --------------------------------
+// Recursively apply all settings to Definitions,
+// and update all dependants thereafter.
+function applySettings(model, index, stage, state) {
+    var settings = Forge.settings;
+
+    console.log('applySettings', model.Name);
+    // Apply all settings that match the current lifecycle
+    var values = [].concat(_toConsumableArray(model.Values));
+    // model.MergedSettings
+    //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
+    //     .forEach(s => values = settings.apply(value, s));
+
+    if (arrayChanged(values, model.Values)) {
+        // The value of this Definition has changed,
+        // so update any Definitions that are depending on
+        // its value (ValueIf, etc...)
+        model.dependants.forEach(applySettings);
+    }
+}
+
+function arrayChanged(a, b) {
+    var changed = false;
+    a.some(function (x, i) {
+        if (x == b[i]) {
+            changed = true;
+            return true;
+        }
+    });
+
+    return change;
 }
 // Definition Settings
 // =====================================
@@ -2119,6 +2174,140 @@ var Tab = React.createClass({
     }
 });
 // =====================================
+var Tags = React.createClass({
+    displayName: 'Tags',
+
+    // -----------------------------
+    render: function render() {
+        var tagNodes = this.renderTags();
+        var addTagNode = this.renderAddTag();
+
+        return React.createElement(
+            'div',
+            { className: 'tags' },
+            React.createElement(
+                'div',
+                { className: 'tags__add' },
+                addTagNode
+            ),
+            React.createElement(
+                'div',
+                { className: 'tags__list' },
+                tagNodes
+            )
+        );
+    },
+
+    // -----------------------------
+    renderAddTag: function renderAddTag() {
+        var _props5 = this.props,
+            tags = _props5.tags,
+            options = _props5.options;
+
+        var activeIds = tags.map(function (t) {
+            return t.Id;
+        });
+        var tagOptions = options.filter(function (tag) {
+            return activeIds.indexOf(tag.Id) === -1;
+        }).map(function (tag) {
+            return React.createElement(
+                'option',
+                { key: tag.Id, value: tag.Id },
+                tag.Name
+            );
+        });
+
+        return React.createElement(
+            'select',
+            { className: 'button button--tertiary', onChange: this.changeNewTag },
+            React.createElement(
+                'option',
+                { disabled: true, value: 'default' },
+                '-- Add --'
+            ),
+            tagOptions
+        );
+    },
+
+    // -----------------------------
+    renderTags: function renderTags() {
+        var _this13 = this;
+
+        var tags = this.props.tags;
+
+        // Map tags into spans that can be removed onClick
+
+        return tags.map(function (tag, index) {
+
+            var removeTagHandler = _this13.removeTag.bind(_this13, index);
+            var className = 'button button--secondary tags__tag';
+
+            return React.createElement(
+                'button',
+                { className: className, key: tag.Id },
+                React.createElement(
+                    'span',
+                    { className: 'tags__name' },
+                    tag.Name
+                ),
+                React.createElement('span', { className: 'tags__remove', onClick: removeTagHandler })
+            );
+        });
+    },
+
+    // -----------------------------
+    changeNewTag: function changeNewTag(event) {
+        var newTagId = +event.target.value;
+        this.addTag(newTagId);
+    },
+
+    // -----------------------------
+    removeTag: function removeTag(index) {
+        var newTags = [].concat(_toConsumableArray(this.props.tags));
+
+        // Remove the given tag from this array
+        newTags.splice(index, 1);
+
+        // Report the change
+        this.reportChange(newTags);
+    },
+
+    // -----------------------------
+    addTag: function addTag(tagId) {
+        var _props6 = this.props,
+            options = _props6.options,
+            tags = _props6.tags;
+
+        var newTags = [].concat(_toConsumableArray(tags));
+
+        // Check first if this tag is already present in the array
+        var tagExists = !!newTags.filter(function (t) {
+            return tagId == t.Id;
+        }).length;
+
+        if (!tagExists) {
+
+            // Get the full tag object from the store
+            var tag = core.Tags.filter(function (t) {
+                return t.Id == tagId;
+            })[0];
+
+            // Add the tag to this array
+            newTags.push(tag);
+
+            // Report the change
+            this.reportChange(newTags);
+        }
+    },
+
+    // -----------------------------
+    reportChange: function reportChange(tags) {
+        var onChange = this.props.onChange;
+
+        onChange && onChange(tags);
+    }
+});
+// =====================================
 // <Tooltip />
 // =====================================
 var Tooltip = function Tooltip(_ref6) {
@@ -2179,9 +2368,9 @@ Forge.__Definition = React.createClass({
     // -----------------------------
     componentWillMount: function componentWillMount() {
         // Trigger Lifecycle: Initialize
-        var _props5 = this.props,
-            core = _props5.core,
-            model = _props5.model;
+        var _props7 = this.props,
+            core = _props7.core,
+            model = _props7.model;
         var stages = Forge.lifeCycle.stages;
 
         this.valueChange(model.Value, stages.init);
@@ -2207,10 +2396,10 @@ Forge.__Definition = React.createClass({
         stage = stage || lifeCycle.stages.update;
         props = props || this.props;
 
-        var _props6 = props,
-            model = _props6.model,
-            core = _props6.core,
-            dispatch = _props6.dispatch;
+        var _props8 = props,
+            model = _props8.model,
+            core = _props8.core,
+            dispatch = _props8.dispatch;
 
         // Apply all settings that match the current lifecycle
         // model.MergedSettings
@@ -2256,9 +2445,9 @@ var __Designer = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _props7 = this.props,
-            designer = _props7.designer,
-            dispatch = _props7.dispatch;
+        var _props9 = this.props,
+            designer = _props9.designer,
+            dispatch = _props9.dispatch;
 
         var loading = designer.saving || designer.loading;
 
@@ -2294,9 +2483,9 @@ var __Designer = React.createClass({
     componentWillMount: function componentWillMount() {
         // Model comes from C# -
         // Set data into store with dispatch.
-        var _props8 = this.props,
-            dispatch = _props8.dispatch,
-            id = _props8.id;
+        var _props10 = this.props,
+            dispatch = _props10.dispatch,
+            id = _props10.id;
 
         dispatch(coreActions.fetchGame(id));
     },
@@ -2397,7 +2586,7 @@ Designer.__Tabs = React.createClass({
 
     // -----------------------------
     renderTab: function renderTab(label, index) {
-        var _this13 = this;
+        var _this14 = this;
 
         // Active Tab Check
         var checked = label === this.props.tab || undefined;
@@ -2405,7 +2594,7 @@ Designer.__Tabs = React.createClass({
         // Click Handler
         // Dispatch action to store and update filter for tab.
         var onClick = function onClick() {
-            return _this13.props.dispatch(designerActions.changeTab(label));
+            return _this14.props.dispatch(designerActions.changeTab(label));
         };
 
         return React.createElement(Tab, { key: label, id: label, label: label, onChange: onClick, name: 'designer-tabs', checked: checked });
@@ -2512,7 +2701,7 @@ Library.__Filters = React.createClass({
 
     // --------------------------------
     renderPermissionTabs: function renderPermissionTabs() {
-        var _this14 = this;
+        var _this15 = this;
 
         // Get action types from libraryActions.
         var _libraryActions$filte = libraryActions.filters,
@@ -2527,8 +2716,8 @@ Library.__Filters = React.createClass({
 
         // Render permission options into Tab nodes.
         var tabNodes = permissionTypes.map(function (permission) {
-            var tabHandler = _this14.changeFilter.bind(_this14, PERMISSION, permission.id);
-            var checked = permission.id === _this14.props.library.filters[PERMISSION];
+            var tabHandler = _this15.changeFilter.bind(_this15, PERMISSION, permission.id);
+            var checked = permission.id === _this15.props.library.filters[PERMISSION];
             return React.createElement(Tab, _extends({ key: permission.id, name: 'access-tab', onChange: tabHandler, checked: checked }, permission));
         });
 
@@ -2696,7 +2885,7 @@ Forge.components.controls.Dictionary = React.createClass({
     displayName: 'Dictionary',
 
     render: function render() {
-        var _this15 = this;
+        var _this16 = this;
 
         var Keys = this.props.Model.Keys;
 
@@ -2709,7 +2898,7 @@ Forge.components.controls.Dictionary = React.createClass({
         var dialogNode = this.state.dialog ? this.renderEditDialog() : undefined;
 
         var editHandler = function editHandler() {
-            return _this15.setState({ dialog: true });
+            return _this16.setState({ dialog: true });
         };
 
         return React.createElement(
@@ -2735,17 +2924,17 @@ Forge.components.controls.Dictionary = React.createClass({
 
     // -----------------------------
     renderEditDialog: function renderEditDialog() {
-        var _this16 = this;
+        var _this17 = this;
 
-        var _props9 = this.props,
-            Model = _props9.Model,
-            allowAdd = _props9.allowAdd;
+        var _props11 = this.props,
+            Model = _props11.Model,
+            allowAdd = _props11.allowAdd;
 
 
         var dialogProps = {
             header: 'Edit: ' + Model.Name,
             onClose: function onClose() {
-                return _this16.setState({ dialog: false });
+                return _this17.setState({ dialog: false });
             }
         };
 
@@ -2778,14 +2967,14 @@ Forge.components.controls.Dictionary = React.createClass({
 
     // -----------------------------
     renderList: function renderList(flat) {
-        var _this17 = this;
+        var _this18 = this;
 
         var Model = this.props.Model;
 
 
         var list = Model.Keys || [];
         var listNodes = list.map(function (x, i) {
-            return _this17.renderPair(x, i, flat);
+            return _this18.renderPair(x, i, flat);
         });
         return listNodes.length ? React.createElement(
             'ul',
@@ -2897,9 +3086,9 @@ Forge.components.controls.Select_Definition = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _props10 = this.props,
-            Model = _props10.Model,
-            Value = _props10.Value;
+        var _props12 = this.props,
+            Model = _props12.Model,
+            Value = _props12.Value;
 
         var _store$getState = store.getState(),
             core = _store$getState.core;
@@ -3032,12 +3221,12 @@ Designer.__Groups = React.createClass({
 
     // -----------------------------
     renderGroups: function renderGroups() {
-        var _this18 = this;
+        var _this19 = this;
 
         return this.state.groups.map(function (g, i) {
 
-            var updateHandler = _this18.updateGroup.bind(_this18, i);
-            var removeHandler = _this18.removeGroup.bind(_this18, i);
+            var updateHandler = _this19.updateGroup.bind(_this19, i);
+            var removeHandler = _this19.removeGroup.bind(_this19, i);
 
             return React.createElement(
                 'div',
@@ -3173,7 +3362,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderList: function renderList() {
-        var _this19 = this;
+        var _this20 = this;
 
         var _props$designer = this.props.designer,
             tab = _props$designer.tab,
@@ -3204,8 +3393,8 @@ Designer.__List = React.createClass({
 
             // Click Handler.
             var onClick = function onClick() {
-                _this19.setState({ open: false });
-                _this19.props.dispatch(designerActions.selectListItem(i));
+                _this20.setState({ open: false });
+                _this20.props.dispatch(designerActions.selectListItem(i));
             };
 
             return React.createElement(
@@ -3235,7 +3424,7 @@ Designer.__List = React.createClass({
 
     // -----------------------------
     renderActions: function renderActions() {
-        var _this20 = this;
+        var _this21 = this;
 
         var tab = this.props.designer.tab;
         var _state2 = this.state,
@@ -3246,14 +3435,14 @@ Designer.__List = React.createClass({
 
         var toggleText = open ? 'Hide' : 'Show';
         var toggle = function toggle() {
-            return _this20.setState({ open: !open });
+            return _this21.setState({ open: !open });
         };
 
         var buttons = ['List', 'Search'];
         if (tab === CATEGORIES.DEFINITIONS) buttons.push('Settings');
 
         var miniButtons = buttons.map(function (b) {
-            var onClick = _this20.changeList.bind(_this20, b);
+            var onClick = _this21.changeList.bind(_this21, b);
             var className = 'button icon icon--' + b.toLowerCase();
             if (b === listTab) {
                 className += ' button--active';
@@ -3365,9 +3554,9 @@ Designer.__Search = React.createClass({
 
     // -----------------------------
     renderItem: function renderItem(item) {
-        var _props11 = this.props,
-            dispatch = _props11.dispatch,
-            designer = _props11.designer;
+        var _props13 = this.props,
+            dispatch = _props13.dispatch,
+            designer = _props13.designer;
 
         var key = item.tab + '-' + (item.Id || item.TempId || item.Name || item.header);
 
@@ -3438,12 +3627,12 @@ Designer.__Settings = React.createClass({
 
     // -----------------------------
     renderSettingsList: function renderSettingsList() {
-        var _this21 = this;
+        var _this22 = this;
 
-        var _props12 = this.props,
-            settings = _props12.settings,
-            core = _props12.core,
-            designer = _props12.designer;
+        var _props14 = this.props,
+            settings = _props14.settings,
+            core = _props14.core,
+            designer = _props14.designer;
 
         var activeItem = core.Definitions[designer.index];
         if (!activeItem) return;
@@ -3454,7 +3643,7 @@ Designer.__Settings = React.createClass({
 
         return settings.map(function (s) {
 
-            var clickHandler = _this21.addSetting.bind(_this21, s);
+            var clickHandler = _this22.addSetting.bind(_this22, s);
             var className = 'designer__list-item setting ';
             var disabled = false;
             if (contains(activeSettings, s.Name)) {
@@ -3481,9 +3670,9 @@ Designer.__Settings = React.createClass({
 
     // -----------------------------
     addSetting: function addSetting(setting) {
-        var _props13 = this.props,
-            dispatch = _props13.dispatch,
-            index = _props13.index;
+        var _props15 = this.props,
+            dispatch = _props15.dispatch,
+            index = _props15.index;
 
         dispatch(coreActions.addSetting(index, setting));
     }
@@ -3574,14 +3763,22 @@ Designer._Menu = React.createClass({
                     React.createElement(Field, { label: 'Name',
                         id: 'name',
                         value: Game.Name }),
-                    React.createElement(Field, { label: 'Access',
-                        id: 'access',
+                    React.createElement(Field, { label: 'View Access',
+                        id: 'view-access',
                         defaultValue: 1,
                         options: accessTypes }),
-                    React.createElement(Field, { label: 'Genre',
-                        id: 'genre',
+                    React.createElement(Field, { label: 'Edit Access',
+                        id: 'edit-access',
                         defaultValue: 1,
-                        options: genres })
+                        options: accessTypes }),
+                    React.createElement(
+                        Field,
+                        { label: 'Genre',
+                            id: 'genre',
+                            defaultValue: 1,
+                            options: genres },
+                        React.createElement(Tags, { options: genres, tags: Game.GenreIds })
+                    )
                 )
             ),
             React.createElement(Designer.Recent, null)
@@ -3590,9 +3787,9 @@ Designer._Menu = React.createClass({
 
     // -----------------------------
     renderTile: function renderTile(category) {
-        var _props14 = this.props,
-            core = _props14.core,
-            dispatch = _props14.dispatch;
+        var _props16 = this.props,
+            core = _props16.core,
+            dispatch = _props16.dispatch;
 
         var count = core[category].length;
         var onClick = function onClick() {
@@ -3885,9 +4082,9 @@ Designer.__Stage = React.createClass({
 
     // -----------------------------
     getSelectedItem: function getSelectedItem() {
-        var _props15 = this.props,
-            designer = _props15.designer,
-            core = _props15.core;
+        var _props17 = this.props,
+            designer = _props17.designer,
+            core = _props17.core;
 
         return (core[designer.tab] || [])[designer.index];
     }
@@ -3909,12 +4106,12 @@ Designer.__Definition = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this22 = this;
+        var _this23 = this;
 
-        var _props16 = this.props,
-            designer = _props16.designer,
-            core = _props16.core,
-            dispatch = _props16.dispatch;
+        var _props18 = this.props,
+            designer = _props18.designer,
+            core = _props18.core,
+            dispatch = _props18.dispatch;
         var changeTab = designerActions.changeTab,
             openList = designerActions.openList,
             dialogTypes = designerActions.dialogTypes;
@@ -3923,7 +4120,7 @@ Designer.__Definition = React.createClass({
         var selectedItem = core.Definitions[designer.index];
 
         var update = function update(prop) {
-            return _this22.updateModel.bind(_this22, prop);
+            return _this23.updateModel.bind(_this23, prop);
         };
 
         var goToTags = function goToTags() {
@@ -4028,10 +4225,10 @@ Designer.__Definition = React.createClass({
 
     // -----------------------------
     updateModel: function updateModel(prop, value) {
-        var _props17 = this.props,
-            designer = _props17.designer,
-            core = _props17.core,
-            dispatch = _props17.dispatch;
+        var _props19 = this.props,
+            designer = _props19.designer,
+            core = _props19.core,
+            dispatch = _props19.dispatch;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -4078,7 +4275,7 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     renderSetting: function renderSetting(setting, index) {
-        var _this23 = this;
+        var _this24 = this;
 
         var activeTagId = this.props.designer.activeTagId;
 
@@ -4094,7 +4291,7 @@ Designer.__DefinitionSettings = React.createClass({
 
         if (!afterNode) {
             var tagActivate = function tagActivate() {
-                return _this23.props.dispatch(designerActions.activateTag(setting.TagId));
+                return _this24.props.dispatch(designerActions.activateTag(setting.TagId));
             };
             afterNode = React.createElement('span', { className: 'definition__rule-tag', title: 'Tagged Rule', onClick: tagActivate });
         }
@@ -4177,10 +4374,10 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     removeSetting: function removeSetting(setting) {
-        var _props18 = this.props,
-            dispatch = _props18.dispatch,
-            core = _props18.core,
-            designer = _props18.designer;
+        var _props20 = this.props,
+            dispatch = _props20.dispatch,
+            core = _props20.core,
+            designer = _props20.designer;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -4205,9 +4402,9 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     nestRules: function nestRules() {
-        var _props19 = this.props,
-            core = _props19.core,
-            designer = _props19.designer;
+        var _props21 = this.props,
+            core = _props21.core,
+            designer = _props21.designer;
 
         var selectedItem = core.Definitions[designer.index];
         var Settings = selectedItem.Settings,
@@ -4241,10 +4438,10 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     valueChange: function valueChange(settingId, value, ev) {
-        var _props20 = this.props,
-            dispatch = _props20.dispatch,
-            core = _props20.core,
-            designer = _props20.designer;
+        var _props22 = this.props,
+            dispatch = _props22.dispatch,
+            core = _props22.core,
+            designer = _props22.designer;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -4264,10 +4461,10 @@ Designer.__DefinitionSettings = React.createClass({
 
     // -----------------------------
     updateOrder: function updateOrder(initialIndex, newIndex, handler) {
-        var _props21 = this.props,
-            dispatch = _props21.dispatch,
-            designer = _props21.designer,
-            core = _props21.core;
+        var _props23 = this.props,
+            dispatch = _props23.dispatch,
+            designer = _props23.designer,
+            core = _props23.core;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -4345,9 +4542,9 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     renderAddTag: function renderAddTag() {
-        var _props22 = this.props,
-            core = _props22.core,
-            designer = _props22.designer;
+        var _props24 = this.props,
+            core = _props24.core,
+            designer = _props24.designer;
 
         var selectedItem = core.Definitions[designer.index];
 
@@ -4378,18 +4575,18 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     renderTags: function renderTags() {
-        var _this24 = this;
+        var _this25 = this;
 
-        var _props23 = this.props,
-            core = _props23.core,
-            designer = _props23.designer,
-            dispatch = _props23.dispatch;
+        var _props25 = this.props,
+            core = _props25.core,
+            designer = _props25.designer,
+            dispatch = _props25.dispatch;
 
         var selectedItem = core.Definitions[designer.index];
 
         // Map tags into spans that can be removed onClick
         return (selectedItem.Tags || []).map(function (tag, index) {
-            var removeTagHandler = _this24.removeTag.bind(_this24, index);
+            var removeTagHandler = _this25.removeTag.bind(_this25, index);
 
             var clickHandler = function clickHandler() {
                 var newId = tag.Id !== designer.activeTagId ? tag.Id : null;
@@ -4420,9 +4617,9 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     removeTag: function removeTag(index) {
-        var _props24 = this.props,
-            core = _props24.core,
-            designer = _props24.designer;
+        var _props26 = this.props,
+            core = _props26.core,
+            designer = _props26.designer;
 
         var selectedItem = core.Definitions[designer.index];
         var newTags = [].concat(_toConsumableArray(selectedItem.Tags || []));
@@ -4436,9 +4633,9 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     addTag: function addTag(tagId) {
-        var _props25 = this.props,
-            core = _props25.core,
-            designer = _props25.designer;
+        var _props27 = this.props,
+            core = _props27.core,
+            designer = _props27.designer;
 
         var selectedItem = core.Definitions[designer.index];
         var newTags = [].concat(_toConsumableArray(selectedItem.Tags || []));
@@ -4470,10 +4667,10 @@ Designer.__DefinitionTags = React.createClass({
 
     // -----------------------------
     updateModel: function updateModel(tags) {
-        var _props26 = this.props,
-            designer = _props26.designer,
-            dispatch = _props26.dispatch,
-            core = _props26.core;
+        var _props28 = this.props,
+            designer = _props28.designer,
+            dispatch = _props28.dispatch,
+            core = _props28.core;
 
         var model = _objectWithoutProperties(core.Definitions[designer.index], []);
 
@@ -4498,16 +4695,16 @@ Designer.__Rule = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _this25 = this;
+        var _this26 = this;
 
-        var _props27 = this.props,
-            designer = _props27.designer,
-            core = _props27.core;
+        var _props29 = this.props,
+            designer = _props29.designer,
+            core = _props29.core;
 
         var selectedItem = core.Rules[designer.index];
 
         var update = function update(prop) {
-            return _this25.updateModel.bind(_this25, prop);
+            return _this26.updateModel.bind(_this26, prop);
         };
         var setting = core.Settings.filter(function (s) {
             return s.Id == selectedItem.SettingId;
@@ -4552,10 +4749,10 @@ Designer.__Rule = React.createClass({
 
     // -----------------------------
     updateModel: function updateModel(prop, value) {
-        var _props28 = this.props,
-            designer = _props28.designer,
-            core = _props28.core,
-            dispatch = _props28.dispatch;
+        var _props30 = this.props,
+            designer = _props30.designer,
+            core = _props30.core,
+            dispatch = _props30.dispatch;
 
         var model = _objectWithoutProperties(core.Rules[designer.index], []);
 
@@ -4582,9 +4779,9 @@ Designer.__Tag = React.createClass({
 
     // -----------------------------
     render: function render() {
-        var _props29 = this.props,
-            core = _props29.core,
-            designer = _props29.designer;
+        var _props31 = this.props,
+            core = _props31.core,
+            designer = _props31.designer;
 
         var selectedItem = core.Tags[designer.index];
 
@@ -4665,10 +4862,10 @@ Designer.__Tag = React.createClass({
 
     // -----------------------------
     updateTagName: function updateTagName(value) {
-        var _props30 = this.props,
-            designer = _props30.designer,
-            core = _props30.core,
-            dispatch = _props30.dispatch;
+        var _props32 = this.props,
+            designer = _props32.designer,
+            core = _props32.core,
+            dispatch = _props32.dispatch;
 
         var tag = _objectWithoutProperties(core.Tags[designer.index], []);
 
