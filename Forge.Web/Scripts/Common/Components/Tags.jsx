@@ -1,5 +1,5 @@
 ﻿// =====================================
-const Tags = React.createClass({
+Forge.Tags = React.createClass({
     // -----------------------------
     render: function () {
         var tagNodes = this.renderTags();

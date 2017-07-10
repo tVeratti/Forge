@@ -1,4 +1,10 @@
-﻿// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const Groups = require('./Groups.jsx');
+const actions = require('./../Actions.js');
+
+// =====================================
 // Presentation
 // =====================================
 const __Builder = React.createClass({
@@ -16,9 +22,9 @@ const __Builder = React.createClass({
     // -----------------------------
     componentWillMount: function(){
         // Model comes from C# -
-        // Set data into store with dispatch.
-        const { dispatch, id } = this.props;
-        dispatch(coreActions.fetchGame(id));
+        // // Set data into store with dispatch.
+        // const { dispatch, id } = this.props;
+        // dispatch(coreActions.fetchGame(id));
     },
 
     // -----------------------------
@@ -43,3 +49,5 @@ Builder.Provider = (props) => (
         <Builder {...props} />
     </Provider>
 );
+
+module.exports = Builder;

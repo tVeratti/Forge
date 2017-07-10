@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const Definition = require('./../../Core/Components/Definition.jsx');
+
+// =====================================
 // Presentation
 // =====================================
-Builder._Groups = (props) => {
+const _Groups = (props) => {
     const { core } = props;
     const topGroups = core.Groups.filter(g => !g.ParentId);
     const groupNodes = topGroups.map(g => <Builder.Group key={g.Id} core={core} model={g} />);
@@ -16,23 +21,23 @@ Builder._Groups = (props) => {
 // =====================================
 // Container
 // =====================================
-Builder.Groups = connect(
+const Groups = connect(
     state => { return { ...state }}
-)(Builder._Groups);
+)(_Groups);
 
 // =====================================
-// <Builder.Group />
+// <Group />
 // =====================================
-Builder.Group = (props) => {
+const Group = (props) => {
     const { core, model } = props;
 
     const childNodes = core.Groups
         .filter(g => g.ParentId == model.Id)
-        .map(g => <Builder.Group key={g.Id} core={core} model={g} />);
+        .map(g => <Group key={g.Id} core={core} model={g} />);
 
     const definitionNodes = core.Definitions
         .filter(d => d.GroupId == model.Id)
-        .map((d, i) => <Forge.Definition key={i} model={d} />);
+        .map((d, i) => <Definition key={i} model={d} />);
     
     return (
         <div className='builder__group group panel'>
@@ -42,3 +47,5 @@ Builder.Group = (props) => {
         </div>
     )
 }
+
+module.exports = Groups;

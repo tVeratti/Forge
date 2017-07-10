@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Web", "Forge.Web\Forg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forge.Data", "Forge.Data\Forge.Data.csproj", "{393D0F19-449A-45CA-9E8C-2A04E1BFCD74}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Forge.Tests", "Forge.Tests\Forge.Tests.njsproj", "{3C1F918D-D282-4454-8DCF-D4889A82E381}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{393D0F19-449A-45CA-9E8C-2A04E1BFCD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393D0F19-449A-45CA-9E8C-2A04E1BFCD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393D0F19-449A-45CA-9E8C-2A04E1BFCD74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1F918D-D282-4454-8DCF-D4889A82E381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1F918D-D282-4454-8DCF-D4889A82E381}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1F918D-D282-4454-8DCF-D4889A82E381}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1F918D-D282-4454-8DCF-D4889A82E381}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,14 +1,4 @@
-﻿// Primary NameSpace
-// =====================================
-const Forge = {
-    settings: {},
-    lifeCycle: {},
-    components: {
-        controls: {}
-    }
-};
-
-let user = {};
+﻿let user = {};
 
 // Vendor
 // =====================================

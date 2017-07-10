@@ -1,9 +1,4 @@
-﻿// Action Types
-// =====================================
-// --------------------------------
-
-
-const builderActions = {    
+﻿const builderActions = {    
 
     // Constants
     // =====================================
@@ -15,8 +10,7 @@ const builderActions = {
     // Action Creators
     // =====================================
     // --------------------------------
-    requestDesigner: function(){
-        return { type: REQUEST_DESIGNER };
-    },
 
 }
+
+module.exports = builderActions;

@@ -47,7 +47,7 @@ Designer._Menu = React.createClass({
                             id='genre'
                             defaultValue={1}
                             options={genres}>
-                            <Tags options={genres} tags={Game.GenreIds} />
+                            <Forge.Tags options={genres} tags={Game.GenreIds} />
                         </Field>
                         
                     </div>

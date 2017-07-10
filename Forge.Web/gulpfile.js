@@ -1,7 +1,10 @@
 ﻿const gulp =        require('gulp');
-const concat =      require('gulp-concat');		// Merge files.
-const babel =       require('gulp-babel');		// Transpile from ES6 to ES5.
-const plumber =     require('gulp-plumber');
+const uglify =      require('gulp-uglify');
+const browserify =  require('browserify');
+const babelify =    require('babelify');
+const source =      require('vinyl-source-stream');
+const buffer =      require('vinyl-buffer');
+const replace =     require('gulp-replace');
 
 const sourceJS = [
     // Global & Utilities
@@ -22,38 +25,32 @@ const sourceJS = [
     'Scripts/store.js'
 ];
 
-const sourceJSTests = [
-    'Scripts/Tests/Components/*.jsx',
-    'Scripts/Tests/**/*.jsx'
-];
-
-const babelOptions = {
-    presets: [
-        'es2015',
-        'react',
-        'stage-2'
-    ]
-};
-
-gulp.task('build', function () {
-    return gulp.src(sourceJS)
-        .pipe(plumber())
-	    .pipe(concat('scripts.js'))
-	    .pipe(babel(babelOptions))
-	    .pipe(gulp.dest('Content'));
+// BROWSERIFY
+// ---------------------------------------------
+// Primary bundling of components for distribution.
+// This creates the single static JS file which applications
+// request and load onto their page for global variables.
+gulp.task('browserify-components', function () {
+    return browserify({ entries: './Scripts/index.js' })
+        .transform('babelify', { presets: [ 'es2015', 'react', 'stage-2' ]})
+        .bundle()
+        .pipe(source('scripts.js'))
+        .pipe(buffer())
+        .pipe(uglify())
+        .pipe(replace(/('|")use strict\1(;*)/g, ''))
+        .pipe(gulp.dest('Content'));
 });
 
-gulp.task('build-tests', function () {
-    return gulp.src(sourceJSTests)
-        .pipe(plumber())
-	    .pipe(concat('tests.js'))
-	    .pipe(babel(babelOptions))
-	    .pipe(gulp.dest('Content'));
+// LISTEN
+// ---------------------------------------------
+// Listen for changes of source files (saves).
+gulp.task('watch', [], function () {
+    // Rune main bundling browserify task on components.
+    gulp.watch(sourceJS, ['browserify-components']);
+
 });
 
-gulp.task('watch', ['build', 'build-tests'], function () {
-    gulp.watch(sourceJS, ['build']);
-    gulp.watch(sourceJSTests, ['build-tests']);
-});
-
-gulp.task('default', ['watch']);
+gulp.task('default', [
+    'browserify-components',
+    'watch'
+])

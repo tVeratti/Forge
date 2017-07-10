@@ -15,7 +15,6 @@ namespace Forge.Web
             bundles.Add(new ScriptBundle("~/scripts/vendor-js").Include(
                  "~/Scripts/Vendor/jquery-1.10.2.js",
                  "~/Scripts/Vendor/moment.js",
-                 "~/Scripts/Vendor/pubsub.js",
                  
                  "~/Scripts/Vendor/react-with-addons-15.3.2.js",
                  "~/Scripts/Vendor/react-dom-15.3.2.js",

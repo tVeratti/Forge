@@ -214,7 +214,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\Account\Components\Account.jsx" />
     <Content Include="Scripts\Builder\Actions.js" />
-    <Content Include="Scripts\Builder\Components\Builder__Groups.jsx" />
+    <Content Include="Scripts\Builder\Components\Groups.jsx" />
     <Content Include="Scripts\Builder\Reducer.js" />
     <Content Include="Scripts\Builder\Components\Builder.jsx" />
     <Content Include="Scripts\Account\Actions.js" />
@@ -252,6 +252,7 @@
     <Content Include="Scripts\Designer\Components\List\Designer__List.jsx" />
     <Content Include="Scripts\Designer\Components\List\Designer__Search.jsx" />
     <Content Include="Scripts\Designer\Components\List\Designer__Settings.jsx" />
+    <Content Include="Scripts\index.js" />
     <Content Include="Scripts\Library\Components\Library_Filters.jsx" />
     <Content Include="Scripts\Library\Components\Library_Controls.jsx" />
     <Content Include="Scripts\Library\Components\Library_Summary.jsx" />
@@ -274,8 +275,6 @@
     <Content Include="Scripts\Library\Components\Library_Game.jsx" />
     <Content Include="Scripts\Library\Reducer.js" />
     <Content Include="Scripts\Library\Actions.js" />
-    <Content Include="Scripts\Tests\Components\SpecRunner.jsx" />
-    <Content Include="Scripts\Tests\Specs\DefinitionSpec.jsx" />
     <Content Include="Scripts\Vendor\enzyme-2.7.1.js" />
     <Content Include="Scripts\Vendor\jasmine.js" />
     <Content Include="Scripts\Vendor\react-dom-15.3.2.js" />

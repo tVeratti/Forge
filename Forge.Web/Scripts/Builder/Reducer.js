@@ -1,9 +1,9 @@
-﻿const initialBuilderState = {
+﻿const initialState = {
     loading: true,
     saving: false
 }
 
-function builderReducer(state = initialBuilderState, action){
+function builderReducer(state = initialState, action){
     
     let nextState = Object.assign({}, state);
 
@@ -14,3 +14,5 @@ function builderReducer(state = initialBuilderState, action){
 
     return nextState;
 }
+
+module.exports = builderReducer;
