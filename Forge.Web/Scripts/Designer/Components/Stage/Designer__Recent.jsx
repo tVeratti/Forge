@@ -1,7 +1,11 @@
-﻿// =====================================
-// <Designer.Link />
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const { CATEGORIES } = require(__dirname + '/Core');
+
+// Presentation
 // =====================================
-Designer.__Recent = ({ core, designer, dispatch }) => {
+const __Recent = ({ core, designer, dispatch }) => {
     const categories = [CATEGORIES.TAGS, CATEGORIES.RULES, CATEGORIES.DEFINITIONS];
     const sourceItems = [ ...core.Tags, ...core.Rules, ...core.Definitions ];
 
@@ -49,6 +53,9 @@ Designer.__Recent = ({ core, designer, dispatch }) => {
 // =====================================
 // Container
 // =====================================
-Designer.Recent = connect(
+const Recent = connect(
     state => { return { ...state }}
-)(Designer.__Recent);
+)(__Recent);
+
+
+module.exports = Recent;

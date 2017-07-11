@@ -1,7 +1,11 @@
-// =====================================
+const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const { actions } = require(__dirname + '/Core');
+
 // Presentation
 // =====================================
-Designer.__List = React.createClass({    
+const __List = React.createClass({    
 	// -----------------------------
 	render: function(){
 		const listNodes = this.renderList();
@@ -147,13 +151,14 @@ Designer.__List = React.createClass({
 	// -----------------------------
 	new: function(){
 		this.setState({ open: false });
-		this.props.dispatch(coreActions.createItem());
+		this.props.dispatch(actions.createItem());
 	}
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.List = connect(
+const List = connect(
     state => { return { ...state }}
-)(Designer.__List);
+)(__List);
+
+module.exports = List;

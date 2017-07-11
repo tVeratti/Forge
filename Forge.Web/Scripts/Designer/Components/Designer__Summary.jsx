@@ -1,10 +1,9 @@
-﻿// -------------------------------------------------
-// <Designer.Summary />
-// -------------------------------------------------
-// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Summary = React.createClass({
+const __Summary = React.createClass({
     render: function(){
         const { Game } = this.props.core;
         const { loading } = this.props.designer; 
@@ -25,9 +24,10 @@ Designer.__Summary = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Summary = connect(
+const Summary = connect(
     state => { return { ...state } }
-)(Designer.__Summary);
+)(__Summary);
+
+module.exports = Summary;

@@ -223,6 +223,7 @@
     <Content Include="Scripts\Common\Components\Tooltip.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Dictionary.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Select_Definition.jsx" />
+    <Content Include="Scripts\Core\index.js" />
     <Content Include="Scripts\Designer\Components\Dialogs\Designer__LoadError.jsx" />
     <Content Include="Scripts\Designer\Components\Dialogs\Designer__Groups.jsx" />
     <Content Include="Scripts\Designer\Components\Stage\Designer__Link.jsx" />

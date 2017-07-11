@@ -1,6 +1,6 @@
 ﻿// LifeCycle Management
 // =====================================
-Forge.lifeCycle = new LifeCycle();
+const lifeCycle = new LifeCycle();
 
 function LifeCycle(){
 	// Stages
@@ -41,3 +41,5 @@ function LifeCycle(){
 		isActive: _isActive
 	};
 };
+
+module.exports = lifeCycle;

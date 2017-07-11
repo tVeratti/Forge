@@ -1,4 +1,13 @@
-﻿// -------------------------------------------------
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const Summary =     require('./Designer__Summary.jsx');
+const Tabs =        require('./Designer__Tabs.jsx');
+const Dialogs =     require('./Designer__Dialogs.jsx');
+const List =        require('./Designer__List.jsx');
+const Stage =       require('./Designer__Stage.jsx');
+
+// -------------------------------------------------
 // <Designer />
 // 
 // =====================
@@ -31,21 +40,20 @@ const __Designer = React.createClass({
 
         return (
             <div className={className}>
-                <Designer.Dialogs />
+                <Dialogs />
 
                 {/* Game Information & Navigation */}
                 <div className='section section--secondary'>
                     {loading && <div className='loading-bar' />}
                     
-                    <Designer.Summary />
-                    <Designer.Tabs />
+                    <Summary />
+                    <Tabs />
                 </div>
 
                 {/* Stage & Controls */}
                 <div className='designer__views'>
-                    <Designer.List />
-                    <Designer.Stage />
-                    <div className='designer__overlay overlay' onClick={closeList} />
+                    <List />
+                    <Stage />
                 </div>
 
             </div>
@@ -82,3 +90,5 @@ Designer.Provider = (props) => (
         <Designer {...props} />
     </Provider>
 );
+
+module.exports = Designer;

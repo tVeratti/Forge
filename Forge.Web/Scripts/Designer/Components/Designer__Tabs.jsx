@@ -1,10 +1,9 @@
-﻿// -------------------------------------------------
-// <Designer.Tabs />
-// -------------------------------------------------
-// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Tabs = React.createClass({
+const __Tabs = React.createClass({
     views: ['Menu', 'Preview', 'Tags', 'Rules', 'Definitions' ],
 
     // -----------------------------
@@ -33,9 +32,10 @@ Designer.__Tabs = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Tabs = connect(
+const Tabs = connect(
     state => { return { tab: state.designer.tab }}
-)(Designer.__Tabs);
+)(__Tabs);
+
+module.exports = Tabs;

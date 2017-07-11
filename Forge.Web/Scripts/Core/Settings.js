@@ -1,6 +1,6 @@
 // Definition Settings
 // =====================================
-Forge.settings = {
+const settings = {
 	apply: function(value, setting) {
 		const { SettingName, Name } = setting;
 		return this[SettingName || Name](value, setting);
@@ -32,3 +32,5 @@ Forge.settings = {
 			: value;
 	}
 };
+
+module.exports = settings;

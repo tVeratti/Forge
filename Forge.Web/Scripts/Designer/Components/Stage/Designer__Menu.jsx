@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const actions = require('./../../Actions.js');
+const { CATEGORIES } = require(__dirname + '/Core');
+
 // Presentation
 // =====================================
-Designer._Menu = React.createClass({
+const __Menu = React.createClass({
     // -----------------------------
     render: function() {
         const { Game, Tags, Rules, Definitions } = this.props.core;
@@ -64,7 +69,7 @@ Designer._Menu = React.createClass({
     renderTile: function(category){
         const { core, dispatch } = this.props;
         const count = core[category].length;
-        const onClick = () => dispatch(designerActions.changeTab(category));
+        const onClick = () => dispatch(actions.changeTab(category));
 
         return (
             <button className='designer__tile' onClick={onClick}>
@@ -78,6 +83,8 @@ Designer._Menu = React.createClass({
 // =====================================
 // Container
 // =====================================
-Designer.Menu = connect(
+const Menu = connect(
     state => { return { ...state }}
-)(Designer._Menu);
+)(__Menu);
+
+module.exports = Menu;

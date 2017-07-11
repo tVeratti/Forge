@@ -1,10 +1,9 @@
-﻿// -------------------------------------------------
-// <Designer.Stage />
-// -------------------------------------------------
-// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Stage = React.createClass({
+const __Stage = React.createClass({
     instructions: {
         Tags: 'A Tag can be used to logically group Settings and Definitions. Tags can be used to apply Rules to many Definitions at once (ie: Give all Definitions with the Tag of "Attribute" a Minimum value of 1).',
         Rules: 'Rules are pre-defined Settings that can be applied to many definitions using Tags.',
@@ -112,9 +111,10 @@ Designer.__Stage = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Stage = connect(
+const Stage = connect(
     state => { return { ...state }}
-)(Designer.__Stage);
+)(__Stage);
+
+module.exports = Stage;

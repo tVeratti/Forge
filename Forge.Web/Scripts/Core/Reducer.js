@@ -1,4 +1,7 @@
-﻿const initialCoreState = {
+﻿const { CATEGORIES } = require('./Actions.js');
+const { getRules, sortSettings } = requre('./Settings.js');
+
+const initialState = {
     loading: true,
     saving: false,
     unsaved: {},
@@ -16,21 +19,21 @@
 }
 
 // =====================================
-function coreReducer(state = initialCoreState, action){
+function coreReducer(state = initialState, action){
     const { getRules, sortSettings } = Forge.utilities;
 
     let nextState = { ...state };
 
     switch(action.type){
         // --------------------------------
-        case REQUEST_GAME:
+        case 'REQUEST_GAME':
             var localGame = getGameFomLocalStorage(action.id) || initialCoreState;
             nextState = { ...localGame, loading: true };
 
             break;
 
         // --------------------------------
-        case GET_LOCAL_GAME:
+        case 'GET_LOCAL_GAME':
             // Check for a game that was saved to local and compare
             // it to what was retrieved from the database.
             var localGame = getGameFomLocalStorage(action.id);
@@ -54,7 +57,7 @@ function coreReducer(state = initialCoreState, action){
             // Same prep code for Local & DB.
 
         // --------------------------------
-        case RECEIVE_GAME:
+        case 'RECEIVE_GAME':
             nextState = {
                 ...nextState,
                 ...(action.game || localGame),
@@ -77,7 +80,7 @@ function coreReducer(state = initialCoreState, action){
             break;
 
         // --------------------------------
-        case CREATE_ITEM:
+        case 'CREATE_ITEM':
             // New item with temporary Id
             let newItem = {
                 Id: action.id,
@@ -108,7 +111,7 @@ function coreReducer(state = initialCoreState, action){
             break;
 
         // --------------------------------
-        case UPDATE_ID:
+        case 'UPDATE_ID':
             var index, items = [ ...state[action.tab] ];
             items.forEach((x, i) => index = x.Id === action.oldId ? i : index);
             items[index].Id = action.newId;
@@ -117,7 +120,7 @@ function coreReducer(state = initialCoreState, action){
             break;
 
         // --------------------------------
-        case UPDATE_ITEM:
+        case 'UPDATE_ITEM':
             var items = [ ...state[action.category] ];
             items[action.index] = {
                 ...items[action.index],
@@ -137,19 +140,19 @@ function coreReducer(state = initialCoreState, action){
             break;
 
         // -------------------------------- 
-        case UPDATE_GROUPS:
+        case 'UPDATE_GROUPS':
             nextState.Groups = sortBy(action.result, 'Order');
             break;
 
         // --------------------------------
-        case DELETE_ITEM:
+        case 'DELETE_ITEM':
             nextState[action.tab] = state[action.tab].slice();
             nextState[action.tab].splice(action.model.index, 1);
             nextState[action.tab].forEach((x, i) => x.index = i);
             break;
 
         // --------------------------------
-        case ADD_SETTING:
+        case 'ADD_SETTING':
             var definitions = [ ...state.Definitions ];
             var { ...definition } = definitions[action.index];
 
@@ -182,7 +185,7 @@ function coreReducer(state = initialCoreState, action){
             break;
         
         // --------------------------------
-        case UPDATE_GAME:
+        case 'UPDATE_GAME':
             nextState.Game = {
                 ...state.Game,
                 ...action.model

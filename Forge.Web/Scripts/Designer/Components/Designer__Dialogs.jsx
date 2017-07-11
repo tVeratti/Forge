@@ -1,14 +1,18 @@
-﻿// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
+const { actions } = require('./../Actions.js');
+
 // Presentation
 // =====================================
-Designer.__Dialogs = (props) => {
+const __Dialogs = (props) => {
     const { dialogType } = props;
 
     const { 
         LOAD_ERROR,
         LOAD_CONFLICT,
         EDIT_GROUPS
-        } = designerActions.dialogTypes;
+        } = actions.dialogTypes;
 
     switch (dialogType) {
         case LOAD_ERROR:    return <Designer.LoadError />;
@@ -38,11 +42,12 @@ Designer.__Dialogs = (props) => {
     // },
 };
 
-// =====================================
 // Container
 // =====================================
-Designer.Dialogs = connect(
+const Dialogs = connect(
     state => { 
         return { dialogType: state.common.dialogType }
     }
-)(Designer.__Dialogs);
+)(__Dialogs);
+
+module.exports = Dialogs;

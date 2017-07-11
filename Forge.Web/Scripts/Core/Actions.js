@@ -1,28 +1,10 @@
-﻿// Action Types
-// =====================================
-// --------------------------------
-const REQUEST_GAME =        'REQUEST_GAME';
-const RECEIVE_GAME =        'RECEIVE_GAME';
-const GET_LOCAL_GAME =      'GET_LOCAL_GAME';
-
-const CREATE_ITEM =         'CREATE_ITEM';
-const UPDATE_ITEM =         'UPDATE_ITEM';
-const DELETE_ITEM =         'DELETE_ITEM';
-const ADD_SETTING =         'ADD_SETTING';
-const UPDATE_GAME =         'UPDATE_GAME';
-const UPDATE_ID =           'UPDATE_ID';
-const UPDATE_GROUPS =       'UPDATE_GROUPS';
-
-const BEGIN_SAVE_CORE =     'BEGIN_SAVE_CORE';
-const END_SAVE_CORE =       'END_SAVE_CORE';
-
-const CATEGORIES = {
+﻿const CATEGORIES = {
     TAGS:           'Tags',
     RULES:          'Rules',
     DEFINITIONS:    'Definitions'
 };
 
-const coreActions = {
+const actions = {
 
     // Constants
     // =====================================
@@ -39,9 +21,9 @@ const coreActions = {
     // Action Creators
     // =====================================
     // --------------------------------
-    requestGame:    function()      { return { type: REQUEST_GAME }},
-    receiveGame:    function(game)  { return { type: RECEIVE_GAME, game }},
-    getLocalGame:   function(id)    { return { type: GET_LOCAL_GAME, id}},
+    requestGame:    function()      { return { type: 'REQUEST_GAME' }},
+    receiveGame:    function(game)  { return { type: 'RECEIVE_GAME', game }},
+    getLocalGame:   function(id)    { return { type: 'GET_LOCAL_GAME', id}},
     fetchGame:      function(id){
         return dispatch => {
             // Show loading indication.
@@ -59,7 +41,7 @@ const coreActions = {
 
     // --------------------------------
     updateItemId: function(oldId, newId, tab){
-        return { type: UPDATE_ID, oldId, newId, tab };
+        return { type: 'UPDATE_ID', oldId, newId, tab };
     },
 
     // --------------------------------
@@ -83,7 +65,7 @@ const coreActions = {
 
             // Create item locally before DB insert.
             dispatch({ 
-                 type: CREATE_ITEM,
+                 type: 'CREATE_ITEM',
                  id: tempId,
                  index: core[category].length,
                  category
@@ -103,13 +85,13 @@ const coreActions = {
             const gameId = core.Game.Id;
 
             $.post(this.api.SAVE_GROUPS, { groups, gameId })
-                .success(result => dispatch({ type: UPDATE_GROUPS, result }));
+                .success(result => dispatch({ type: 'UPDATE_GROUPS', result }));
         }
     },
 
     // --------------------------------
     addSetting: function(index, setting){
-        return { type: ADD_SETTING, index, setting };
+        return { type: 'ADD_SETTING', index, setting };
     },
 
     // --------------------------------
@@ -140,28 +122,33 @@ const coreActions = {
                 ? model.index
                 : designer.index;
 
-            dispatch({ type: UPDATE_ITEM, category, index, model, saved, fromCore });
+            dispatch({ type: 'UPDATE_ITEM', category, index, model, saved, fromCore });
         }
     },
 
     // --------------------------------
     updateGame: function(model){
-        return { type: UPDATE_GAME, model };
+        return { type: 'UPDATE_GAME', model };
     },
 
     // --------------------------------
     save: function(){
         return (dispatch, getState) => {
 
-            dispatch({ type: BEGIN_SAVE_CORE });
+            dispatch({ type: 'BEGIN_SAVE_CORE' });
 
             const { core } = getState();
 
             // Fetch games from database with state filters.
             $.post(this.api.SAVE_CORE, core)
                 //.fail(response => dispatch(this.getLocalGame(id)))
-                .done(r => dispatch({ type: END_SAVE_CORE }));
+                .done(r => dispatch({ type: 'END_SAVE_CORE' }));
         };
     }
 }
+
+module.exports = {
+    actions,
+    CATEGORIES
+};
 

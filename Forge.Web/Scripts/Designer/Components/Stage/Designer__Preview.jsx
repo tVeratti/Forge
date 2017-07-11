@@ -1,7 +1,9 @@
-﻿// =====================================
+﻿const React = require('react');
+const { Provider, connect} = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Preview = React.createClass({
+const __Preview = React.createClass({
     // -----------------------------
     render: function() {
         return (
@@ -12,9 +14,10 @@ Designer.__Preview = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Preview = connect(
+const Preview = connect(
     state => { return { ...state }}
-)(Designer.__Preview);
+)(__Preview);
+
+module.exports = Preview;

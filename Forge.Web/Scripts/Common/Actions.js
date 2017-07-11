@@ -1,6 +1,6 @@
 ﻿// Action Creators
 // =====================================
-const commonActions = {
+const actions = {
     // --------------------------------
     openDialog: function(dialogType){
         return { type: 'OPEN_DIALOG', dialogType }
@@ -12,4 +12,4 @@ const commonActions = {
     }
 }
 
-module.exports = commonActions;
+module.exports = actions;

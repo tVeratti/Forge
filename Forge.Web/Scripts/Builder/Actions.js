@@ -1,4 +1,4 @@
-﻿const builderActions = {    
+﻿const actions = {    
 
     // Constants
     // =====================================
@@ -13,4 +13,4 @@
 
 }
 
-module.exports = builderActions;
+module.exports = actions;
