@@ -1,6 +1,4 @@
 ﻿// =====================================
-// <Banner />
-// =====================================
 const Banner = ({ header, children, icon = 'info' }) => {
 
     const className = `banner banner--${icon}`;
@@ -15,3 +13,5 @@ const Banner = ({ header, children, icon = 'info' }) => {
         </div>
     );
 }
+
+module.exports = Banner;

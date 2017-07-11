@@ -1,4 +1,7 @@
-Forge.components.controls.Text = React.createClass({
+const React = require('react');
+
+// =====================================
+const Text = React.createClass({
 	// -----------------------------
 	render: function(){
 		const { Model } = this.props;

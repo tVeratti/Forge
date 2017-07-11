@@ -1,4 +1,6 @@
-﻿
+﻿const React = require('react');
+
+// =====================================
 const Expandable = React.createClass({
     // -----------------------------
     render: function(){
@@ -31,3 +33,5 @@ const Expandable = React.createClass({
         return { open: false };
     }
 });
+
+module.exports = Expandable;

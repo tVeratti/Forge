@@ -1,6 +1,4 @@
 ﻿// =====================================
-// <Tooltip />
-// =====================================
 const Tooltip = ({ children, tip, onClick, icon }) => {
     const iconNode = icon
         ? <span className='fa fa-info-circle' aria-hidden='true' />
@@ -16,3 +14,5 @@ const Tooltip = ({ children, tip, onClick, icon }) => {
         </div>
     );
 }
+
+module.exports = Tooltip;

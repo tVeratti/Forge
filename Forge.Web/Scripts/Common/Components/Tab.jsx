@@ -1,5 +1,5 @@
-﻿// =====================================
-// <Tab />
+﻿const React = require('react');
+
 // =====================================
 const Tab = React.createClass({
     // ----------------------------
@@ -31,3 +31,5 @@ const Tab = React.createClass({
         this.refs.input.checked = checked;
     }
 });
+
+module.exports = Tab;

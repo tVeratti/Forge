@@ -1,11 +1,7 @@
-// --------------------------------------------------
-// <Forge.Definition />
+const React = require('react');
 
-// - Settings
-// - ControlName
-// - Value
-// --------------------------------------------------
-Forge.__Definition = React.createClass({    
+// =====================================
+const Definition = React.createClass({    
     // -----------------------------
     render: function() {
         const { ...model } = this.props.model;
@@ -23,47 +19,9 @@ Forge.__Definition = React.createClass({
     },
 
     // -----------------------------
-    componentWillMount: function(){
-        // Trigger Lifecycle: Initialize
-        const { core, model } = this.props;
-        const { stages } = Forge.lifeCycle;
-        this.valueChange(model.Value, stages.init);
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function(nextProps){
-        // Trigger Lifecycle: Update
-        const { core, model } = nextProps;
-        const { stages } = Forge.lifeCycle;
-        this.valueChange(model.Value, stages.update, nextProps);
-    },
-
-    // -----------------------------
-    valueChange: function(value, stage, props) {
-        const { lifeCycle, settings } = Forge;
-        
-        // Defaults (event triggered == null)
-        stage = stage || lifeCycle.stages.update;
-        props = props || this.props;
-
-        const { model, core, dispatch } = props;
-
-        // Apply all settings that match the current lifecycle
-        // model.MergedSettings
-        //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
-        //     .forEach(s => value = settings.apply(value, s));
-
-        if (typeof value == 'number' && isNaN(value)) value = 0;
-
-        if (value != props.model.Value){
-            dispatch(coreActions.updateDefinition({ ...model, Value: value }, true));
-        };
+    valueChange: function(value) {
+        // dispatch
     },
 });
 
-// =====================================
-// Container
-// =====================================
-Forge.Definition = connect(
-    state => { return { core: state.core }}
-)(Forge.__Definition);
+module.exports = Definition;

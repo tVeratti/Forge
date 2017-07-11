@@ -1,4 +1,7 @@
-Forge.components.controls.Select_Definition = React.createClass({
+const React = require('react');
+
+// =====================================
+const Select_Definition = React.createClass({
 	// -----------------------------
 	render: function(){
 		const { Model, Value } = this.props;

@@ -1,6 +1,4 @@
 ﻿// =====================================
-// <Select />
-// =====================================
 const Select = ({ ...props }) => {
     const options = props.options || [];
 
@@ -21,3 +19,5 @@ const Select = ({ ...props }) => {
         </select>
     );
 };
+
+module.exports = Select;

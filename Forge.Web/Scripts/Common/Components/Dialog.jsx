@@ -1,10 +1,12 @@
-﻿
+﻿const actions = require('./../Actions.js');
+
+// =====================================
 const Dialog = (props) => {
     const { children, header, buttons, requiredAction, onClose } = props;
 
     const close = onClose
         ? () => onClose()
-        : () => store.dispatch(commonActions.closeDialog());
+        : () => store.dispatch(actions.closeDialog());
         
     const overlayClick = requiredAction ? null : close;
 
@@ -36,3 +38,5 @@ const Dialog = (props) => {
         </div>
     );
 };
+
+module.exports = Dialog;

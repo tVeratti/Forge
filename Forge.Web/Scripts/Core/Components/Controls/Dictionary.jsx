@@ -1,4 +1,7 @@
-Forge.components.controls.Dictionary = React.createClass({
+const React = require('react');
+
+// =====================================
+const Dictionary = React.createClass({
 	render: function(){
 		const { Keys } = this.props.Model;
 

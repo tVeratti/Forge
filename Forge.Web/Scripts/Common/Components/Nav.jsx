@@ -1,5 +1,5 @@
-﻿// =======================================================
-// <Nav />
+﻿const React = require('react');
+
 // =======================================================
 const Nav = React.createClass({
     // RENDER ==========================
@@ -84,3 +84,5 @@ const Nav = React.createClass({
         document.removeEventListener('click', this.hideAll);
     }
 });
+
+module.exports = Nav;

@@ -1,4 +1,7 @@
-Forge.components.controls.Number = React.createClass({
+const React = require('react');
+
+// =====================================
+const Number = React.createClass({
 	// -----------------------------
 	render: function(){
 		const { Model } = this.props;

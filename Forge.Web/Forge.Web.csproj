@@ -234,7 +234,6 @@
     <Content Include="Scripts\Common\Components\Checkbox.jsx" />
     <Content Include="Scripts\Common\Components\Select.jsx" />
     <Content Include="Scripts\Common\Components\Radio.jsx" />
-    <Content Include="Scripts\Common\Components\GenreSelect.jsx" />
     <Content Include="Scripts\Common\Components\Sortable.jsx" />
     <Content Include="Scripts\Common\Components\Tab.jsx" />
     <Content Include="Scripts\Core\Actions.js" />

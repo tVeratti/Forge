@@ -1,5 +1,7 @@
-﻿// =====================================
-Forge.Tags = React.createClass({
+﻿const React = require('react');
+
+// =====================================
+const Tags = React.createClass({
     // -----------------------------
     render: function () {
         var tagNodes = this.renderTags();
@@ -92,3 +94,5 @@ Forge.Tags = React.createClass({
         onChange && onChange(tags);
     }
 });
+
+module.exports = Tags;

@@ -1,6 +1,4 @@
 ﻿// =====================================
-// <Checkbox />
-// =====================================
 const Checkbox = (props) => {
     const { id, label, name, checked, onChange } = props;
 
@@ -11,3 +9,5 @@ const Checkbox = (props) => {
         </span>
     );
 }
+
+module.exports = Checkbox;

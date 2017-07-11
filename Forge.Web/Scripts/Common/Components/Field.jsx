@@ -1,6 +1,4 @@
 ﻿// =====================================
-// <Field />
-// =====================================
 const Field = ({ ...props }) => {
     const change = (ev) => props.onChange(ev.target.value);
 
@@ -25,3 +23,5 @@ const Field = ({ ...props }) => {
         </div>
     );
 }
+
+module.exports = Field;

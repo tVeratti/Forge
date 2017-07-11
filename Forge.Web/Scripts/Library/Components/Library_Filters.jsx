@@ -19,7 +19,6 @@ Library.__Filters = React.createClass({
                 <div className='library__other-filters'>
                     {/* Other Filters */}
                     {keywordNode}
-                    <GenreSelect />
                 </div>
 
             </div>

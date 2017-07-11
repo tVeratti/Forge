@@ -1,5 +1,5 @@
-﻿// =====================================
-// <Sortable />
+﻿const React = require('react');
+
 // =====================================
 const Sortable = React.createClass({
     // -----------------------------
@@ -115,7 +115,6 @@ const Sortable = React.createClass({
 
     // -----------------------------
     calculateActive: function(index, ev){
-
         // Determine if the user is hovering over the top
         // or bottm half of the element in order to know
         // where the drop should be shown (above/below).
@@ -156,4 +155,6 @@ const Sortable = React.createClass({
 
         if (onChange) onChange(initialIndex, newIndex, handler);
     }
-})
+});
+
+module.exports = Sortable;
