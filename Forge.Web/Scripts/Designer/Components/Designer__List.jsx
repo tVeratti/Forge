@@ -1,7 +1,7 @@
 const React = require('react');
-const { Provider, connect} = require('react-redux');
+const { connect} = require('react-redux');
 
-const { actions } = require(__dirname + '/Core');
+const { action, CATEGORIES } = require('Core');
 
 // Presentation
 // =====================================

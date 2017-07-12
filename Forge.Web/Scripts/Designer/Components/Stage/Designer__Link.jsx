@@ -1,8 +1,11 @@
-﻿// =====================================
-// <Designer.Link />
+﻿const React = require('react');
+
+const store = require('Store.js');
+const actions = require('Designer/Actions.js');
+
 // =====================================
-Designer.Link = ({ model, hideCategory }) => {
-    const onClick = () => store.dispatch(designerActions.navigate(model));
+const Link = ({ model, hideCategory }) => {
+    const onClick = () => store.dispatch(actions.navigate(model));
     
     return (
         <button className='button button--link designer__link' onClick={onClick}>
@@ -11,3 +14,5 @@ Designer.Link = ({ model, hideCategory }) => {
         </button>
     )
 }
+
+module.exports = Link;

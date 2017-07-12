@@ -1,5 +1,8 @@
-﻿
-Designer.LoadError = () => {
+﻿const React = require('react');
+
+const Dialog = require('Common/Components/Dialog.jsx');
+
+const LoadError = () => {
     return (
         <Dialog header='Connection Failed'>
             The Designer could not be loaded. You may continue working in offline mode,
@@ -8,3 +11,4 @@ Designer.LoadError = () => {
     )
 };
 
+module.exports = LoadError;

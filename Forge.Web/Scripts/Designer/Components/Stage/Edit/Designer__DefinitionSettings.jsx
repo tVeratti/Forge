@@ -1,7 +1,13 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const designerActions = require('Designer/Actions.js');
+const { actions, utilities } = require('Core');
+const controls = {};
+
 // Presentation
 // =====================================
-Designer.__DefinitionSettings = React.createClass({
+const __DefinitionSettings = React.createClass({
     // -----------------------------
     render: function () {
         
@@ -93,7 +99,7 @@ Designer.__DefinitionSettings = React.createClass({
 
         // Dynamically create the component based on Control name.
        return React.createElement(
-            Forge.components.controls[controlName], 
+            controls[controlName], 
             controlProps
         );
     },
@@ -117,7 +123,7 @@ Designer.__DefinitionSettings = React.createClass({
         settings.splice(index, 1);
         model.Settings = settings;
 
-        dispatch(coreActions.updateDefinition(model));
+        dispatch(actions.updateDefinition(model));
     },
 
     // -----------------------------
@@ -183,17 +189,18 @@ Designer.__DefinitionSettings = React.createClass({
         // Set Priority based on index.
         flatSettings.forEach((s, i) => s.Priority = i);
 
-        const sortedSettings = Forge.utilities.sortSettings(flatSettings);
+        const sortedSettings = utilities.sortSettings(flatSettings);
         model.Settings = sortedSettings.filter(s => !s.TagId);
         model.Rules = sortedSettings.filter(s => !!s.TagId);
 
-        dispatch(coreActions.updateDefinition(model));
+        dispatch(actions.updateDefinition(model));
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.DefinitionSettings = connect(
+const DefinitionSettings = connect(
     state => { return { ...state }}
-)(Designer.__DefinitionSettings);
+)(__DefinitionSettings);
+
+module.exports = DefinitionSettings;

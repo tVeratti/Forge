@@ -1,17 +1,4 @@
-﻿// Action Types
-// =====================================
-// --------------------------------
-const REQUEST_DESIGNER =        'REQUEST_DESIGNER';
-const RECEIVE_DESIGNER =        'RECEIVE_DESIGNER';
-const BACK =                    'BACK';
-const CHANGE_TAB =              'CHANGE_TAB';
-const NAVIGATE =                'NAVIGATE';
-const SELECT_LIST_ITEM =        'SELECT_LIST_ITEM';
-const FORCE_LIST =              'FORCE_LIST';
-const ACTIVATE_TAG =            'ACTIVATE_TAG';
-const SAVE_MODEL =              'SAVE_MODEL';
-const SAVE_TAG =                'SAVE_TAG';
-const SAVE_DEFINITION =         'SAVE_DEFINITION';
+﻿const { actions, CATEGORIES} = require('Core');
 
 const designerActions = {    
 
@@ -39,12 +26,12 @@ const designerActions = {
     // =====================================
     // --------------------------------
     requestDesigner: function(){
-        return { type: REQUEST_DESIGNER };
+        return { type: 'REQUEST_DESIGNER' };
     },
 
     // --------------------------------
     receiveDesigner: function(designer){
-        return { type: RECEIVE_DESIGNER, designer };
+        return { type: 'RECEIVE_DESIGNER', designer };
     },
 
     // --------------------------------
@@ -54,7 +41,13 @@ const designerActions = {
             dispatch(this.requestDesigner());
 
             // Fetch games from database with state filters.
-            $.get(this.api.FETCH_DESIGNER, { id })
+            fetch(this.api.FETCH_DESIGNER, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id })
+                })
                 .then(response => JSON.parse(response))
                 .then(result => dispatch(this.receiveDesigner(result)));
         }
@@ -62,37 +55,37 @@ const designerActions = {
 
     // --------------------------------
     back: function(){
-        return { type: BACK };
+        return { type: 'BACK' };
     },
 
     // --------------------------------
     changeTab: function(tab){
-        return { type: CHANGE_TAB, tab };
+        return { type: 'CHANGE_TAB', tab };
     },
 
     // --------------------------------
     selectListItem: function(index){
-        return { type: SELECT_LIST_ITEM, index };
+        return { type: 'SELECT_LIST_ITEM', index };
     },
 
     // --------------------------------
     navigate: function(model){
-        return { type: SELECT_LIST_ITEM, category: model.Category, index: model.index };
+        return { type: 'SELECT_LIST_ITEM', category: model.Category, index: model.index };
     },
 
     // --------------------------------
     closeList: function(){
-        return { type: FORCE_LIST, listOpen: false, force: true };
+        return { type: 'FORCE_LIST', listOpen: false, force: true };
     },
 
     // --------------------------------
     openList: function(listTab){
-        return { type: FORCE_LIST, listOpen: true, listTab, force: true};
+        return { type: 'FORCE_LIST', listOpen: true, listTab, force: true};
     },
 
     // --------------------------------
     activateTag: function(tagId){
-        return { type: ACTIVATE_TAG, tagId };
+        return { type: 'ACTIVATE_TAG', tagId };
     },
 
     // --------------------------------
@@ -105,7 +98,7 @@ const designerActions = {
             const gameId = core.Game.Id;
             const model = { ...core[tab][index] };
 
-            dispatch({ type: DELETE_ITEM, model, tab });
+            dispatch({ type: 'DELETE_ITEM', model, tab });
 
             let api;
             switch(designer.tab){
@@ -114,7 +107,13 @@ const designerActions = {
                 case CATEGORIES.DEFINITIONS: api = this.api.DELETE_DEFINITION; break;
             }
 
-            $.post(api, { Id: model.Id });
+            fetch(api, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: model.Id })
+            });
         }
     },
 
@@ -141,9 +140,15 @@ const designerActions = {
             }
             
             // Send model data to database.
-            $.post(api, { model })
-                .fail(response => dispatch(coreActions.updateItem(model, tab, true)))
-                .success(response => JSON.parse(response))
+            fetch(api, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ model })
+                })
+                //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                .then(response => JSON.parse(response))
                 .then(id => {
                     // Check if an id was sent back from the controller -
                     // this indicates if an item was inserted or updated.
@@ -160,3 +165,5 @@ const designerActions = {
         return debounceAction(thunk, 'saveModel', 500);
     }
 }
+
+module.exports = designerActions;

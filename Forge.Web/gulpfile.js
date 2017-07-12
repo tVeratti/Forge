@@ -5,6 +5,7 @@ const babelify =    require('babelify');
 const source =      require('vinyl-source-stream');
 const buffer =      require('vinyl-buffer');
 const replace =     require('gulp-replace');
+const plumber =     require('gulp-plumber');
 
 const sourceJS = [
     // Global & Utilities
@@ -31,12 +32,16 @@ const sourceJS = [
 // This creates the single static JS file which applications
 // request and load onto their page for global variables.
 gulp.task('browserify-components', function () {
-    return browserify({ entries: './Scripts/index.js' })
+    return browserify({
+            entries: './Scripts/index.js',
+            paths: ['./Scripts']
+        })
         .transform('babelify', { presets: [ 'es2015', 'react', 'stage-2' ]})
         .bundle()
         .pipe(source('scripts.js'))
+        .pipe(plumber())
         .pipe(buffer())
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(replace(/('|")use strict\1(;*)/g, ''))
         .pipe(gulp.dest('Content'));
 });

@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const { actions, utilities } = require('Core');
+const Field = require('Common/Components/Field.jsx');
+
 // Presentation
 // =====================================
-Designer.__Rule = React.createClass({    
+const __Rule = React.createClass({    
 
     // -----------------------------
     render: function(){
@@ -11,7 +16,7 @@ Designer.__Rule = React.createClass({
         const update = (prop) => this.updateModel.bind(this, prop);
         const setting = core.Settings.filter(s => s.Id == selectedItem.SettingId)[0];
         const controlNode = setting
-            ? Forge.utilities.renderControl(setting, update('Keys'))
+            ? utilities.renderControl(setting, update('Keys'))
             : 'Choose a Setting type';
 
         return (
@@ -54,14 +59,15 @@ Designer.__Rule = React.createClass({
         
         model[prop] = value;
 
-        dispatch(coreActions.updateRule(model));
+        dispatch(actions.updateRule(model));
     }
     
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Rule = connect(
+const Rule = connect(
     state => { return { ...state } }
-)(Designer.__Rule);
+)(__Rule);
+
+module.exports = Rule;

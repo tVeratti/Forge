@@ -12,11 +12,13 @@
     "gulp-replace": "^0.5.4",
     "gulp-uglify": "^3.0.0",
     "moment": "^2.18.1",
+    "path": "^0.12.7",
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
+    "rfr": "^1.2.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "whatwg-fetch": "^2.0.3"

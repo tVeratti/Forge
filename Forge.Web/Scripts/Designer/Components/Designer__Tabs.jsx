@@ -1,5 +1,9 @@
 ﻿const React = require('react');
-const { Provider, connect} = require('react-redux');
+const { connect} = require('react-redux');
+
+const designerActions = require('Designer/Actions.js');
+
+const Tab = require('Common/Components/Tab.jsx');
 
 // Presentation
 // =====================================

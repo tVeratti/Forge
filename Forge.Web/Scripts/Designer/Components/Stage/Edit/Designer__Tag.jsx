@@ -1,7 +1,13 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const { actions } = require('Core');
+const Field = require('Common/Components/Field.jsx');
+const Link = require('./../Designer__link.jsx');
+
 // Presentation
 // =====================================
-Designer.__Tag = React.createClass({    
+const __Tag = React.createClass({    
 
     // -----------------------------
     render: function(){
@@ -60,7 +66,7 @@ Designer.__Tag = React.createClass({
 
         return (
             <li key={item.Id} className='list__item'>
-                <Designer.Link model={item} dispatch={dispatch} category={category} hideCategory={true} />
+                <Link model={item} dispatch={dispatch} category={category} hideCategory={true} />
             </li>
         );
     },
@@ -71,13 +77,14 @@ Designer.__Tag = React.createClass({
         const { ...tag } = core.Tags[designer.index];
         tag.Name = value;
 
-        dispatch(coreActions.updateTag(tag));
+        dispatch(actions.updateTag(tag));
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Tag = connect(
+const Tag = connect(
     state => { return { ...state } }
-)(Designer.__Tag);
+)(__Tag);
+
+module.exports = Tag;

@@ -1,8 +1,12 @@
 ﻿const React = require('react');
-const { Provider, connect} = require('react-redux');
+const { connect} = require('react-redux');
 
-const actions = require('./../../Actions.js');
-const { CATEGORIES } = require(__dirname + '/Core');
+const actions = require('Designer/Actions.js');
+const { CATEGORIES } = require('Core');
+
+const Field = require('Common/Components/Field.jsx');
+const Select = require('Common/Components/Select.jsx');
+const Recent = require('./Designer__Recent.jsx');
 
 // Presentation
 // =====================================
@@ -60,7 +64,7 @@ const __Menu = React.createClass({
 
                 
 
-                <Designer.Recent />
+                <Recent />
             </div>
         );
     },

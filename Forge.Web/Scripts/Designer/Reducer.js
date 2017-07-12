@@ -1,7 +1,9 @@
-﻿// Default navigation information based on 
+﻿const { CATEGORIES } = require('Core');
+
+// Default navigation information based on 
 // potential hash values to allow linking/refreshing.
 const hash = (location.hash || '').split('/');
-const initialDesignerState = {
+const initialState = {
     loading: true,
     saving: false,
     tab: (hash[0] || 'Menu').replace('#', ''),
@@ -10,7 +12,7 @@ const initialDesignerState = {
     itemHistory: []
 }
 
-function designerReducer(state = initialDesignerState, action){
+function designerReducer(state = initialState, action){
     
     let nextState = Object.assign({}, state);
     nextState.navigated = false;
@@ -27,14 +29,14 @@ function designerReducer(state = initialDesignerState, action){
     }
 
     switch(action.type){
-        case GET_LOCAL_GAME:
+        case 'GET_LOCAL_GAME':
             nextState.local = true;
-        case RECEIVE_GAME:
+        case 'RECEIVE_GAME':
             nextState.saving = false;
             nextState.loading = false;
             
         // --------------------------------
-        case BACK:
+        case 'BACK':
             if (state.itemHistory.length){
                 const backState = state.itemHistory[0];
                 nextState = Object.assign({}, nextState, backState);
@@ -43,16 +45,16 @@ function designerReducer(state = initialDesignerState, action){
             break;
 
         // --------------------------------
-        case CHANGE_TAB:
+        case 'CHANGE_TAB':
             nextState.tab = action.tab;
             nextState.index = -1;
             nextState.activeTagId = null;
             break;
 
         // --------------------------------
-        case FORCE_LIST:
-        case SELECT_LIST_ITEM:
-        case CREATE_ITEM:
+        case 'FORCE_LIST':
+        case 'SELECT_LIST_ITEM':
+        case 'CREATE_ITEM':
 
             const listOpen = action.listOpen !== undefined
                 ? action.listOpen
@@ -80,22 +82,22 @@ function designerReducer(state = initialDesignerState, action){
 
             break;
 
-        case DELETE_ITEM:
+        case 'DELETE_ITEM':
             nextState.index = -1;
             break;
 
         // --------------------------------
-        case ACTIVATE_TAG:
+        case 'ACTIVATE_TAG':
             nextState.activeTagId = action.tagId;
             break;
         
         // --------------------------------
-        case SAVE_MODEL:
+        case 'SAVE_MODEL':
             if (state.saving) return nextState;
             nextState.saving = true;
             break;
 
-        case UPDATE_ITEM:
+        case 'UPDATE_ITEM':
             nextState.saving = false;
     }
 
@@ -103,3 +105,5 @@ function designerReducer(state = initialDesignerState, action){
 
     return nextState;
 }
+
+module.exports = designerReducer;

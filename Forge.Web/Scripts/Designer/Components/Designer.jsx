@@ -1,6 +1,10 @@
 ﻿const React = require('react');
 const { Provider, connect} = require('react-redux');
 
+const store =               require('Store.js');
+const designerActions =     require('Designer/Actions.js');
+const coreActions =         require('Core').actions;
+
 const Summary =     require('./Designer__Summary.jsx');
 const Tabs =        require('./Designer__Tabs.jsx');
 const Dialogs =     require('./Designer__Dialogs.jsx');

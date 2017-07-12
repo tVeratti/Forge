@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const designerActions =     require('Designer/Actions.js');
+const coreActions =         require('Core/Actions.js');
+
 // Presentation
 // =====================================
-Designer.__DefinitionTags = React.createClass({
+const __DefinitionTags = React.createClass({
     // -----------------------------
     render: function () {
         
@@ -121,9 +126,10 @@ Designer.__DefinitionTags = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.DefinitionTags = connect(
+const DefinitionTags = connect(
     state => { return { ...state }}
-)(Designer.__DefinitionTags);
+)(__DefinitionTags);
+
+module.exports = DefinitionTags;

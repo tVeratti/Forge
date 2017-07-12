@@ -1,4 +1,6 @@
-﻿const CATEGORIES = {
+﻿require('whatwg-fetch');
+
+const CATEGORIES = {
     TAGS:           'Tags',
     RULES:          'Rules',
     DEFINITIONS:    'Definitions'
@@ -30,9 +32,15 @@ const actions = {
             dispatch(this.requestGame());
 
             // Fetch games from database with state filters.
-            $.get(this.api.FETCH_CORE, { id })
-                .fail(response => dispatch(this.getLocalGame(id)))
-                .done(response => {
+            fetch(this.api.FETCH_CORE, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id })
+                })
+                //.fail(response => dispatch(this.getLocalGame(id)))
+                .then(response => {
                     const result = JSON.parse(response)
                     dispatch(this.receiveGame(result))
                 });
@@ -72,9 +80,15 @@ const actions = {
             });
             
             // Send model data to database.
-            $.post(api, { model, gameId })
+            fetch(api, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ model, gameId })
+                })
                 //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
-                .success(response => JSON.parse(response))
+                .then(response => JSON.parse(response))
                 .then(id => dispatch(coreActions.updateItemId(tempId, id, category)));
         }
     },
@@ -84,7 +98,13 @@ const actions = {
             const { core, designer } = getState();
             const gameId = core.Game.Id;
 
-            $.post(this.api.SAVE_GROUPS, { groups, gameId })
+            fetch(this.api.SAVE_GROUPS, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ groups, gameId })
+                })
                 .success(result => dispatch({ type: 'UPDATE_GROUPS', result }));
         }
     },
@@ -140,9 +160,15 @@ const actions = {
             const { core } = getState();
 
             // Fetch games from database with state filters.
-            $.post(this.api.SAVE_CORE, core)
+            fetch(this.api.SAVE_CORE, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ core })
+                })
                 //.fail(response => dispatch(this.getLocalGame(id)))
-                .done(r => dispatch({ type: 'END_SAVE_CORE' }));
+                .then(r => dispatch({ type: 'END_SAVE_CORE' }));
         };
     }
 }

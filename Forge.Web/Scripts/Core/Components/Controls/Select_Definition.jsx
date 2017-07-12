@@ -1,5 +1,7 @@
 const React = require('react');
 
+const Select = require('./../../../Common/Components/Select.jsx');
+
 // =====================================
 const Select_Definition = React.createClass({
 	// -----------------------------

@@ -1,5 +1,8 @@
 const React = require('react');
 
+const ToolTip = require('./Tooltip.jsx');
+const controls = {};
+
 // =====================================
 const Dictionary = React.createClass({
 	render: function(){
@@ -110,7 +113,7 @@ const Dictionary = React.createClass({
 
 		// Dynamically create the component based on Control name.
         return React.createElement(
-            Forge.components.controls[item.Control || item.ControlName || 'Text'], 
+            controls[item.Control || item.ControlName || 'Text'], 
             { Model: item, onChange }
         );
 	},
@@ -144,3 +147,5 @@ const Dictionary = React.createClass({
 		onChange && onChange(list);
 	}
 });
+
+module.exports = Dictionary;

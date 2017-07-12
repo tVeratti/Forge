@@ -1,7 +1,15 @@
-﻿// =====================================
+﻿const React =           require('react');
+const { connect} =      require('react-redux');
+
+const commonActions =   require('Common/Actions.js');
+const coreActions =     require('Core/Actions.js');
+
+const Dialog =          require('Common/Components/Dialog.jsx');
+const Sortable =        require('Common/Components/Sortable.jsx');
+
 // Presentation
 // =====================================
-Designer.__Groups = React.createClass({
+const __Groups = React.createClass({
     // -----------------------------
     render: function(){
         const groupNodes = this.renderGroups();
@@ -95,9 +103,10 @@ Designer.__Groups = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Groups = connect(state => {
+const Groups = connect(state => {
     return { Groups: state.core.Groups };
-})(Designer.__Groups);
+})(__Groups);
+
+module.exports = Groups;

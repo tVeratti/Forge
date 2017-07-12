@@ -1,7 +1,20 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const { CATEGORIES } = require('Core');
+
+const designerActions =     require('Designer/Actions.js');
+const commonActions =       require('Common/Actions.js');
+const coreActions =         require('Core/Actions.js');
+
+const Field =               require('Common/Components/Field.jsx');
+const Definition =          require('Core/Components/Definition.jsx');
+const DefinitionTags =      require('./Designer__DefinitionTags.jsx');
+const DefinitionSettings =  require('./Designer__DefinitionSettings.jsx');
+
 // Presentation
 // =====================================
-Designer.__Definition = React.createClass({    
+const __EditDefinition = React.createClass({    
 
     // -----------------------------
     render: function(){
@@ -54,7 +67,7 @@ Designer.__Definition = React.createClass({
                     <h4>Tags</h4>
                     <p className='summary'>Tags can be used to apply global rules, which will add settings with predfined values.</p>
                     <a className='button button--link' onClick={goToTags}>Edit Tags</a>
-                    <Designer.DefinitionTags />
+                    <DefinitionTags />
                     
                 </div>
 
@@ -64,7 +77,7 @@ Designer.__Definition = React.createClass({
                     <p className='summary'>These settings change the behavior of this definition on the character builder. These will be applied to the definition in order from top to bottom (priority). <b>Drag a setting to re-order its priority level.</b></p>
                     <a className='button button--link' onClick={goToSettings}>Add Settings</a>
                     <div className='separator  separator--small' />
-                    <Designer.DefinitionSettings />
+                    <DefinitionSettings />
                 </div>
 
                 {/* Preview */}
@@ -90,9 +103,10 @@ Designer.__Definition = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Definition = connect(
+const EditDefinition = connect(
     state => { return { ...state } }
-)(Designer.__Definition);
+)(__EditDefinition);
+
+module.exports = EditDefinition;

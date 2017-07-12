@@ -1,7 +1,10 @@
 ﻿const React = require('react');
-const { Provider, connect} = require('react-redux');
+const { connect} = require('react-redux');
 
-const { actions } = require('./../Actions.js');
+const actions = require('Designer/Actions.js');
+
+const LoadError =   require('./Dialogs/Designer__LoadError.jsx');
+const Groups =      require('./Dialogs/Designer__Groups.jsx');
 
 // Presentation
 // =====================================
@@ -15,8 +18,8 @@ const __Dialogs = (props) => {
         } = actions.dialogTypes;
 
     switch (dialogType) {
-        case LOAD_ERROR:    return <Designer.LoadError />;
-        case EDIT_GROUPS:   return <Designer.Groups />;
+        case LOAD_ERROR:    return <LoadError />;
+        case EDIT_GROUPS:   return <Groups />;
     }
     
     return <span />

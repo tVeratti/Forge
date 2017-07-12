@@ -1,5 +1,17 @@
 ﻿const React = require('react');
-const { Provider, connect} = require('react-redux');
+const { connect} = require('react-redux');
+
+const designerActions =     require('Designer/Actions.js');
+const coreActions =         require('Core/Actions.js');
+
+const Preview =     require('./Stage/Designer__Preview.jsx');
+const Menu =        require('./Stage/Designer__Menu.jsx');
+
+const Tag =         require('./Stage/Edit/Designer__Tag.jsx');
+const Rule =        require('./Stage/Edit/Designer__Rule.jsx');
+const Definition =  require('./Stage/Edit/Designer__Definition.jsx');
+
+const { CATEGORIES } = coreActions;
 
 // Presentation
 // =====================================
@@ -67,12 +79,12 @@ const __Stage = React.createClass({
 
         // Return a specific editing stage component.
         switch(designer.tab){
-            case CATEGORIES.TAGS:            return <Designer.Tag />;
-            case CATEGORIES.RULES:           return <Designer.Rule />;
-            case CATEGORIES.DEFINITIONS:     return <Designer.Definition />;
-            case 'Preview':                  return <Designer.Preview />;
+            case CATEGORIES.TAGS:            return <Tag />;
+            case CATEGORIES.RULES:           return <Rule />;
+            case CATEGORIES.DEFINITIONS:     return <Definition />;
+            case 'Preview':                  return <Preview />;
             
-            default:                         return <Designer.Menu />
+            default:                         return <Menu />
         }
     },
 

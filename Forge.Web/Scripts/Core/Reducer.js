@@ -1,5 +1,5 @@
-﻿const { CATEGORIES } = require('./Actions.js');
-const { getRules, sortSettings } = requre('./Settings.js');
+﻿const { settings, utilities, CATEGORIES } = require('Core');
+const { getRules, sortSettings } = settings;
 
 const initialState = {
     loading: true,
@@ -20,14 +20,14 @@ const initialState = {
 
 // =====================================
 function coreReducer(state = initialState, action){
-    const { getRules, sortSettings } = Forge.utilities;
+    const { getRules, sortSettings } = utilities;
 
     let nextState = { ...state };
 
     switch(action.type){
         // --------------------------------
         case 'REQUEST_GAME':
-            var localGame = getGameFomLocalStorage(action.id) || initialCoreState;
+            var localGame = getGameFomLocalStorage(action.id) || initialState;
             nextState = { ...localGame, loading: true };
 
             break;
@@ -222,7 +222,7 @@ function getGameFomLocalStorage(id){
 // 1. Merge Rules & Settings.
 // 2. Build Dependency Tree.
 // 3. Apply all Settings (Recursive, tree).
-function updateAll(state, stage = Forge.lifeCycle.stages.update){
+function updateAll(state, stage = lifeCycle.stages.update){
     const { Definitions } = state;
 
     Definitions.forEach(model =>{
@@ -257,7 +257,6 @@ function updateAll(state, stage = Forge.lifeCycle.stages.update){
 // Recursively apply all settings to Definitions,
 // and update all dependants thereafter.
 function applySettings(model, index, stage, state){
-    const { settings } = Forge;
     console.log('applySettings', model.Name)
     // Apply all settings that match the current lifecycle
     let values = [ ...model.Values ];
@@ -284,3 +283,5 @@ function arrayChanged(a, b){
 
     return change;
 }
+
+module.exports = coreReducer;

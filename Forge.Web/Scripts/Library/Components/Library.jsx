@@ -1,4 +1,5 @@
-﻿// =====================================
+﻿const store = require('Store.js');
+
 // <Library />
 // =====================================
 const __Library = (props) => {
@@ -25,7 +26,6 @@ const Library = connect(
     state => { return { ...state } }
 )(__Library);
 
-// =====================================
 // Root
 // =====================================
 Library.Provider = () => {
