@@ -1,12 +1,12 @@
 ﻿const React = require('react');
 const { connect} = require('react-redux');
 
-const { CATEGORIES } = require('Core');
+const { CATEGORIES, actions } = require('Core');
 
 // Presentation
 // =====================================
 const __Recent = ({ core, designer, dispatch }) => {
-    const categories = [CATEGORIES.TAGS, CATEGORIES.RULES, CATEGORIES.DEFINITIONS];
+    const categories = [ CATEGORIES.TAGS, CATEGORIES.RULES, CATEGORIES.DEFINITIONS ];
     const sourceItems = [ ...core.Tags, ...core.Rules, ...core.Definitions ];
 
     const recentNodes = sourceItems
@@ -17,7 +17,7 @@ const __Recent = ({ core, designer, dispatch }) => {
         .map((x, i) => <li><Designer.Link key={i} model={x} /></li>);
     
     const startNodes = categories.map(c => {
-        const createItem = () => dispatch(coreActions.createItem(c));
+        const createItem = () => dispatch(actions.createItem(c));
         const label = c.slice(0, -1);
         const disabled = core.Game.IsLocked;
         return (

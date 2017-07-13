@@ -25,29 +25,6 @@ const designerActions = {
     // Action Creators
     // =====================================
     // --------------------------------
-    requestDesigner: function(){
-        return { type: 'REQUEST_DESIGNER' };
-    },
-
-    // --------------------------------
-    receiveDesigner: function(designer){
-        return { type: 'RECEIVE_DESIGNER', designer };
-    },
-
-    // --------------------------------
-    fetchDesigner: function(id) {
-        return dispatch => {
-            // Show loading indication.
-            dispatch(this.requestDesigner());
-
-            // Fetch games from database with state filters.
-            fetch(`${this.api.FETCH_DESIGNER}/${id}`)
-                .then(response => JSON.parse(response))
-                .then(result => dispatch(this.receiveDesigner(result)));
-        }
-    },
-
-    // --------------------------------
     back: function(){
         return { type: 'BACK' };
     },
@@ -103,6 +80,7 @@ const designerActions = {
 
             fetch(api, { 
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -136,12 +114,13 @@ const designerActions = {
             // Send model data to database.
             fetch(api, { 
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ model })
                 })
-                //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                //.fail(response => dispatch(actions.updateItem(model, tab, true)))
                 .then(response => JSON.parse(response))
                 .then(id => {
                     // Check if an id was sent back from the controller -
@@ -152,7 +131,7 @@ const designerActions = {
                         model.Id = id;
                     }
                     
-                    dispatch(coreActions.updateItem(model, tab, true));
+                    dispatch(actions.updateItem(model, tab, true));
                 });
         }
         
