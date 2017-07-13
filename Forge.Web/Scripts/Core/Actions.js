@@ -26,24 +26,15 @@ const actions = {
     requestGame:    function()      { return { type: 'REQUEST_GAME' }},
     receiveGame:    function(game)  { return { type: 'RECEIVE_GAME', game }},
     getLocalGame:   function(id)    { return { type: 'GET_LOCAL_GAME', id}},
-    fetchGame:      function(id){
+    fetchGame:      function(id)    {
         return dispatch => {
             // Show loading indication.
             dispatch(this.requestGame());
 
             // Fetch games from database with state filters.
-            fetch(this.api.FETCH_CORE, { 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id })
-                })
+            fetch(`${this.api.FETCH_CORE}/${id}`, { credentials: 'same-origin' })
                 //.fail(response => dispatch(this.getLocalGame(id)))
-                .then(response => {
-                    const result = JSON.parse(response)
-                    dispatch(this.receiveGame(result))
-                });
+                .then(response => dispatch(this.receiveGame(response)));
         }
     },
 
@@ -82,14 +73,14 @@ const actions = {
             // Send model data to database.
             fetch(api, { 
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ model, gameId })
                 })
                 //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
-                .then(response => JSON.parse(response))
-                .then(id => dispatch(coreActions.updateItemId(tempId, id, category)));
+                .then(id => dispatch(this.updateItemId(tempId, id, category)));
         }
     },
 

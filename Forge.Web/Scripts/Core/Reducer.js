@@ -1,5 +1,6 @@
 ﻿const { settings, utilities, CATEGORIES } = require('Core');
 const { getRules, sortSettings } = settings;
+const { sortBy } = utilities;
 
 const initialState = {
     loading: true,

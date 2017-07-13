@@ -41,13 +41,7 @@ const designerActions = {
             dispatch(this.requestDesigner());
 
             // Fetch games from database with state filters.
-            fetch(this.api.FETCH_DESIGNER, { 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id })
-                })
+            fetch(`${this.api.FETCH_DESIGNER}/${id}`)
                 .then(response => JSON.parse(response))
                 .then(result => dispatch(this.receiveDesigner(result)));
         }

@@ -13,6 +13,8 @@ const Select = ({ ...props }) => {
 
     const onChange = (ev) => props.onChange && props.onChange(ev.target.value);
 
+    delete props.options;
+
     return (
         <select className='select__input' {...props}>
             {optionNodes}

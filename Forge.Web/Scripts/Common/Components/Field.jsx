@@ -1,4 +1,7 @@
-﻿// =====================================
+﻿const Select = require('./Select.jsx');
+const Tooltip = require('./Tooltip.jsx');
+
+// =====================================
 const Field = ({ ...props }) => {
     const change = (ev) => props.onChange(ev.target.value);
 

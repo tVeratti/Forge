@@ -4,9 +4,10 @@ const { connect} = require('react-redux');
 const actions = require('Designer/Actions.js');
 const { CATEGORIES } = require('Core');
 
-const Field = require('Common/Components/Field.jsx');
-const Select = require('Common/Components/Select.jsx');
-const Recent = require('./Designer__Recent.jsx');
+const Field =           require('Common/Components/Field.jsx');
+const Select =          require('Common/Components/Select.jsx');
+const TagsControl =     require('Common/Components/Tags.jsx');
+const Recent =          require('./Designer__Recent.jsx');
 
 // Presentation
 // =====================================
@@ -56,7 +57,7 @@ const __Menu = React.createClass({
                             id='genre'
                             defaultValue={1}
                             options={genres}>
-                            <Forge.Tags options={genres} tags={Game.GenreIds} />
+                            <TagsControl tags={[]} options={[]} />
                         </Field>
                         
                     </div>

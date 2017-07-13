@@ -1,7 +1,7 @@
 ﻿const React = require('react');
 const { connect} = require('react-redux');
 
-const { CATEGORIES } = require('Core').actions;
+const { CATEGORIES } = require('Core');
 
 // Presentation
 // =====================================

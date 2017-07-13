@@ -6,6 +6,7 @@ const coreActions =         require('Core/Actions.js');
 
 const Preview =     require('./Stage/Designer__Preview.jsx');
 const Menu =        require('./Stage/Designer__Menu.jsx');
+const Recent =      require('./Stage/Designer__Recent.jsx');
 
 const Tag =         require('./Stage/Edit/Designer__Tag.jsx');
 const Rule =        require('./Stage/Edit/Designer__Rule.jsx');
@@ -74,7 +75,7 @@ const __Stage = React.createClass({
         if (!selectedItem 
             && designer.tab !== 'Preview'
             && designer.tab !== 'Menu'){
-            return <Designer.Recent />;
+            return <Recent />;
         }
 
         // Return a specific editing stage component.

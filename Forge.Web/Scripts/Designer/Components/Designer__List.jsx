@@ -1,7 +1,8 @@
 const React = require('react');
 const { connect} = require('react-redux');
 
-const { action, CATEGORIES } = require('Core');
+const { actions, CATEGORIES } = require('Core');
+const designerActions = require('Designer/Actions.js');
 
 // Presentation
 // =====================================
@@ -50,13 +51,6 @@ const __List = React.createClass({
 				open: true,
 				listTab: 'List'
 			});
-		}
-	},
-
-	// -----------------------------
-	componentDidUpdate: function(prevProps){
-		if (this.props.designer.navigated){
-			$('#designer')[0].scrollIntoView(true);
 		}
 	},
 
