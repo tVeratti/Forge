@@ -1,10 +1,9 @@
-﻿// -------------------------------------------------
-// <Designer.__Settings />
-// -------------------------------------------------
-// =====================================
+﻿const React = require('react');
+const { connect } = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Settings = React.createClass({
+const __Settings = React.createClass({
 
     // -----------------------------
     render: function () {
@@ -49,13 +48,12 @@ Designer.__Settings = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Settings = connect(
+const Settings = connect(
     state => { return { 
         settings: state.core.Settings || [],
         index: state.designer.index,
         ...state
     }}
-)(Designer.__Settings);
+)(__Settings);

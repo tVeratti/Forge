@@ -2,6 +2,7 @@
 const { connect} = require('react-redux');
 
 const { CATEGORIES, actions } = require('Core');
+const Link = require('./Designer__Link.jsx');
 
 // Presentation
 // =====================================
@@ -14,7 +15,7 @@ const __Recent = ({ core, designer, dispatch }) => {
         .sort((a, b) => { return new Date(b.ModifiedDate) - new Date(a.ModifiedDate) })
         .reverse()
         .slice(0, 5)
-        .map((x, i) => <li><Designer.Link key={i} model={x} /></li>);
+        .map((x, i) => <li key={i}><Link model={x} /></li>);
     
     const startNodes = categories.map(c => {
         const createItem = () => dispatch(actions.createItem(c));

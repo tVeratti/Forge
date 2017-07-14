@@ -1,10 +1,9 @@
-﻿// -------------------------------------------------
-// <Designer.__Search />
-// -------------------------------------------------
-// =====================================
+﻿const React = require('react');
+const { connect } = require('react-redux');
+
 // Presentation
 // =====================================
-Designer.__Search = React.createClass({
+const __Search = React.createClass({
 
     // -----------------------------
     render: function () {
@@ -94,9 +93,10 @@ Designer.__Search = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Designer.Search = connect(
+const Search = connect(
     state => { return { ...state }}
-)(Designer.__Search);
+)(__Search);
+
+module.exports = Search;

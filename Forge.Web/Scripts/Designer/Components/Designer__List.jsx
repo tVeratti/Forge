@@ -4,6 +4,9 @@ const { connect} = require('react-redux');
 const { actions, CATEGORIES } = require('Core');
 const designerActions = require('Designer/Actions.js');
 
+const Settings = require('./List/Designer__Settings.jsx');
+const Search = require('./List/Designer__Search.jsx');
+
 // Presentation
 // =====================================
 const __List = React.createClass({    
@@ -60,8 +63,8 @@ const __List = React.createClass({
 		const { listTab } = this.state;
 
 		switch(listTab){
-			case 'Settings': return 	<Designer.Settings />;
-			case 'Search': return 		<Designer.Search />;
+			case 'Settings': return 	<Settings />;
+			case 'Search': return 		<Search />;
 		}
 		
 		const list = this.props.core[tab];

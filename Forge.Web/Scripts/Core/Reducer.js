@@ -258,7 +258,6 @@ function updateAll(state, stage = lifeCycle.stages.update){
 // Recursively apply all settings to Definitions,
 // and update all dependants thereafter.
 function applySettings(model, index, stage, state){
-    console.log('applySettings', model.Name)
     // Apply all settings that match the current lifecycle
     let values = [ ...model.Values ];
     // model.MergedSettings

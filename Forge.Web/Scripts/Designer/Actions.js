@@ -121,7 +121,7 @@ const designerActions = {
                     body: JSON.stringify({ model })
                 })
                 //.fail(response => dispatch(actions.updateItem(model, tab, true)))
-                .then(response => JSON.parse(response))
+                .then(response => response.json())
                 .then(id => {
                     // Check if an id was sent back from the controller -
                     // this indicates if an item was inserted or updated.

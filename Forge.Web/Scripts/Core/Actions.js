@@ -34,6 +34,7 @@ const actions = {
             // Fetch games from database with state filters.
             fetch(`${this.api.FETCH_CORE}/${id}`, { credentials: 'same-origin' })
                 //.fail(response => dispatch(this.getLocalGame(id)))
+                .then(response => response.json())
                 .then(response => dispatch(this.receiveGame(response)));
         }
     },
@@ -80,6 +81,7 @@ const actions = {
                     body: JSON.stringify({ model, gameId })
                 })
                 //.fail(response => dispatch(coreActions.updateItem(model, tab, true)))
+                .then(response => response.json())
                 .then(id => dispatch(this.updateItemId(tempId, id, category)));
         }
     },
@@ -96,7 +98,8 @@ const actions = {
                     },
                     body: JSON.stringify({ groups, gameId })
                 })
-                .success(result => dispatch({ type: 'UPDATE_GROUPS', result }));
+                .then(response => response.json())
+                .then(result => dispatch({ type: 'UPDATE_GROUPS', result }));
         }
     },
 
