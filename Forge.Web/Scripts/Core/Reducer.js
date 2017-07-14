@@ -1,6 +1,5 @@
-﻿const { settings, utilities, CATEGORIES } = require('Core');
-const { getRules, sortSettings } = settings;
-const { sortBy } = utilities;
+﻿const { utilities, lifeCycle, CATEGORIES } = require('Core');
+const { sortBy, getRules, sortSettings, contains } = utilities;
 
 const initialState = {
     loading: true,
@@ -70,13 +69,7 @@ function coreReducer(state = initialState, action){
             nextState.Rules.forEach((r, i) => r.index = i);
             nextState.Tags.forEach((t, i) => t.index = i);
 
-            nextState.Definitions = nextState.Definitions.map((d, i) => {
-                // Get Rules & merge with Settings.
-                const Rules = getRules(nextState, d);
-                const MergedSettings = sortSettings([ ...Rules, ...d.Settings ]).filter(s => !s.overridden);
-                return { ...d, index: i, Rules, MergedSettings };
-            });
-
+            updateAll(nextState, action);
             setGameToLocalStorage(nextState);
             break;
 
@@ -136,7 +129,7 @@ function coreReducer(state = initialState, action){
             if (!action.saved) nextState.unsaved[unsavedKey] = true;
             else delete nextState.unsaved[unsavedKey];
 
-            updateAll(nextState);            
+            nextState.Definitions = updateAll(nextState, action);            
             setGameToLocalStorage(nextState);
             break;
 
@@ -181,7 +174,7 @@ function coreReducer(state = initialState, action){
             definitions[action.index] = definition;
             nextState.Definitions = definitions;
 
-            updateAll(nextState);
+            nextState.Definitions = updateAll(nextState, action);
             setGameToLocalStorage(nextState);
             break;
         
@@ -223,10 +216,31 @@ function getGameFomLocalStorage(id){
 // 1. Merge Rules & Settings.
 // 2. Build Dependency Tree.
 // 3. Apply all Settings (Recursive, tree).
-function updateAll(state, stage = lifeCycle.stages.update){
-    const { Definitions } = state;
+function updateAll(state, action, stage = lifeCycle.stages.update){
+    let { Definitions } = state;
+    const startTime = new Date().getTime();
 
-    Definitions.forEach(model =>{
+    if (action.type === 'ADD_SETTING' || 
+        action.category === CATEGORIES.DEFINITIONS){
+        // Base updates on the actively edited Definition.
+        // This will run updates for all dependant Definitions.
+        Definitions = [ Definitions[action.index].Id ];
+    }
+    else if (action.type !== 'RECEIVE_GAME'){
+        // Get all Definitions affected by the update to the Tag or Rule.
+        switch(action.category) {
+         case CATEGORIES.TAGS:
+            Definitions = Definitions.filter(d => contains(d.Tags, action.model.Id));
+            break;
+        case CATEGORIES.RULES:
+            Definitions = Definitions.filter(d => contains(d.Rules, action.model.Id));
+            break;
+        }
+    }
+
+    Definitions.forEach((model, index) =>{
+        model.index = index;
+
         // Build MergedSettings (Rules + Settings).
         model.Rules = getRules(state, model);
         model.MergedSettings = sortSettings([ 
@@ -244,32 +258,37 @@ function updateAll(state, stage = lifeCycle.stages.update){
             if (target){
                 // Add the current definition to the tree
                 // which tracks definition dependencies.
-                tree[target.Value] = tree[target.Value] || [];
-                tree[target.Value].push(model.Id);
+                state.tree[target.Value] = state.tree[target.Value] || [];
+                state.tree[target.Value].push(model.Id);
             }
-        })
+        });
     })
 
     // Apply all Settings...
     Definitions.forEach(applySettings.bind(this, stage, state));
+
+    console.log('end updateAll', new Date().getTime() - startTime, tree);
+
+    return Definitions;
 }
 
 // --------------------------------
 // Recursively apply all settings to Definitions,
 // and update all dependants thereafter.
-function applySettings(model, index, stage, state){
+function applySettings(stage, state, model, index){
+    console.log(model)
     // Apply all settings that match the current lifecycle
-    let values = [ ...model.Values ];
+    //let values = [ ...model.Values ];
     // model.MergedSettings
     //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
     //     .forEach(s => values = settings.apply(value, s));
     
-    if (arrayChanged(values, model.Values)){
-        // The value of this Definition has changed,
-        // so update any Definitions that are depending on
-        // its value (ValueIf, etc...)
-        model.dependants.forEach(applySettings);
-    }
+    // if (arrayChanged(values, model.Values)){
+    //     // The value of this Definition has changed,
+    //     // so update any Definitions that are depending on
+    //     // its value (ValueIf, etc...)
+    //     model.dependants.forEach(applySettings);
+    // }
 }
 
 function arrayChanged(a, b){
