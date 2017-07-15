@@ -1,10 +1,13 @@
-﻿// Core Functions
+﻿const controls = require('./Components/Controls');
+console.log(controls)
+
+// Core Functions
 // =====================================
 const utilities = {
 	renderControl: function(item, onChange){
 		// Dynamically create the component based on Control name.
         return React.createElement(
-            Forge.components.controls[item.Control || item.ControlName || 'Text'], 
+            controls[item.Control || item.ControlName || 'Text'], 
             { Model: item, onChange }
         );
 	},
@@ -15,10 +18,10 @@ const utilities = {
 
 		definition.Rules = definition.Rules || [];
 		definition.Tags = definition.Tags || [];
+		console.log(definition)
 
 		// Get all Rules associated to the Definition by Tags.
-		const definitionTags = definition.Tags
-			.map(t => +t.Id);
+		const definitionTags = definition.Tags.map(t => +t.Id);
 
 		// Remove rules no longer associated by a Tag.
 		// This will happen when a Tag has been removed from the Definition.
@@ -73,7 +76,7 @@ const utilities = {
 
 	// -----------------------------
 	getDefinitionSettings: (state, definition) => {
-		const rules = Forge.utilities.getRules(state, definition);
+		const rules = this.getRules(state, definition);
 		return Forge.utilities.sortSettings([ ...definition.Settings, ...rules ]);
 	},
 

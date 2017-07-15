@@ -5,11 +5,6 @@ const Tooltip = require('./Tooltip.jsx');
 const Field = ({ ...props }) => {
     const change = (ev) => props.onChange(ev.target.value);
 
-    const controlNode = props.children ||
-        (props.options
-            ? <Select {...props} onChange={change} />
-            : <input {...props} onChange={change} />);
-
     const tooltipNode = props.tooltip
         ? <Tooltip tip={props.tooltip} icon={true}>?</Tooltip>
         : undefined;
@@ -17,7 +12,15 @@ const Field = ({ ...props }) => {
     const afterNode = props.after
         ? <span className='field__after'>{props.after}</span>
         : undefined;
-            
+
+    delete props.tooltip;
+    delete props.after;
+
+    const controlNode = props.children ||
+        (props.options
+            ? <Select {...props} onChange={change} />
+            : <input {...props} onChange={change} />);
+
     return (
         <div className='field'>
             <label className='field__label' htmlFor={props.id}>{props.label}</label>

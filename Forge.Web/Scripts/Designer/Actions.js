@@ -91,9 +91,9 @@ const designerActions = {
 
     // --------------------------------
     saveModel: function(){
-        const thunk = (dispatch, getState) => {
+        return (dispatch, getState) => {
 
-            dispatch({ type: SAVE_MODEL });
+            dispatch({ type: 'SAVE_MODEL' });
 
             // Get the current state data.
             const { core, designer } = getState();
@@ -134,8 +134,6 @@ const designerActions = {
                     dispatch(actions.updateItem(model, tab, true));
                 });
         }
-        
-        return debounceAction(thunk, 'saveModel', 500);
     }
 }
 

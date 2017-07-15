@@ -1,11 +1,11 @@
 ﻿const React = require('react');
-const { connect} = require('react-redux');
+const { connect } = require('react-redux');
 
 const { CATEGORIES } = require('Core');
 
 const designerActions =     require('Designer/Actions.js');
 const commonActions =       require('Common/Actions.js');
-const coreActions =         require('Core/Actions.js');
+const coreActions =         require('Core/Actions.js').actions;
 
 const Field =               require('Common/Components/Field.jsx');
 const Definition =          require('Core/Components/Definition.jsx');
@@ -67,7 +67,7 @@ const __EditDefinition = React.createClass({
                     <h4>Tags</h4>
                     <p className='summary'>Tags can be used to apply global rules, which will add settings with predfined values.</p>
                     <a className='button button--link' onClick={goToTags}>Edit Tags</a>
-                    <DefinitionTags />
+                    {/*<DefinitionTags />*/}
                     
                 </div>
 
@@ -77,11 +77,11 @@ const __EditDefinition = React.createClass({
                     <p className='summary'>These settings change the behavior of this definition on the character builder. These will be applied to the definition in order from top to bottom (priority). <b>Drag a setting to re-order its priority level.</b></p>
                     <a className='button button--link' onClick={goToSettings}>Add Settings</a>
                     <div className='separator  separator--small' />
-                    <DefinitionSettings />
+                    {/*<DefinitionSettings />*/}
                 </div>
 
                 {/* Preview */}
-                <Forge.Definition model={selectedItem} />
+
             </div>
         )
     },
@@ -98,7 +98,6 @@ const __EditDefinition = React.createClass({
             const control = core.Controls.filter(c => c.Id == value)[0];
             model.ControlName = control && control.Name;
         }
-
         dispatch(coreActions.updateDefinition(model));
     }
 });

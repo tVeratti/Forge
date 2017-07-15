@@ -1,6 +1,6 @@
 const React = require('react');
 
-const Select = require('./../../../Common/Components/Select.jsx');
+const Select = require('Common/Components/Select.jsx');
 
 // =====================================
 const Select_Definition = React.createClass({
@@ -22,3 +22,5 @@ const Select_Definition = React.createClass({
 		onChange && onChange(+value);
 	}
 });
+
+module.exports = Select_Definition;

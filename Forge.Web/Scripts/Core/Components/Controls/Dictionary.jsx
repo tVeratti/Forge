@@ -1,6 +1,6 @@
 const React = require('react');
 
-const ToolTip = require('./Tooltip.jsx');
+const ToolTip = require('Common/Components/Tooltip.jsx');
 const controls = {};
 
 // =====================================

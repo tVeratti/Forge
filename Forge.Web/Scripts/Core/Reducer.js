@@ -224,7 +224,7 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
         action.category === CATEGORIES.DEFINITIONS){
         // Base updates on the actively edited Definition.
         // This will run updates for all dependant Definitions.
-        Definitions = [ Definitions[action.index].Id ];
+        Definitions = [ Definitions[action.index] ];
     }
     else if (action.type !== 'RECEIVE_GAME'){
         // Get all Definitions affected by the update to the Tag or Rule.
@@ -267,7 +267,7 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
     // Apply all Settings...
     Definitions.forEach(applySettings.bind(this, stage, state));
 
-    console.log('end updateAll', new Date().getTime() - startTime, tree);
+    console.log('end updateAll', new Date().getTime() - startTime, state.tree);
 
     return Definitions;
 }
@@ -276,7 +276,6 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
 // Recursively apply all settings to Definitions,
 // and update all dependants thereafter.
 function applySettings(stage, state, model, index){
-    console.log(model)
     // Apply all settings that match the current lifecycle
     //let values = [ ...model.Values ];
     // model.MergedSettings

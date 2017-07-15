@@ -22,3 +22,5 @@ const Number = React.createClass({
 		onChange && onChange(+value);
 	}
 });
+
+module.exports = Number;

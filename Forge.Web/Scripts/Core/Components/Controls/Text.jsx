@@ -19,3 +19,5 @@ const Text = React.createClass({
 		onChange && onChange(value);
 	}
 });
+
+module.exports = Text;

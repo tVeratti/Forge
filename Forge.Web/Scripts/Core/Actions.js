@@ -86,6 +86,7 @@ const actions = {
         }
     },
 
+    // --------------------------------
     updateGroups: function(groups){
         return (dispatch, getState) => {
             const { core, designer } = getState();
