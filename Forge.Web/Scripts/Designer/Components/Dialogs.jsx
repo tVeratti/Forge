@@ -3,8 +3,8 @@ const { connect} = require('react-redux');
 
 const actions = require('Designer/Actions.js');
 
-const LoadError =   require('./Dialogs/Designer__LoadError.jsx');
-const Groups =      require('./Dialogs/Designer__Groups.jsx');
+const LoadError =   require('./Dialogs/LoadError.jsx');
+const Groups =      require('./Dialogs/EditGroups.jsx');
 
 // Presentation
 // =====================================

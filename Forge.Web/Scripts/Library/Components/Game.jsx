@@ -1,7 +1,7 @@
-﻿// =====================================
-// <Library.Game />
+﻿const moment = require('moment');
+
 // =====================================
-Library.Game = ({ ...game }) => {
+const Game = ({ ...game }) => {
     const updated = moment(game.ModifiedDate).format('MMM DD');
     const created = moment(game.CreatedDate).format('MMM DD');
 
@@ -27,3 +27,5 @@ Library.Game = ({ ...game }) => {
         </li>
     )
 };
+
+module.exports = Game;

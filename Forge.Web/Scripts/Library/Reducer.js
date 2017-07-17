@@ -11,18 +11,18 @@ function libraryReducer(state = initialLibraryState, action){
 
     switch(action.type){
         // --------------------------------
-        case REQUEST_GAMES:
+        case 'REQUEST_GAMES':
             nextState.loading = true;
             break;
 
         // --------------------------------
-        case RECEIVE_GAMES:
+        case 'RECEIVE_GAMES':
             nextState.games = action.games;
             nextState.loading = false;
             break;
 
         // --------------------------------
-        case FILTER_GAMES:
+        case 'FILTER_GAMES':
             const filters = { ...nextState.filters };
             filters[action.key] = action.value;
             nextState.filters = filters;
@@ -31,3 +31,5 @@ function libraryReducer(state = initialLibraryState, action){
     
     return nextState;
 }
+
+module.exports = libraryReducer;

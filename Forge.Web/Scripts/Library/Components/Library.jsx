@@ -1,4 +1,9 @@
-﻿const store = require('Store.js');
+﻿const { Provider, connect } = require('react-redux');
+const store = require('Store.js');
+
+const Summary =     require('./Summary.jsx');
+const Controls =    require('./Controls.jsx');
+const List =        require('./List.jsx');
 
 // <Library />
 // =====================================
@@ -10,11 +15,11 @@ const __Library = (props) => {
             {/* Summary & Controls */}
             <div className='section section--secondary'>
                 { loading && <div className='loading-bar' />}
-                <Library.Summary />
-                <Library.Controls />
+                <Summary />
+                <Controls />
             </div>
 
-            <Library.List />
+            <List />
         </div>
     );
 };
@@ -35,3 +40,5 @@ Library.Provider = () => {
         </Provider>
     );
 };
+
+module.exports = Library;

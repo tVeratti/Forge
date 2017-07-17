@@ -2,7 +2,7 @@
 const { connect} = require('react-redux');
 
 const { CATEGORIES, actions } = require('Core');
-const Link = require('./Designer__Link.jsx');
+const Link = require('Designer/Components/Link.jsx');
 
 // Presentation
 // =====================================

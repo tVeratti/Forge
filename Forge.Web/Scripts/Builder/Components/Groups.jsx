@@ -1,7 +1,7 @@
 ﻿const React = require('react');
 const { Provider, connect} = require('react-redux');
 
-const Definition = require('./../../Core/Components/Definition.jsx');
+const Definition = require('Core/Components/Definition.jsx');
 
 // =====================================
 // Presentation
@@ -9,7 +9,7 @@ const Definition = require('./../../Core/Components/Definition.jsx');
 const _Groups = (props) => {
     const { core } = props;
     const topGroups = core.Groups.filter(g => !g.ParentId);
-    const groupNodes = topGroups.map(g => <Builder.Group key={g.Id} core={core} model={g} />);
+    const groupNodes = topGroups.map(g => <Group key={g.Id} core={core} model={g} />);
 
     return (
         <div className='builder__groups'>

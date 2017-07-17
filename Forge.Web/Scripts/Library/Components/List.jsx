@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const libraryActions = require('Library/Actions.js');
+const Game = require('./Game.jsx');
+
 // Presentation
 // =====================================
-Library.__List = React.createClass({
+const __List = React.createClass({
     // --------------------------------
     render: function(){
         const gameNodes = this.renderGames();
@@ -27,7 +32,7 @@ Library.__List = React.createClass({
     // --------------------------------
     renderGames: function(){
         return this.props.games.map(game => {
-            return <Library.Game key={game.Id} {...game} />;
+            return <Game key={game.Id} {...game} />;
         });
     },
 
@@ -42,6 +47,8 @@ Library.__List = React.createClass({
 // =====================================
 // Container
 // =====================================
-Library.List = connect(
+const List = connect(
     state => { return { ...state.library } }
-)(Library.__List);
+)(__List);
+
+module.exports = List;

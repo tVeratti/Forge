@@ -4,8 +4,8 @@ const { connect} = require('react-redux');
 const { actions, CATEGORIES } = require('Core');
 const designerActions = require('Designer/Actions.js');
 
-const Settings = require('./List/Designer__Settings.jsx');
-const Search = require('./List/Designer__Search.jsx');
+const Settings = require('./List/Settings.jsx');
+const Search = require('./List/Search.jsx');
 
 // Presentation
 // =====================================

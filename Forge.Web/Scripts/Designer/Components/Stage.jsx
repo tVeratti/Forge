@@ -4,13 +4,13 @@ const { connect} = require('react-redux');
 const designerActions =     require('Designer/Actions.js');
 const coreActions =         require('Core/Actions.js');
 
-const Preview =     require('./Stage/Designer__Preview.jsx');
-const Menu =        require('./Stage/Designer__Menu.jsx');
-const Recent =      require('./Stage/Designer__Recent.jsx');
+const Preview =     require('./Stage/Preview.jsx');
+const Menu =        require('./Stage/Menu.jsx');
+const Recent =      require('./Stage/Recent.jsx');
 
-const Tag =         require('./Stage/Edit/Designer__Tag.jsx');
-const Rule =        require('./Stage/Edit/Designer__Rule.jsx');
-const Definition =  require('./Stage/Edit/Designer__Definition.jsx');
+const Tag =         require('./Stage/Edit/Tag.jsx');
+const Rule =        require('./Stage/Edit/Rule.jsx');
+const Definition =  require('./Stage/Edit/Definition.jsx');
 
 const { CATEGORIES } = coreActions;
 

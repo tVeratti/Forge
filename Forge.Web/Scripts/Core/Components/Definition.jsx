@@ -1,5 +1,7 @@
 const React = require('react');
 
+const utilities = require('Core/Utilities.js');
+
 // =====================================
 const Definition = React.createClass({    
     // -----------------------------
@@ -8,7 +10,7 @@ const Definition = React.createClass({
         model._formId = `d-${model.Id}`;
 
         // Dynamically create the component based on Control name.
-        const controlNode = Forge.utilities.renderControl(model, this.valueChange)
+        const controlNode = utilities.renderControl(model, this.valueChange)
 
         return (
             <div className='definition'>

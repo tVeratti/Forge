@@ -1,7 +1,12 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const libraryActions = require('Library/Actions.js');
+const Tab = require('Common/Components/Tab.jsx');
+
 // Presentation
 // =====================================
-Library.__Filters = React.createClass({
+const __Filters = React.createClass({
     // --------------------------------
     render: function(){
         const permissionNodes = this.renderPermissionTabs();
@@ -58,10 +63,10 @@ Library.__Filters = React.createClass({
 
     // --------------------------------
     renderGenreSelect: function(){
-        const { GENRE } = libraryActions.filterTypes;
-        const changeHandler = this.changeFilter.bind(this, GENRE);
+        // const { GENRE } = libraryActions.filterTypes;
+        // const changeHandler = this.changeFilter.bind(this, GENRE);
 
-        return <GenreSelect onChange={changeHandler} />;
+        // return <GenreSelect onChange={changeHandler} />;
     },
 
     // --------------------------------
@@ -73,9 +78,10 @@ Library.__Filters = React.createClass({
     }
 });
 
-// =====================================
 // Container
 // =====================================
-Library.Filters = connect(
+const Filters = connect(
     state => { return { library: state.library } }
-)(Library.__Filters);
+)(__Filters);
+
+module.exports = Filters;

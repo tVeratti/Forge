@@ -1,13 +1,17 @@
-﻿// =====================================
+﻿const React = require('react');
+const { connect} = require('react-redux');
+
+const Filters = require('./Filters.jsx');
+
 // Presentation
 // =====================================
-Library.__Controls = React.createClass({
+const __Controls = React.createClass({
     // --------------------------------
     render: function(){
 
         return (
             <div className='library__controls'>
-                <Library.Filters />
+                <Filters />
 
                 
             </div>
@@ -17,7 +21,8 @@ Library.__Controls = React.createClass({
     
 });
 
-// =====================================
 // Container
 // =====================================
-Library.Controls = connect()(Library.__Controls);
+const Controls = connect()(__Controls);
+
+module.exports = Controls;

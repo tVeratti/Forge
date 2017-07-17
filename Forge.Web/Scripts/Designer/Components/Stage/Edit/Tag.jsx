@@ -3,7 +3,7 @@ const { connect} = require('react-redux');
 
 const { actions } = require('Core');
 const Field = require('Common/Components/Field.jsx');
-const Link = require('./../Designer__link.jsx');
+const Link = require('Designer/Components/Link.jsx');
 
 // Presentation
 // =====================================

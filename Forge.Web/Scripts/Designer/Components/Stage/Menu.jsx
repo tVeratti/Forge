@@ -7,7 +7,7 @@ const { CATEGORIES } = require('Core');
 const Field =           require('Common/Components/Field.jsx');
 const Select =          require('Common/Components/Select.jsx');
 const TagsControl =     require('Common/Components/Tags.jsx');
-const Recent =          require('./Designer__Recent.jsx');
+const Recent =          require('./Recent.jsx');
 
 // Presentation
 // =====================================

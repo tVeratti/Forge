@@ -9,8 +9,8 @@ const coreActions =         require('Core/Actions.js').actions;
 
 const Field =               require('Common/Components/Field.jsx');
 const Definition =          require('Core/Components/Definition.jsx');
-const DefinitionTags =      require('./Designer__DefinitionTags.jsx');
-const DefinitionSettings =  require('./Designer__DefinitionSettings.jsx');
+const DefinitionTags =      require('./DefinitionTags.jsx');
+const DefinitionSettings =  require('./DefinitionSettings.jsx');
 
 // Presentation
 // =====================================

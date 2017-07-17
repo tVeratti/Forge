@@ -5,11 +5,11 @@ const store =               require('Store.js');
 const designerActions =     require('Designer/Actions.js');
 const coreActions =         require('Core').actions;
 
-const Summary =     require('./Designer__Summary.jsx');
-const Tabs =        require('./Designer__Tabs.jsx');
-const Dialogs =     require('./Designer__Dialogs.jsx');
-const List =        require('./Designer__List.jsx');
-const Stage =       require('./Designer__Stage.jsx');
+const Summary =     require('./Summary.jsx');
+const Tabs =        require('./Tabs.jsx');
+const Dialogs =     require('./Dialogs.jsx');
+const List =        require('./List.jsx');
+const Stage =       require('./Stage.jsx');
 
 // -------------------------------------------------
 // <Designer />

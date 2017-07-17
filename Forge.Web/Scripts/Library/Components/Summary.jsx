@@ -1,7 +1,5 @@
 ﻿// =====================================
-// <Library.Summary />
-// =====================================
-Library.Summary = () => {
+const Summary = () => {
     return (
         <div className='section section--summary library__summary'>
             <h1>Library</h1>
@@ -9,3 +7,5 @@ Library.Summary = () => {
         </div>
     );
 };
+
+module.exports = Summary;
