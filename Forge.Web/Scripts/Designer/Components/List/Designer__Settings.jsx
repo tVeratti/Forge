@@ -1,6 +1,9 @@
 ﻿const React = require('react');
 const { connect } = require('react-redux');
 
+const { utilities, actions } = require('Core');
+const { contains } = utilities;
+
 // Presentation
 // =====================================
 const __Settings = React.createClass({
@@ -44,7 +47,7 @@ const __Settings = React.createClass({
     // -----------------------------
     addSetting: function(setting){
         const { dispatch, index } = this.props;
-        dispatch(coreActions.addSetting(index, setting));
+        dispatch(actions.addSetting(index, setting));
     }
 });
 
@@ -57,3 +60,5 @@ const Settings = connect(
         ...state
     }}
 )(__Settings);
+
+module.exports = Settings;

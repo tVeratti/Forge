@@ -6,8 +6,8 @@ const hash = (location.hash || '').split('/');
 const initialState = {
     loading: true,
     saving: false,
-    tab: (hash[0] || 'Menu').replace('#', ''),
-    index: +hash[1] || -1,
+    tab: 'Menu',
+    index: -1,
     listTab: 'List',
     itemHistory: []
 }
@@ -100,8 +100,6 @@ function designerReducer(state = initialState, action){
         case 'UPDATE_ITEM':
             nextState.saving = false;
     }
-
-    window.location.hash = `${nextState.tab}/${nextState.index}`;
 
     return nextState;
 }

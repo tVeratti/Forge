@@ -3,7 +3,9 @@ const { connect} = require('react-redux');
 
 const designerActions = require('Designer/Actions.js');
 const { actions, utilities } = require('Core');
-const controls = {};
+const controls = require('Core/Components/Controls');
+
+const Sortable = require('Common/Components/Sortable.jsx');
 
 // Presentation
 // =====================================
@@ -137,7 +139,7 @@ const __DefinitionSettings = React.createClass({
     
         let settingIds = Settings.map(s => s.SettingId);
         
-        let flatSettings = Forge.utilities
+        let flatSettings = utilities
             .sortSettings([ ...Settings, ...Rules ])
             .map(s => {
                 const subRules = Rules.filter(r => {

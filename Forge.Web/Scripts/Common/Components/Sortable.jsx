@@ -116,11 +116,13 @@ const Sortable = React.createClass({
     // -----------------------------
     calculateActive: function(index, ev){
         // Determine if the user is hovering over the top
-        // or bottm half of the element in order to know
+        // or bottom half of the element in order to know
         // where the drop should be shown (above/below).
-        const $target = $(ev.target);
-        const itemHeight = $target.outerHeight();
-        const itemOffset = $target.offset();
+        const { target } = ev;
+        const itemHeight = target;
+        const itemOffset = target.offsetHeight;
+
+        console.log(itemHeight, itemOffset)
 
         const y = ev.pageY - itemOffset.top;
 

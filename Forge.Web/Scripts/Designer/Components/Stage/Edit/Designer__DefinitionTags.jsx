@@ -2,7 +2,7 @@
 const { connect} = require('react-redux');
 
 const designerActions =     require('Designer/Actions.js');
-const coreActions =         require('Core/Actions.js');
+const coreActions =         require('Core/Actions.js').actions;
 
 // Presentation
 // =====================================

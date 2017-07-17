@@ -67,7 +67,7 @@ const __EditDefinition = React.createClass({
                     <h4>Tags</h4>
                     <p className='summary'>Tags can be used to apply global rules, which will add settings with predfined values.</p>
                     <a className='button button--link' onClick={goToTags}>Edit Tags</a>
-                    {/*<DefinitionTags />*/}
+                    <DefinitionTags />
                     
                 </div>
 
@@ -77,7 +77,7 @@ const __EditDefinition = React.createClass({
                     <p className='summary'>These settings change the behavior of this definition on the character builder. These will be applied to the definition in order from top to bottom (priority). <b>Drag a setting to re-order its priority level.</b></p>
                     <a className='button button--link' onClick={goToSettings}>Add Settings</a>
                     <div className='separator  separator--small' />
-                    {/*<DefinitionSettings />*/}
+                    <DefinitionSettings />
                 </div>
 
                 {/* Preview */}

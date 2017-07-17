@@ -10,7 +10,7 @@ const Number = React.createClass({
 		if (isNaN(value)) value = 0;
 
 		return (
-			<input id={Model._formId} type='number' value={value} onChange={this.change} />
+			<input id={Model._formId} type='number' value={value || ''} onChange={this.change} />
 		);
 	},
 

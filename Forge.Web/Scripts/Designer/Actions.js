@@ -101,7 +101,7 @@ const designerActions = {
             const gameId = core.Game.Id;
             const model = { 
                 ...core[tab][index],
-                gameId,
+                GameId: gameId
              };
             
             let api;
