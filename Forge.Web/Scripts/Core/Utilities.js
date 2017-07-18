@@ -1,5 +1,4 @@
 ﻿const controls = require('./Components/Controls');
-console.log(controls)
 
 // Core Functions
 // =====================================
@@ -18,7 +17,6 @@ const utilities = {
 
 		definition.Rules = definition.Rules || [];
 		definition.Tags = definition.Tags || [];
-		console.log(definition)
 
 		// Get all Rules associated to the Definition by Tags.
 		const definitionTags = definition.Tags.map(t => +t.Id);

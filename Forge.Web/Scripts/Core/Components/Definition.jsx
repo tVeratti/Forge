@@ -1,6 +1,7 @@
 const React = require('react');
 
 const utilities = require('Core/Utilities.js');
+const { dispatch } = require('Store.js');
 
 // =====================================
 const Definition = React.createClass({    
@@ -22,7 +23,7 @@ const Definition = React.createClass({
 
     // -----------------------------
     valueChange: function(value) {
-        // dispatch
+        const { dispatch } = this
     },
 });
 
