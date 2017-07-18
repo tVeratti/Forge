@@ -3,15 +3,17 @@
 const store = require('Store.js');
 const actions = require('Designer/Actions.js');
 
+const Button = require('Common/Components/Button.jsx');
+
 // =====================================
 const Link = ({ model, hideCategory }) => {
-    const onClick = () => store.dispatch(actions.navigate(model));
+    //const onClick = () => store.dispatch(actions.navigate(model));
     
     return (
-        <button className='button button--link designer__link' onClick={onClick}>
+        <Button className='button button--link designer__link' >
             <span>{model.Name}</span>
             { !hideCategory && <span>{model.Category}</span> }
-        </button>
+        </Button>
     )
 }
 

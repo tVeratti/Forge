@@ -219,6 +219,7 @@
     <Content Include="Scripts\Builder\Components\Builder.jsx" />
     <Content Include="Scripts\Account\Actions.js" />
     <Content Include="Scripts\Account\Reducer.js" />
+    <Content Include="Scripts\Common\Components\Button.jsx" />
     <Content Include="Scripts\Common\Components\Tags.jsx" />
     <Content Include="Scripts\Common\Components\Tooltip.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Dictionary.jsx" />
