@@ -122,8 +122,6 @@ const Sortable = React.createClass({
         const itemHeight = target;
         const itemOffset = target.offsetHeight;
 
-        console.log(itemHeight, itemOffset)
-
         const y = ev.pageY - itemOffset.top;
 
         if (itemHeight / 2 > y) {

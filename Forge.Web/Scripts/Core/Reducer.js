@@ -216,60 +216,73 @@ function getGameFomLocalStorage(id){
 // 1. Merge Rules & Settings.
 // 2. Build Dependency Tree.
 // 3. Apply all Settings (Recursive, tree).
+// Note: State is passed through to provide references
+//      to the latest Rules, Settings, and Tags data which
+//      is used to build Definitions.
 function updateAll(state, action, stage = lifeCycle.stages.update){
-    let { Definitions } = state;
+    let definitions = [ ...state.Definitions ];
     const startTime = new Date().getTime();
+    let updatedCount = 0;
 
     if (action.type === 'ADD_SETTING' || 
         action.category === CATEGORIES.DEFINITIONS){
-        // Base updates on the actively edited Definition.
+        // Base updates on ONLY the actively edited Definition.
         // This will run updates for all dependant Definitions.
-        Definitions = [ Definitions[action.index] ];
-    }
-    else if (action.type !== 'RECEIVE_GAME'){
-        // Get all Definitions affected by the update to the Tag or Rule.
-        switch(action.category) {
-         case CATEGORIES.TAGS:
-            Definitions = Definitions.filter(d => contains(d.Tags, action.model.Id));
-            break;
-        case CATEGORIES.RULES:
-            Definitions = Definitions.filter(d => contains(d.Rules, action.model.Id));
-            break;
-        }
-    }
+        updateDefinition(state, definitions[action.index]);
+        updatedCount = 1;
 
-    Definitions.forEach((model, index) =>{
-        model.index = index;
+    } else {
+        // Update Definitions that are related to the object
+        // being modified (All Definitions, Tag, or Rule...)
+        definitions.forEach((model, index) =>{
+            model.index = index;
 
-        // Build MergedSettings (Rules + Settings).
-        model.Rules = getRules(state, model);
-        model.MergedSettings = sortSettings([ 
-                ...model.Rules,
-                ...model.Settings ])
-            .filter(s => !s.overridden);
-        
-        // Prepare tree references...
-        model.MergedSettings.forEach(s => {
-            // Get any settings keys which target an 
-            // outside definitionId (Target, TargetId).
-            const targetKeys = ['Target', 'TargetId'];
-            const target = s.Keys.filter(k => targetKeys.indexOf(k.Key) > -1)[0];
-
-            if (target){
-                // Add the current definition to the tree
-                // which tracks definition dependencies.
-                state.tree[target.Value] = state.tree[target.Value] || [];
-                state.tree[target.Value].push(model.Id);
+            if (action.type !== 'RECEIVE_GAME'){
+                // Only update if this Definition contains the modified Tag or Rule.
+                switch(action.category) {
+                    case CATEGORIES.TAGS:   if (!contains(model.Tags.map(t => t.Id), action.model.Id)) return; break;
+                    case CATEGORIES.RULES:  if (!contains(model.Rules.map(r => r.Id), action.model.Id)) return; break;
+                }
             }
+
+            // Build Rules, Settings, Tree
+            updateDefinition(state, model);
+            updatedCount++;
         });
-    })
+    }
 
     // Apply all Settings...
-    Definitions.forEach(applySettings.bind(this, stage, state));
+    definitions.forEach(applySettings.bind(this, stage, state));
 
-    console.log('end updateAll', new Date().getTime() - startTime, state.tree);
+    const elapsedTime = new Date().getTime() - startTime;
+    console.log('end updateAll', elapsedTime, updatedCount);
 
-    return Definitions;
+    return definitions;
+}
+
+// --------------------------------
+function updateDefinition(state, model){
+    // Build MergedSettings (Rules + Settings).
+    model.Rules = getRules(state, model);
+    model.MergedSettings = sortSettings([ 
+            ...model.Rules,
+            ...model.Settings ])
+        .filter(s => !s.overridden);
+    
+    // Prepare tree references...
+    model.MergedSettings.forEach(s => {
+        // Get any settings keys which target an 
+        // outside definitionId (Target, TargetId).
+        const targetKeys = ['Target', 'TargetId'];
+        const target = s.Keys.filter(k => targetKeys.indexOf(k.Key) > -1)[0];
+
+        if (target){
+            // Add the current definition to the tree
+            // which tracks definition dependencies.
+            state.tree[target.Value] = state.tree[target.Value] || [];
+            state.tree[target.Value].push(model.Id);
+        }
+    });
 }
 
 // --------------------------------
