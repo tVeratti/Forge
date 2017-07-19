@@ -6,6 +6,7 @@ const designerActions = require('Designer/Actions.js');
 
 const Settings = require('./List/Settings.jsx');
 const Search = require('./List/Search.jsx');
+const Button = require('Common/Components/Button.jsx');
 
 // Presentation
 // =====================================
@@ -89,7 +90,7 @@ const __List = React.createClass({
 
 			return (
 				<li key={key} className={className}>
-					<button className='button button--transparent' onClick={onClick}>{item.Name}</button>
+					<Button className='button button--transparent' onClick={onClick}>{item.Name}</Button>
 				</li>
 			);
 		});
@@ -97,7 +98,7 @@ const __List = React.createClass({
 		// Unshift the ADD button to the top of the list.
 		nodes.unshift(
 			<li key='add' className='designer__list-item'>
-				<button className='button button--tertiary designer__add' onClick={this.new} title={'New'}>New</button>
+				<Button className='button button--tertiary designer__add' onClick={this.new} title={'New'}>New</Button>
 			</li>
 		);
 		

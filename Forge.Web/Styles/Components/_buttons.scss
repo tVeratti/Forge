@@ -24,6 +24,7 @@ button,
     background: $color-secondary-70;
     color: $color-primary-10;
     border: none;
+    border-radius: 3px;
     outline: none;
     line-height: 12px;
     font-family: inherit;
@@ -84,7 +85,18 @@ button,
     }
 
     .button__clicky{
-        background: red;
+        position: absolute;
+        display: inline-block;
+        background: rgba($color-secondary-50, 0.7);
+	    border-radius: 100%;
+	    transform: scale(0);
+    }
+
+    &.button--animate{
+        .button__clicky { animation: ripple 0.6s linear; }
+        @keyframes ripple {
+	        100% {opacity: 0; transform: scale(2);}
+        }
     }
 }
 

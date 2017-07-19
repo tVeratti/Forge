@@ -39,7 +39,7 @@ const Button = React.createClass({
             const { scrollLeft, scrollTop } = document.body;
 
             // Get full size of clicky that matches the highest dimension of wrapper.
-            const maxDimension = Math.max(wrapper.offsetHeight, wrapper.offsetHeight);
+            const maxDimension = Math.max(wrapper.offsetHeight, wrapper.offsetWidth);
             const size = { width: maxDimension, height: maxDimension };
 
             // Get position of clicky
@@ -50,13 +50,13 @@ const Button = React.createClass({
             };
             
             const coords = {
-                left: (x - offset.left - clicky.offseWidth/2) + 'px',
-                top: (y - offset.top - clicky.offsetHeight/2) + 'px'
+                left: (x - offset.left - clicky.offsetWidth/2) + 'px',
+                top: (y - offset.top - clicky.offsetHeight/2) - 1 + 'px'
             };
             
             this.setState({ coords, size });
 
-            //setTimeout(() => this.setState({ animate: false }), 1000);
+            setTimeout(() => this.setState({ animate: false }), 700);
         }
     },
 

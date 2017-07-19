@@ -12,7 +12,7 @@ const Link = ({ model, hideCategory }) => {
     return (
         <Button className='button button--link designer__link' >
             <span>{model.Name}</span>
-            { !hideCategory && <span>{model.Category}</span> }
+            { !hideCategory && <span className='button__subtitle'>{model.Category}</span> }
         </Button>
     )
 }
