@@ -6,11 +6,6 @@
 <div id="designer"></div>
 
 @section scripts{
-    <script type="text/javascript">
-        ReactDOM.render(
-            React.createElement(Forge.Designer.Provider, { id: @Model }),
-            document.getElementById('designer')
-        );
-    </script>
+    @Html.Render("designer", "Forge.Designer.Provider")
 }
 

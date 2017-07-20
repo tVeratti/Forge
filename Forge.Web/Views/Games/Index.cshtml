@@ -5,10 +5,5 @@
 <div id="library"></div>
 
 @section scripts{
-    <script type="text/javascript">
-        ReactDOM.render(
-            React.createElement(Forge.Library.Provider),
-            document.getElementById('library')
-        );
-    </script>
+    @Html.Render("library", "Forge.Library.Provider")
 }

@@ -280,7 +280,7 @@ b {
       vertical-align: middle;
       line-height: 55px;
       height: 55px;
-      text-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
       background: none; }
       #nav .nav-group .toggle:hover, #nav .nav-group .toggle.t-open {
         color: #f8f8f8; }
@@ -1264,6 +1264,12 @@ input {
       border-bottom: 10px solid white; }
   .tooltip:hover .tooltip__value {
     display: block; }
+
+#account {
+  width: 80%;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px; }
 
 .dictionary {
   display: table;

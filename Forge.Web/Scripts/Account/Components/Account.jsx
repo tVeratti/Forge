@@ -1,44 +1,38 @@
 ﻿const React = require('react');
 const { Provider, connect} = require('react-redux');
 
-// =====================================
+const store = require('Store.js');
+const actions = require('Account/Actions.js');
+
+const Profile = require('./Profile.jsx');
+const Login = require('./Login.jsx');
+
 // Presentation
 // =====================================
 const __Account = React.createClass({
     // -----------------------------
     render: function () {
+        const { id } = this.props;
+        const view = id ? <Profile /> : <Login />;
 
         return (
             <div className='account'>
-
-
+                {view}
             </div>
         );
     },
 
-    // -----------------------------
     componentWillMount: function(){
-        // Model comes from C# -
-        // Set data into store with dispatch.
-        // const { dispatch, id } = this.props;
-        // dispatch(coreActions.fetchGame(id));
-    },
-
-    // -----------------------------
-    componentWillReceiveProps: function(nextProps){
-        // const game = nextProps.Game;
-        // if (game && game.Name) document.title = `${game.Name} - Forge | Builder`;
+        const { dispatch, id, email } = this.props;
+        dispatch(actions.setUser(id, email));
     }
+
 });
 
-// =====================================
 // Container
 // =====================================
-const Account = connect(
-    state => { return { ...state.core } }
-)(__Account);
+const Account = connect()(__Account);
 
-// =====================================
 // Root
 // =====================================
 Account.Provider = (props) => (

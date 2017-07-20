@@ -2,18 +2,20 @@
 
 const reduxThunk = require('redux-thunk').default;
 
-const coreReducer =     require('Core/Reducer.js');
-const commonReducer =   require('Common/Reducer.js');
-const libraryReducer =  require('Library/Reducer.js');
-const designerReducer = require('Designer/Reducer.js');
-const builderReducer =  require('Builder/Reducer.js');
+const core =     require('Core/Reducer.js');
+const common =   require('Common/Reducer.js');
+const builder =  require('Builder/Reducer.js');
+const library =  require('Library/Reducer.js');
+const designer = require('Designer/Reducer.js');
+const account =  require('Account/Reducer.js')
 
 const rootReducer = combineReducers({
-    core:           coreReducer,
-    common:         commonReducer,
-    library:        libraryReducer,
-    designer:       designerReducer,
-    builder:        builderReducer
+    core,
+    common,
+    builder,
+    library,
+    designer,
+    account
 });
 
 const store = createStore(

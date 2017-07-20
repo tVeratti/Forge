@@ -1,0 +1,10 @@
+﻿@import '../_colors';
+@import '../units';
+@import '../_mixins';
+
+#account{
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}

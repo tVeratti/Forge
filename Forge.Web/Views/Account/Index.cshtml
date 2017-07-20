@@ -1,19 +1,17 @@
 ﻿@{
     ViewBag.Title = "Index";
+    var userModel = new
+    {
+        id = User?.Id,
+        email = User?.Email,
+        name =  User?.UserName
+    };
 }
 
-<h2>Account Index</h2>
+<div id="account"></div>
 
-@if (User == null || !User.Identity.IsAuthenticated) {
-    <form action="/Account/ExternalLogin" method="post">
-        <button type="submit" name="Provider" value="Google">Google+</button>
-    </form>
-}
-else
-{
-    <form action="/Account/LogOut" method="post">
-        <button type="submit">Log Out</button>
-    </form>
+@section scripts {
+    @Html.Render("account", "Forge.Account.Provider", userModel)
 }
 
 

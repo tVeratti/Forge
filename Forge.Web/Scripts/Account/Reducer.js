@@ -1,28 +1,28 @@
 ﻿const initialState = {
-    dialogType: null
+    user: {}
 }
 
-function commonReducer(state = initialState, action){
+function reducer(state = initialState, action){
 
     let nextState = Object.assign({}, state);
 
     switch(action.type){
-        case 'GET_LOCAL_GAME':
-            nextState.dialogType = designerActions.dialogTypes.LOAD_ERROR;
+        // --------------------------------
+        case 'SET_USER':
+            nextState.user = { ...action };
+            delete nextState.user.type;
+            
+            break;
+        // --------------------------------
+        case 'REQUEST_USER':
             break;
 
         // --------------------------------
-        case 'OPEN_DIALOG':
-            nextState.dialogType = action.dialogType;
-            break;
-
-        // --------------------------------
-        case 'CLOSE_DIALOG':
-            nextState.dialogType = null;
+        case 'RECEIVE_USER':
             break;
     }
     
     return nextState;
 }
 
-module.exports = commonReducer;
+module.exports = reducer;
