@@ -3295,7 +3295,7 @@ var __Stage = React.createClass({
 
         return React.createElement(
             'div',
-            { className: className, key: stageKey },
+            { className: className },
             React.createElement(
                 'div',
                 { className: 'stage__menu' },
@@ -3307,7 +3307,7 @@ var __Stage = React.createClass({
             ),
             React.createElement(
                 'div',
-                { className: 'stage__workspace' },
+                { className: 'stage__workspace', key: stageKey },
                 workspaceNode
             )
         );

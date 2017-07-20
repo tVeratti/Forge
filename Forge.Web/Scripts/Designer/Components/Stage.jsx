@@ -50,7 +50,7 @@ const __Stage = React.createClass({
             : undefined;
 
         return (
-            <div className={className} key={stageKey}>
+            <div className={className}>
 
                 {/* Actions */}
                 <div className='stage__menu'>
@@ -63,7 +63,7 @@ const __Stage = React.createClass({
                 </div>
 
                 {/* Workspace */}
-                <div className='stage__workspace'>
+                <div className='stage__workspace' key={stageKey}>
                     {workspaceNode}
                 </div>
             </div>
