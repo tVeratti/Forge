@@ -45,21 +45,22 @@ const __Designer = React.createClass({
         return (
             <div className={className}>
                 <Dialogs />
+                <List />
 
-                {/* Game Information & Navigation */}
-                <div className='section section--secondary'>
-                    {loading && <div className='loading-bar' />}
-                    
-                    <Summary />
-                    <Tabs />
+                <div className='designer__static'>
+                    {/* Game Information & Navigation */}
+                    <div className='section section--secondary'>
+                        {loading && <div className='loading-bar' />}
+                        
+                        <Summary />
+                        <Tabs />
+                    </div>
+
+                    {/* Stage & Controls */}
+                    <div className='designer__views'>
+                        <Stage />
+                    </div>
                 </div>
-
-                {/* Stage & Controls */}
-                <div className='designer__views'>
-                    <List />
-                    <Stage />
-                </div>
-
             </div>
         );
     },

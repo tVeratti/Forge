@@ -9,7 +9,8 @@
         height: 44px;*/
     }
 
-    &.icon--list{       @include icon("\f394"); }
-    &.icon--settings{   @include icon("\f13d"); }
-    &.icon--search{     @include icon("\f4a4"); }
+    &.icon--list{       @include icon("\e872"); }
+    &.icon--settings{   @include icon("\e810"); }
+    &.icon--search{     @include icon("\e86f"); }
+    &.icon--new{        @include icon("\e881"); }
 }

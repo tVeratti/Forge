@@ -7,10 +7,10 @@ const Button = require('Common/Components/Button.jsx');
 
 // =====================================
 const Link = ({ model, hideCategory }) => {
-    //const onClick = () => store.dispatch(actions.navigate(model));
+    const onClick = () => store.dispatch(actions.navigate(model));
     
     return (
-        <Button className='button button--link designer__link' >
+        <Button className='button button--link designer__link' onClick={onClick}>
             <span>{model.Name}</span>
             { !hideCategory && <span className='button__subtitle'>{model.Category}</span> }
         </Button>

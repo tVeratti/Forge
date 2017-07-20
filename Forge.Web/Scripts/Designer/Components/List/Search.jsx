@@ -1,6 +1,11 @@
 ﻿const React = require('react');
 const { connect } = require('react-redux');
 
+const { CATEGORIES, utilities } = require('Core');
+const { sortBy, contains } = utilities;
+
+const designerActions = require('Designer/Actions.js');
+
 // Presentation
 // =====================================
 const __Search = React.createClass({
@@ -42,7 +47,6 @@ const __Search = React.createClass({
     // -----------------------------
     concatCoreArrays: function(){
         const { core } = this.props;
-
         return [
             { header: CATEGORIES.RULES },
             ...sortBy(this.mapTabItems(core.Rules, CATEGORIES.RULES), 'Name'),

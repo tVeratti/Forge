@@ -1,5 +1,4 @@
-﻿@import 'Fonts/font-awesome.min.css';
-@import 'Fonts/Ionicons/ionicons.min.css';
+﻿@import 'Fonts/Linearicons/style.css';
 
 @import 'reset';
 @import 'units';
@@ -68,7 +67,7 @@ b { font-weight: 600; }
 ::-webkit-scrollbar-track
 {
 	//border-radius: 10px;
-	background-color: $color-primary-50;
+	background: none;
     margin-left: 5px;
 }
 
@@ -80,7 +79,8 @@ b { font-weight: 600; }
 ::-webkit-scrollbar-thumb
 {
 	//border-radius: 10px;
-	background-color: $color-primary-80;
+	background-color: $color-primary-70;
+    //&:hover{ background-color: $color-p-20; }
 }
 
 

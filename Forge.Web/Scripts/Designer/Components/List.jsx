@@ -44,17 +44,8 @@ const __List = React.createClass({
 	componentWillReceiveProps: function(nextProps){
 		const { designer } = nextProps;
 
-		if (designer.navigated){
-			this.setState({ 
-				open: designer.listOpen,
-				listTab: designer.listTab
-			});
-		}
-		else if (designer.tab !== this.props.designer.tab){
-			this.setState({
-				open: true,
-				listTab: 'List'
-			});
+		if (designer.tab !== this.props.designer.tab){
+			this.setState({ listTab: 'List' });
 		}
 	},
 
@@ -98,7 +89,7 @@ const __List = React.createClass({
 		// Unshift the ADD button to the top of the list.
 		nodes.unshift(
 			<li key='add' className='designer__list-item'>
-				<Button className='button button--tertiary designer__add' onClick={this.new} title={'New'}>New</Button>
+				
 			</li>
 		);
 		
@@ -124,7 +115,7 @@ const __List = React.createClass({
 				if (navigated) className += ' button--flash';
 			}
 
-			return <button key={b} className={className} title={b} onClick={onClick} />;
+			return <Button key={b} className={className} title={b} onClick={onClick} />;
 		});
 		//<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
 		return (
@@ -132,8 +123,8 @@ const __List = React.createClass({
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}
+					<Button className='button icon icon--new' onClick={this.new} title={'New'} />
 				</div>
-				
 			</div>
 		);
 	},

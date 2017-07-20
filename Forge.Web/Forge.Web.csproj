@@ -297,6 +297,8 @@
     <Content Include="Styles\Fonts\fontawesome-webfont.svg" />
     <Content Include="Styles\Fonts\Ionicons\ionicons.min.css" />
     <Content Include="Styles\Fonts\Ionicons\ionicons.svg" />
+    <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.svg" />
+    <Content Include="Styles\Fonts\Linearicons\style.css" />
     <Content Include="Styles\site.css">
       <DependentUpon>site.scss</DependentUpon>
     </Content>
@@ -354,6 +356,10 @@
     <Content Include="Styles\Fonts\Ionicons\ionicons.eot" />
     <Content Include="Styles\Fonts\Ionicons\ionicons.ttf" />
     <Content Include="Styles\Fonts\Ionicons\ionicons.woff" />
+    <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.eot" />
+    <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.ttf" />
+    <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.woff" />
+    <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.woff2" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

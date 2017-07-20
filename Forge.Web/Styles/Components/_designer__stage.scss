@@ -7,11 +7,8 @@
     vertical-align: top;
 
     @media screen and (max-width: 720px){
-        &:not(.stage--menu):not(.stage--preview){ 
-            padding-left: 44px;
-        }
         .stage__workspace{
-            padding-right: 10px;
+            padding: 10px;
         }
     }
     
@@ -166,6 +163,7 @@
     align-items: stretch;
     background-color: $color-background-menu-2;
     border-bottom: 1px solid $color-primary-30;
+    padding: 0 10px;
     //@include soft-shadow();
 
     .button{
@@ -176,7 +174,7 @@
         &:before,
         &:after { 
             display: block;
-            font-family: "Ionicons";
+            font-family: "Linearicons-Free";
             font-size: 24px;
         }
     }
@@ -193,11 +191,12 @@
         &:before{ content: $icon; }
         &:hover{ color: $color; }
     }
-    .stage__back { @include menu-button("\f2ca", $color-primary-80); } 
-    .stage__save { @include menu-button("\f383", $color-tertiary-50); }
+    .stage__back { @include menu-button("\e879", $color-primary-80); } 
+    .stage__forward { @include menu-button("\e87a", $color-primary-80); } 
+    .stage__save { @include menu-button("\e87f", $color-tertiary-40); }
 
     .stage__save-all { @include menu-button("\f382", $color-tertiary-50); }
-    .stage__delete { @include menu-button("\f2d7", $color-red); }
+    .stage__delete { @include menu-button("\e880", $color-red); }
     .stage__fav { @include menu-button("\f3ae", $color-primary-80); }
 
     .stage__unsaved-count{
@@ -220,7 +219,7 @@
     .designer__remove {
         &:hover{ color: $color-red; }
         &:after{
-            font-family: 'Ionicons';
+            font-family: "Linearicons-Free";
             content: "\f2d7";
             font-size: 20px;
             padding: 5px;

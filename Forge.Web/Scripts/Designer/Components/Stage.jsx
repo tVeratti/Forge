@@ -4,6 +4,8 @@ const { connect} = require('react-redux');
 const designerActions =     require('Designer/Actions.js');
 const coreActions =         require('Core/Actions.js');
 
+const Button = require('Common/Components/Button.jsx');
+
 const Preview =     require('./Stage/Preview.jsx');
 const Menu =        require('./Stage/Menu.jsx');
 const Recent =      require('./Stage/Recent.jsx');
@@ -52,11 +54,12 @@ const __Stage = React.createClass({
 
                 {/* Actions */}
                 <div className='stage__menu'>
-                    <button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length} title='Back' />
-                    <button className='button button--transparent stage__save-all' onClick={this.saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>
+                    <Button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length} title='Back' />
+                    <Button className='button button--transparent stage__forward' onClick={this.forward} disabled={!itemHistory.length} title='Back' />
+                    {/* <button className='button button--transparent stage__save-all' onClick={this.saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>*/}
                     <span className='divider' />
-                    <button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled} title='Save' />
-                    <button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled} title='Delete' />
+                    <Button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled} title='Save' />
+                    <Button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled} title='Delete' />
                 </div>
 
                 {/* Workspace */}

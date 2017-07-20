@@ -1,5 +1,7 @@
 ﻿const React = require('react');
 
+const Button = require('./Button.jsx');
+
 // =======================================================
 const Nav = React.createClass({
     // RENDER ==========================
@@ -23,7 +25,7 @@ const Nav = React.createClass({
 
 			    {/* Site Navigation Menu */}
 			    <div id="nav-site" className="nav-group">
-				    <span className={toggleSiteClassName} onClick={toggleSiteHandler} />
+				    <Button className={toggleSiteClassName} onClick={toggleSiteHandler} />
 	                <ul className={siteUlClass}>
 	            	    {arrowNode}
                         <li><a href="/">Home</a></li>
@@ -33,7 +35,7 @@ const Nav = React.createClass({
 
                 {/* Account Navigation Menu */}
                 <div id="nav-account" className="nav-group">
-                    <span className={toggleAccountClassName} onClick={toggleAccountHandler} />
+                    <Button className={toggleAccountClassName} onClick={toggleAccountHandler} />
                     <ul className={accountUlClass}>
                         {arrowNode}
                         <li><a href="/Account">{this.props.UserName || 'Log In'}</a></li>

@@ -8,7 +8,14 @@ const Link = require('Designer/Components/Link.jsx');
 // =====================================
 const __Recent = ({ core, designer, dispatch }) => {
     const categories = [ CATEGORIES.TAGS, CATEGORIES.RULES, CATEGORIES.DEFINITIONS ];
-    const sourceItems = [ ...core.Tags, ...core.Rules, ...core.Definitions ];
+
+    let sourceItems;
+    switch(designer.tab){
+        case CATEGORIES.TAGS: sourceItems = [ ...core.Tags ]; break;
+        case CATEGORIES.RULES: sourceItems = [ ...core.Rules ]; break;
+        case CATEGORIES. DEFINITIONS: sourceItems = [ ...core.Definitions ]; break;
+        default: sourceItems = [ ...core.Tags, ...core.Rules, ...core.Definitions ]; break;
+    }
 
     const recentNodes = sourceItems
         .slice()

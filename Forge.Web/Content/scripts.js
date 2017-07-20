@@ -288,7 +288,7 @@ var Button = React.createClass({
         return React.createElement(
             'button',
             _extends({}, props, { onClick: this.onClick, ref: 'wrapper' }),
-            animate && React.createElement('span', { className: 'button__clicky', style: _extends({}, coords, size), ref: 'clicky' }),
+            React.createElement('span', { key: animate, className: 'button__clicky', style: _extends({}, coords, size), ref: 'clicky' }),
             this.props.children
         );
     },
@@ -300,46 +300,13 @@ var Button = React.createClass({
 
     // -----------------------------
     getInitialState: function getInitialState() {
-        return { animate: false };
+        return { animate: false, start: false };
     },
 
+    // -----------------------------
     componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
-        var _this = this;
-
-        if (this.state.animate && !prevState.animate) {
-            // Move button__clicky to the mouse
-            var _state2 = this.state,
-                x = _state2.x,
-                y = _state2.y;
-            var _refs = this.refs,
-                clicky = _refs.clicky,
-                wrapper = _refs.wrapper;
-            var _document$body = document.body,
-                scrollLeft = _document$body.scrollLeft,
-                scrollTop = _document$body.scrollTop;
-
-            // Get full size of clicky that matches the highest dimension of wrapper.
-
-            var maxDimension = Math.max(wrapper.offsetHeight, wrapper.offsetWidth);
-            var size = { width: maxDimension, height: maxDimension };
-
-            // Get position of clicky
-            var rect = wrapper.getBoundingClientRect();
-            var offset = {
-                left: rect.left + scrollLeft,
-                top: rect.top + scrollTop
-            };
-
-            var coords = {
-                left: x - offset.left - clicky.offsetWidth / 2 + 'px',
-                top: y - offset.top - clicky.offsetHeight / 2 - 1 + 'px'
-            };
-
-            this.setState({ coords: coords, size: size });
-
-            setTimeout(function () {
-                return _this.setState({ animate: false });
-            }, 700);
+        if (this.state.start && prevState.start == false) {
+            this.setState({ animate: true, start: false });
         }
     },
 
@@ -349,7 +316,32 @@ var Button = React.createClass({
 
         onClick && onClick(ev);
 
-        this.setState({ animate: true, x: ev.pageX, y: ev.pageY });
+        // Move button__clicky to the mouse
+        var _refs = this.refs,
+            clicky = _refs.clicky,
+            wrapper = _refs.wrapper;
+        var _document$body = document.body,
+            scrollLeft = _document$body.scrollLeft,
+            scrollTop = _document$body.scrollTop;
+
+        // Get full size of clicky that matches the highest dimension of wrapper.
+
+        var maxDimension = Math.max(wrapper.offsetHeight, wrapper.offsetWidth);
+        var size = { width: maxDimension, height: maxDimension };
+
+        // Get position of clicky
+        var rect = wrapper.getBoundingClientRect();
+        var offset = {
+            left: rect.left + scrollLeft,
+            top: rect.top + scrollTop
+        };
+
+        var coords = {
+            left: ev.pageX - offset.left - maxDimension / 2 + 'px',
+            top: ev.pageY - offset.top - maxDimension / 2 - 1 + 'px'
+        };
+
+        this.setState({ start: true, animate: false, coords: coords, size: size });
     }
 });
 
@@ -527,6 +519,8 @@ module.exports = Footer;
 
 var React = require('react');
 
+var Button = require('./Button.jsx');
+
 // =======================================================
 var Nav = React.createClass({
     displayName: 'Nav',
@@ -553,7 +547,7 @@ var Nav = React.createClass({
             React.createElement(
                 'div',
                 { id: 'nav-site', className: 'nav-group' },
-                React.createElement('span', { className: toggleSiteClassName, onClick: toggleSiteHandler }),
+                React.createElement(Button, { className: toggleSiteClassName, onClick: toggleSiteHandler }),
                 React.createElement(
                     'ul',
                     { className: siteUlClass },
@@ -581,7 +575,7 @@ var Nav = React.createClass({
             React.createElement(
                 'div',
                 { id: 'nav-account', className: 'nav-group' },
-                React.createElement('span', { className: toggleAccountClassName, onClick: toggleAccountHandler }),
+                React.createElement(Button, { className: toggleAccountClassName, onClick: toggleAccountHandler }),
                 React.createElement(
                     'ul',
                     { className: accountUlClass },
@@ -643,7 +637,7 @@ var Nav = React.createClass({
 
 module.exports = Nav;
 
-},{"react":267}],12:[function(require,module,exports){
+},{"./Button.jsx":7,"react":267}],12:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -2512,18 +2506,22 @@ var __Designer = React.createClass({
             'div',
             { className: className },
             React.createElement(Dialogs, null),
+            React.createElement(List, null),
             React.createElement(
                 'div',
-                { className: 'section section--secondary' },
-                loading && React.createElement('div', { className: 'loading-bar' }),
-                React.createElement(Summary, null),
-                React.createElement(Tabs, null)
-            ),
-            React.createElement(
-                'div',
-                { className: 'designer__views' },
-                React.createElement(List, null),
-                React.createElement(Stage, null)
+                { className: 'designer__static' },
+                React.createElement(
+                    'div',
+                    { className: 'section section--secondary' },
+                    loading && React.createElement('div', { className: 'loading-bar' }),
+                    React.createElement(Summary, null),
+                    React.createElement(Tabs, null)
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'designer__views' },
+                    React.createElement(Stage, null)
+                )
             )
         );
     },
@@ -2792,11 +2790,13 @@ var Link = function Link(_ref) {
     var model = _ref.model,
         hideCategory = _ref.hideCategory;
 
-    //const onClick = () => store.dispatch(actions.navigate(model));
+    var onClick = function onClick() {
+        return store.dispatch(actions.navigate(model));
+    };
 
     return React.createElement(
         Button,
-        { className: 'button button--link designer__link' },
+        { className: 'button button--link designer__link', onClick: onClick },
         React.createElement(
             'span',
             null,
@@ -2868,16 +2868,8 @@ var __List = React.createClass({
 		var designer = nextProps.designer;
 
 
-		if (designer.navigated) {
-			this.setState({
-				open: designer.listOpen,
-				listTab: designer.listTab
-			});
-		} else if (designer.tab !== this.props.designer.tab) {
-			this.setState({
-				open: true,
-				listTab: 'List'
-			});
+		if (designer.tab !== this.props.designer.tab) {
+			this.setState({ listTab: 'List' });
 		}
 	},
 
@@ -2930,15 +2922,7 @@ var __List = React.createClass({
 		});
 
 		// Unshift the ADD button to the top of the list.
-		nodes.unshift(React.createElement(
-			'li',
-			{ key: 'add', className: 'designer__list-item' },
-			React.createElement(
-				Button,
-				{ className: 'button button--tertiary designer__add', onClick: this.new, title: 'New' },
-				'New'
-			)
-		));
+		nodes.unshift(React.createElement('li', { key: 'add', className: 'designer__list-item' }));
 
 		return nodes;
 	},
@@ -2970,7 +2954,7 @@ var __List = React.createClass({
 				if (navigated) className += ' button--flash';
 			}
 
-			return React.createElement('button', { key: b, className: className, title: b, onClick: onClick });
+			return React.createElement(Button, { key: b, className: className, title: b, onClick: onClick });
 		});
 		//<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
 		return React.createElement(
@@ -2979,7 +2963,8 @@ var __List = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'designer__mini-buttons' },
-				miniButtons
+				miniButtons,
+				React.createElement(Button, { className: 'button icon icon--new', onClick: this.new, title: 'New' })
 			)
 		);
 	},
@@ -3021,10 +3006,18 @@ var React = require('react');
 var _require = require('react-redux'),
     connect = _require.connect;
 
+var _require2 = require('Core'),
+    CATEGORIES = _require2.CATEGORIES,
+    utilities = _require2.utilities;
+
+var sortBy = utilities.sortBy,
+    contains = utilities.contains;
+
+
+var designerActions = require('Designer/Actions.js');
+
 // Presentation
 // =====================================
-
-
 var __Search = React.createClass({
     displayName: '__Search',
 
@@ -3073,7 +3066,6 @@ var __Search = React.createClass({
     // -----------------------------
     concatCoreArrays: function concatCoreArrays() {
         var core = this.props.core;
-
 
         return [{ header: CATEGORIES.RULES }].concat(_toConsumableArray(sortBy(this.mapTabItems(core.Rules, CATEGORIES.RULES), 'Name')), [{ header: CATEGORIES.TAGS }], _toConsumableArray(sortBy(this.mapTabItems(core.Tags, CATEGORIES.TAGS), 'Name')), [{ header: CATEGORIES.DEFINITIONS }], _toConsumableArray(sortBy(this.mapTabItems(core.Definitions, CATEGORIES.DEFINITIONS), 'Name')));
     },
@@ -3138,7 +3130,7 @@ var Search = connect(function (state) {
 
 module.exports = Search;
 
-},{"react":267,"react-redux":85}],38:[function(require,module,exports){
+},{"Core":29,"Designer/Actions.js":30,"react":267,"react-redux":85}],38:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -3249,6 +3241,8 @@ var _require = require('react-redux'),
 var designerActions = require('Designer/Actions.js');
 var coreActions = require('Core/Actions.js');
 
+var Button = require('Common/Components/Button.jsx');
+
 var Preview = require('./Stage/Preview.jsx');
 var Menu = require('./Stage/Menu.jsx');
 var Recent = require('./Stage/Recent.jsx');
@@ -3305,15 +3299,11 @@ var __Stage = React.createClass({
             React.createElement(
                 'div',
                 { className: 'stage__menu' },
-                React.createElement('button', { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length, title: 'Back' }),
-                React.createElement(
-                    'button',
-                    { className: 'button button--transparent stage__save-all', onClick: this.saveAll, disabled: !unsavedCountNode, title: 'Save All' },
-                    unsavedCountNode
-                ),
+                React.createElement(Button, { className: 'button button--transparent stage__back', onClick: this.back, disabled: !itemHistory.length, title: 'Back' }),
+                React.createElement(Button, { className: 'button button--transparent stage__forward', onClick: this.forward, disabled: !itemHistory.length, title: 'Back' }),
                 React.createElement('span', { className: 'divider' }),
-                React.createElement('button', { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled, title: 'Save' }),
-                React.createElement('button', { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled, title: 'Delete' })
+                React.createElement(Button, { className: 'button button--transparent stage__save', onClick: this.save, disabled: menuDisabled, title: 'Save' }),
+                React.createElement(Button, { className: 'button button--transparent stage__delete', onClick: this.delete, disabled: menuDisabled, title: 'Delete' })
             ),
             React.createElement(
                 'div',
@@ -3399,7 +3389,7 @@ var Stage = connect(function (state) {
 
 module.exports = Stage;
 
-},{"./Stage/Edit/Definition.jsx":40,"./Stage/Edit/Rule.jsx":43,"./Stage/Edit/Tag.jsx":44,"./Stage/Menu.jsx":45,"./Stage/Preview.jsx":46,"./Stage/Recent.jsx":47,"Core/Actions.js":18,"Designer/Actions.js":30,"react":267,"react-redux":85}],40:[function(require,module,exports){
+},{"./Stage/Edit/Definition.jsx":40,"./Stage/Edit/Rule.jsx":43,"./Stage/Edit/Tag.jsx":44,"./Stage/Menu.jsx":45,"./Stage/Preview.jsx":46,"./Stage/Recent.jsx":47,"Common/Components/Button.jsx":7,"Core/Actions.js":18,"Designer/Actions.js":30,"react":267,"react-redux":85}],40:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -4473,7 +4463,18 @@ var __Recent = function __Recent(_ref) {
         dispatch = _ref.dispatch;
 
     var categories = [CATEGORIES.TAGS, CATEGORIES.RULES, CATEGORIES.DEFINITIONS];
-    var sourceItems = [].concat(_toConsumableArray(core.Tags), _toConsumableArray(core.Rules), _toConsumableArray(core.Definitions));
+
+    var sourceItems = void 0;
+    switch (designer.tab) {
+        case CATEGORIES.TAGS:
+            sourceItems = [].concat(_toConsumableArray(core.Tags));break;
+        case CATEGORIES.RULES:
+            sourceItems = [].concat(_toConsumableArray(core.Rules));break;
+        case CATEGORIES.DEFINITIONS:
+            sourceItems = [].concat(_toConsumableArray(core.Definitions));break;
+        default:
+            sourceItems = [].concat(_toConsumableArray(core.Tags), _toConsumableArray(core.Rules), _toConsumableArray(core.Definitions));break;
+    }
 
     var recentNodes = sourceItems.slice().sort(function (a, b) {
         return new Date(b.ModifiedDate) - new Date(a.ModifiedDate);

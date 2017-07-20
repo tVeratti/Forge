@@ -24,7 +24,7 @@ button,
     background: $color-secondary-70;
     color: $color-primary-10;
     border: none;
-    border-radius: 3px;
+    //border-radius: 3px;
     outline: none;
     line-height: 12px;
     font-family: inherit;
@@ -87,7 +87,7 @@ button,
     .button__clicky{
         position: absolute;
         display: inline-block;
-        background: rgba($color-secondary-50, 0.7);
+        background: rgba($color-secondary-20, 0.7);
 	    border-radius: 100%;
 	    transform: scale(0);
     }
