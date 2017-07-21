@@ -6,6 +6,6 @@
 <div id="designer"></div>
 
 @section scripts{
-    @Html.Render("designer", "Forge.Designer.Provider")
+    @Html.Render("designer", "Forge.Designer.Provider", new { id = Model })
 }
 

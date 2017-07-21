@@ -1,5 +1,7 @@
 ﻿const React = require('react');
 
+const Button = require('./Button.jsx');
+
 // =====================================
 const Tags = React.createClass({
     // -----------------------------
@@ -42,10 +44,10 @@ const Tags = React.createClass({
             const className = 'button button--secondary tags__tag';
 
             return (
-                <button className={className} key={tag.Id}>
+                <Button className={className} key={tag.Id}>
                     <span className='tags__name'>{tag.Name}</span>
                     <span className='tags__remove' onClick={removeTagHandler} />
-                </button>
+                </Button>
             );
         });
     },

@@ -11,8 +11,8 @@ var actions = {
     // Action Creators
     // =====================================
     // --------------------------------
-    setUser: function setUser(id, email) {
-        return { type: 'SET_USER', id: id, email: email };
+    setUser: function setUser(id, email, name) {
+        return { type: 'SET_USER', id: id, email: email, name: name };
     },
 
     // --------------------------------
@@ -72,9 +72,10 @@ var __Account = React.createClass({
         var _props = this.props,
             dispatch = _props.dispatch,
             id = _props.id,
-            email = _props.email;
+            email = _props.email,
+            name = _props.name;
 
-        dispatch(actions.setUser(id, email));
+        dispatch(actions.setUser(id, email, name));
     }
 
 });
@@ -104,12 +105,21 @@ var Login = function Login(props) {
         'div',
         { className: 'account__login' },
         React.createElement(
-            'form',
-            { action: '/Account/ExternalLogin', method: 'post' },
+            'div',
+            { className: 'panel' },
             React.createElement(
-                'button',
-                { type: 'submit', name: 'Provider', value: 'Google' },
-                'Google+'
+                'h4',
+                null,
+                'Log In'
+            ),
+            React.createElement(
+                'form',
+                { action: '/Account/ExternalLogin', method: 'post' },
+                React.createElement(
+                    'button',
+                    { type: 'submit', name: 'Provider', value: 'Google' },
+                    'Google+'
+                )
             )
         )
     );
@@ -127,6 +137,8 @@ var _require = require('react-redux'),
 
 var actions = require('Account/Actions.js');
 
+var Button = require('Common/Components/Button.jsx');
+
 // Presentation
 // =====================================
 var __Profile = React.createClass({
@@ -141,19 +153,19 @@ var __Profile = React.createClass({
             'div',
             { className: 'account__profile' },
             React.createElement(
-                'div',
-                { className: 'account__user' },
-                React.createElement(
-                    'p',
-                    null,
-                    user.name
-                ),
-                React.createElement(
-                    'p',
-                    null,
-                    user.email
-                )
+                'h1',
+                null,
+                'Profile'
             ),
+            React.createElement(
+                'h2',
+                null,
+                user.name,
+                ' (',
+                user.email,
+                ')'
+            ),
+            React.createElement('div', { className: 'separator' }),
             React.createElement(
                 'form',
                 { action: '/Account/LogOut', method: 'post' },
@@ -161,6 +173,61 @@ var __Profile = React.createClass({
                     'button',
                     { type: 'submit' },
                     'Log Out'
+                )
+            ),
+            React.createElement('div', { className: 'separator' }),
+            React.createElement(
+                'div',
+                { className: 'account__details' },
+                React.createElement(
+                    'div',
+                    { className: 'column' },
+                    React.createElement(
+                        'div',
+                        { className: 'panel' },
+                        React.createElement(
+                            'h4',
+                            null,
+                            'My Games'
+                        ),
+                        React.createElement(
+                            Button,
+                            null,
+                            'Create New Game'
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'panel' },
+                        React.createElement(
+                            'h4',
+                            null,
+                            'My Characters'
+                        ),
+                        React.createElement(
+                            Button,
+                            null,
+                            'Create New Character'
+                        )
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'column' },
+                    React.createElement(
+                        'div',
+                        { className: 'panel' },
+                        React.createElement(
+                            'h4',
+                            null,
+                            'Friends'
+                        ),
+                        React.createElement(
+                            Button,
+                            null,
+                            'Find Friends'
+                        )
+                    )
                 )
             )
         );
@@ -184,7 +251,7 @@ var Profile = connect(function (state) {
 
 module.exports = Profile;
 
-},{"Account/Actions.js":1,"react":271,"react-redux":98}],5:[function(require,module,exports){
+},{"Account/Actions.js":1,"Common/Components/Button.jsx":11,"react":271,"react-redux":98}],5:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -515,6 +582,8 @@ module.exports = Button;
 
 var actions = require('./../Actions.js');
 
+var Button = require('./Button.jsx');
+
 // =====================================
 var Dialog = function Dialog(props) {
     var children = props.children,
@@ -554,7 +623,7 @@ var Dialog = function Dialog(props) {
                         'div',
                         null,
                         React.createElement(
-                            'button',
+                            Button,
                             { className: 'dialog__close button button--transparent', onClick: close, title: 'Close' },
                             React.createElement('span', { className: 'fa fa-remove' })
                         )
@@ -569,7 +638,7 @@ var Dialog = function Dialog(props) {
                     'div',
                     { className: 'dialog__buttons' },
                     buttons || React.createElement(
-                        'button',
+                        Button,
                         { onClick: close },
                         'Close'
                     )
@@ -581,7 +650,7 @@ var Dialog = function Dialog(props) {
 
 module.exports = Dialog;
 
-},{"./../Actions.js":10}],13:[function(require,module,exports){
+},{"./../Actions.js":10,"./Button.jsx":11}],13:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1078,6 +1147,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var React = require('react');
 
+var Button = require('./Button.jsx');
+
 // =====================================
 var Tags = React.createClass({
     displayName: 'Tags',
@@ -1148,7 +1219,7 @@ var Tags = React.createClass({
             var className = 'button button--secondary tags__tag';
 
             return React.createElement(
-                'button',
+                Button,
                 { className: className, key: tag.Id },
                 React.createElement(
                     'span',
@@ -1215,7 +1286,7 @@ var Tags = React.createClass({
 
 module.exports = Tags;
 
-},{"react":271}],20:[function(require,module,exports){
+},{"./Button.jsx":11,"react":271}],20:[function(require,module,exports){
 
 
 // =====================================
@@ -3084,9 +3155,6 @@ var __List = React.createClass({
 			);
 		});
 
-		// Unshift the ADD button to the top of the list.
-		nodes.unshift(React.createElement('li', { key: 'add', className: 'designer__list-item' }));
-
 		return nodes;
 	},
 
@@ -3112,14 +3180,11 @@ var __List = React.createClass({
 		var miniButtons = buttons.map(function (b) {
 			var onClick = _this2.changeList.bind(_this2, b);
 			var className = 'button icon icon--' + b.toLowerCase();
-			if (b === listTab) {
-				className += ' button--active';
-				if (navigated) className += ' button--flash';
-			}
+			if (b === listTab) className += ' button--active';
 
 			return React.createElement(Button, { key: b, className: className, title: b, onClick: onClick });
 		});
-		//<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
+
 		return React.createElement(
 			'div',
 			{ className: 'designer__list-actions' },
@@ -3127,7 +3192,12 @@ var __List = React.createClass({
 				'div',
 				{ className: 'designer__mini-buttons' },
 				miniButtons,
-				React.createElement(Button, { className: 'button icon icon--new', onClick: this.new, title: 'New' })
+				React.createElement(Button, { className: 'button button--transparent icon icon--toggle', onClick: toggle, title: toggleText })
+			),
+			React.createElement(
+				Button,
+				{ className: 'button button--tertiary', onClick: this.new },
+				'New'
 			)
 		);
 	},
@@ -3572,6 +3642,7 @@ var commonActions = require('Common/Actions.js');
 var coreActions = require('Core/Actions.js').actions;
 
 var Field = require('Common/Components/Field.jsx');
+var Button = require('Common/Components/Button.jsx');
 var Definition = require('Core/Components/Definition.jsx');
 var DefinitionTags = require('./DefinitionTags.jsx');
 var DefinitionSettings = require('./DefinitionSettings.jsx');
@@ -3613,8 +3684,8 @@ var __EditDefinition = React.createClass({
             return dispatch(commonActions.openDialog(dialogTypes.EDIT_GROUPS));
         };
         var groupEditnode = React.createElement(
-            'button',
-            { className: 'button button--link', onClick: openGroupEdit },
+            Button,
+            { onClick: openGroupEdit },
             'Edit Groups'
         );
 
@@ -3664,9 +3735,10 @@ var __EditDefinition = React.createClass({
                     { className: 'summary' },
                     'Tags can be used to apply global rules, which will add settings with predfined values.'
                 ),
+                React.createElement('div', { className: 'separator  separator--small' }),
                 React.createElement(
-                    'a',
-                    { className: 'button button--link', onClick: goToTags },
+                    Button,
+                    { onClick: goToTags },
                     'Edit Tags'
                 ),
                 React.createElement(DefinitionTags, null)
@@ -3689,9 +3761,10 @@ var __EditDefinition = React.createClass({
                         'Drag a setting to re-order its priority level.'
                     )
                 ),
+                React.createElement('div', { className: 'separator  separator--small' }),
                 React.createElement(
-                    'a',
-                    { className: 'button button--link', onClick: goToSettings },
+                    Button,
+                    { onClick: goToSettings },
                     'Add Settings'
                 ),
                 React.createElement('div', { className: 'separator  separator--small' }),
@@ -3730,7 +3803,7 @@ var EditDefinition = connect(function (state) {
 
 module.exports = EditDefinition;
 
-},{"./DefinitionSettings.jsx":45,"./DefinitionTags.jsx":46,"Common/Actions.js":10,"Common/Components/Field.jsx":13,"Core":33,"Core/Actions.js":22,"Core/Components/Definition.jsx":28,"Designer/Actions.js":34,"react":271,"react-redux":98}],45:[function(require,module,exports){
+},{"./DefinitionSettings.jsx":45,"./DefinitionTags.jsx":46,"Common/Actions.js":10,"Common/Components/Button.jsx":11,"Common/Components/Field.jsx":13,"Core":33,"Core/Actions.js":22,"Core/Components/Definition.jsx":28,"Designer/Actions.js":34,"react":271,"react-redux":98}],45:[function(require,module,exports){
 
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };

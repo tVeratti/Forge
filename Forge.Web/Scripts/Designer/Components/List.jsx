@@ -86,13 +86,6 @@ const __List = React.createClass({
 			);
 		});
 
-		// Unshift the ADD button to the top of the list.
-		nodes.unshift(
-			<li key='add' className='designer__list-item'>
-				
-			</li>
-		);
-		
 		return nodes;
 	},
 
@@ -110,21 +103,19 @@ const __List = React.createClass({
 		const miniButtons = buttons.map(b => {
 			const onClick = this.changeList.bind(this, b);
 			let className = `button icon icon--${b.toLowerCase()}`;
-			if (b === listTab){
-				className += ' button--active';
-				if (navigated) className += ' button--flash';
-			}
+			if (b === listTab) className += ' button--active';
 
 			return <Button key={b} className={className} title={b} onClick={onClick} />;
 		});
-		//<button className='button button--transparent designer__toggle' onClick={toggle} title={toggleText} /> 
+
 		return (
 			<div className='designer__list-actions'>
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}
-					<Button className='button icon icon--new' onClick={this.new} title={'New'} />
+					<Button className='button button--transparent icon icon--toggle' onClick={toggle} title={toggleText} /> 
 				</div>
+				<Button className='button button--tertiary' onClick={this.new}>New</Button>
 			</div>
 		);
 	},

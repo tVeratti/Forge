@@ -281,7 +281,8 @@ b {
       line-height: 55px;
       height: 55px;
       font-weight: bold;
-      background: none; }
+      background: none;
+      border: none; }
       #nav .nav-group .toggle:hover, #nav .nav-group .toggle.t-open {
         color: #f8f8f8; }
       #nav .nav-group .toggle.nav__menu {
@@ -360,8 +361,7 @@ b {
   max-width: 100%;
   text-align: center;
   font-size: 12px;
-  margin-top: -1px;
-  padding-left: 200px; }
+  margin-top: -1px; }
   #footer .footer__nav {
     padding: 10px; }
     #footer .footer__nav li {
@@ -441,20 +441,34 @@ button,
 .button {
   position: relative;
   display: inline-block;
-  padding: 5px 0;
+  padding: 5px 10px;
   cursor: pointer;
-  background: #0d6d92;
-  color: #f8f8f8;
-  border: none;
   outline: none;
   line-height: 12px;
   font-family: inherit;
   min-height: 30px;
   min-width: 75px;
-  overflow: hidden; }
+  overflow: hidden;
+  color: #f8f8f8;
+  background: #0d6d92;
+  background-image: -moz-linear-gradient(top, #1088b6 0, #0e7aa4 100%);
+  background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop(0, #1088b6), color-stop(100%, #0e7aa4));
+  background-image: -webkit-linear-gradient(top, #1088b6 0, #0e7aa4 100%);
+  background-image: -o-linear-gradient(top, #1088b6 0, #0e7aa4 100%);
+  background-image: -ms-linear-gradient(top, #1088b6 0, #0e7aa4 100%);
+  background-image: linear-gradient(to bottombottom, #1088b6 0, #0e7aa4 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1088b6', endColorstr='#0e7aa4',GradientType=0 );
+  border: none;
+  border-radius: 3px; }
   button:hover,
   .button:hover {
-    background: #1088b6; }
+    background-image: -moz-linear-gradient(top, #40a0c5 0, #0e7aa4 100%);
+    background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop(0, #40a0c5), color-stop(100%, #0e7aa4));
+    background-image: -webkit-linear-gradient(top, #40a0c5 0, #0e7aa4 100%);
+    background-image: -o-linear-gradient(top, #40a0c5 0, #0e7aa4 100%);
+    background-image: -ms-linear-gradient(top, #40a0c5 0, #0e7aa4 100%);
+    background-image: linear-gradient(to bottombottom, #40a0c5 0, #0e7aa4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40a0c5', endColorstr='#0e7aa4',GradientType=0 ); }
   button:active,
   .button:active {
     background: #0d6d92; }
@@ -469,10 +483,24 @@ button,
       background: #909090; }
   button.button--tertiary,
   .button.button--tertiary {
-    background: #97be5a; }
+    background: #97be5a;
+    background-image: -moz-linear-gradient(top, #7DAE31 0, #719d2c 100%);
+    background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop(0, #7DAE31), color-stop(100%, #719d2c));
+    background-image: -webkit-linear-gradient(top, #7DAE31 0, #719d2c 100%);
+    background-image: -o-linear-gradient(top, #7DAE31 0, #719d2c 100%);
+    background-image: -ms-linear-gradient(top, #7DAE31 0, #719d2c 100%);
+    background-image: linear-gradient(to bottombottom, #7DAE31 0, #719d2c 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7DAE31', endColorstr='#719d2c',GradientType=0 ); }
     button.button--tertiary:hover,
     .button.button--tertiary:hover {
-      background: #7DAE31; }
+      background: #7DAE31;
+      background-image: -moz-linear-gradient(top, #8ab646 0, #719d2c 100%);
+      background-image: -webkit-gradient(linear, left top, left bottombottom, color-stop(0, #8ab646), color-stop(100%, #719d2c));
+      background-image: -webkit-linear-gradient(top, #8ab646 0, #719d2c 100%);
+      background-image: -o-linear-gradient(top, #8ab646 0, #719d2c 100%);
+      background-image: -ms-linear-gradient(top, #8ab646 0, #719d2c 100%);
+      background-image: linear-gradient(to bottombottom, #8ab646 0, #719d2c 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8ab646', endColorstr='#719d2c',GradientType=0 ); }
   button.button--action,
   .button.button--action {
     background: #e5c066; }
@@ -846,10 +874,12 @@ h5 {
       width: 100%;
       margin: 0;
       margin-bottom: 5px;
-      text-align: left; }
+      text-align: center; }
     .designer__list .designer__list-actions .designer__mini-buttons {
       display: flex;
-      border-bottom: 1px solid #eeeeee; }
+      border-bottom: 1px solid #eeeeee;
+      padding-bottom: 10px;
+      margin-bottom: 10px; }
       .designer__list .designer__list-actions .designer__mini-buttons button {
         flex-grow: 1;
         text-align: center;
@@ -866,8 +896,6 @@ h5 {
           color: #6f6f6f; }
           .designer__list .designer__list-actions .designer__mini-buttons button.button--active:after {
             text-shadow: none; }
-      .designer__list .designer__list-actions .designer__mini-buttons .icon--new {
-        color: #97be5a !important; }
   .designer__list .designer__list-actions,
   .designer__list .designer__list-items {
     padding-right: 5px; }
@@ -879,7 +907,7 @@ h5 {
     -webkit-transition: opacity 0.6s ease-in-out;
     transition: transform 0.6s ease-in-out; }
   .designer__list .designer__list-item {
-    border-left: 5px solid transparent; }
+    border-left: 5px solid #f8f8f8; }
     .designer__list .designer__list-item button {
       display: block;
       width: 100%;
@@ -900,7 +928,7 @@ h5 {
       .designer__list .designer__list-item.designer__list-item--unsaved .button:before {
         content: "* "; }
     .designer__list .designer__list-item.designer__list-item--selected {
-      border-color: #2894bd !important;
+      border-color: #40a0c5 !important;
       background: #1088b6 !important;
       /*&:after{
                 position: absolute;
@@ -911,8 +939,6 @@ h5 {
             }*/ }
       .designer__list .designer__list-item.designer__list-item--selected .button {
         color: white !important; }
-    .designer__list .designer__list-item:first-child:not(.setting) {
-      border: none; }
 
 .designer__list-header {
   font-weight: 600;
@@ -1270,6 +1296,11 @@ input {
   max-width: 600px;
   margin: auto;
   padding: 20px; }
+  #account .account__login {
+    text-align: center; }
+  #account .account__details {
+    display: flex;
+    flex-direction: column; }
 
 .dictionary {
   display: table;

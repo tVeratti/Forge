@@ -73,7 +73,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
     // --Closed
     &.designer__list--closed {
-        
 
         // MOBILE
         @media screen and (max-width: 720px){
@@ -116,12 +115,14 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             width: 100%;
             margin: 0;
             margin-bottom: 5px;
-            text-align: left;
+            text-align: center;
         }
 
         .designer__mini-buttons{
             display: flex;
             border-bottom: 1px solid $color-primary-20;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
 
             button{
                 flex-grow: 1;
@@ -144,10 +145,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                     &:after { text-shadow: none; }
                 }
             }
-
-            .icon--new {
-                color: $color-tertiary-30 !important;
-            }
         }
     }
 
@@ -168,7 +165,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     // __List-Item
     // ---------------------------
     .designer__list-item{
-        border-left: 5px solid transparent;
+        border-left: 5px solid $color-primary-10;
         &:hover{ 
             //background: $color-primary-20; 
             .button{
@@ -212,7 +209,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         // Active List-Item
         // (List & Search)
         &.designer__list-item--selected{
-            border-color: $color-secondary-40 !important;
+            border-color: $color-secondary-30 !important;
             background: $color-secondary-50 !important;
             .button{
                 color: white !important;
@@ -227,8 +224,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             }*/
         }
 
-        // Add
-        &:first-child:not(.setting){ border: none; }
     }
 }
 

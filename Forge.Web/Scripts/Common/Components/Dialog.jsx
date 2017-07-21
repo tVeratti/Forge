@@ -1,5 +1,7 @@
 ﻿const actions = require('./../Actions.js');
 
+const Button = require('./Button.jsx');
+
 // =====================================
 const Dialog = (props) => {
     const { children, header, buttons, requiredAction, onClose } = props;
@@ -20,9 +22,9 @@ const Dialog = (props) => {
                     <div className='dialog__header'>
                         <div>{header}</div>
                         <div>
-                            <button className='dialog__close button button--transparent' onClick={close} title='Close'>
+                            <Button className='dialog__close button button--transparent' onClick={close} title='Close'>
                                 <span className='fa fa-remove' />
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -31,7 +33,7 @@ const Dialog = (props) => {
 
                     {/* Content */}
                     <div className='dialog__buttons'>
-                        { buttons || <button onClick={close}>Close</button> }
+                        { buttons || <Button onClick={close}>Close</Button> }
                     </div>
                 </div>
             </div>

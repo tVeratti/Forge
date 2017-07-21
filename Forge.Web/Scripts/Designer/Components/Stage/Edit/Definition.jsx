@@ -8,6 +8,7 @@ const commonActions =       require('Common/Actions.js');
 const coreActions =         require('Core/Actions.js').actions;
 
 const Field =               require('Common/Components/Field.jsx');
+const Button =              require('Common/Components/Button.jsx');
 const Definition =          require('Core/Components/Definition.jsx');
 const DefinitionTags =      require('./DefinitionTags.jsx');
 const DefinitionSettings =  require('./DefinitionSettings.jsx');
@@ -30,7 +31,7 @@ const __EditDefinition = React.createClass({
 
         // Edit Groups
         const openGroupEdit = () => dispatch(commonActions.openDialog(dialogTypes.EDIT_GROUPS));
-        const groupEditnode = <button className='button button--link' onClick={openGroupEdit}>Edit Groups</button>;
+        const groupEditnode = <Button onClick={openGroupEdit}>Edit Groups</Button>;
 
         return (
             <div className='edit edit--definition' ref='wrapper'>
@@ -65,8 +66,9 @@ const __EditDefinition = React.createClass({
                 {/* Tags */}
                 <div className='panel'>
                     <h4>Tags</h4>
-                    <p className='summary'>Tags can be used to apply global rules, which will add settings with predfined values.</p>
-                    <a className='button button--link' onClick={goToTags}>Edit Tags</a>
+                    <p className='summary'>Tags can be used to apply global rules, which will add settings with predefined values.</p>
+                    <div className='separator  separator--small' />
+                    <Button onClick={goToTags}>Edit Tags</Button>
                     <DefinitionTags />
                     
                 </div>
@@ -75,7 +77,8 @@ const __EditDefinition = React.createClass({
                 <div className='panel'>
                     <h4>Settings</h4>
                     <p className='summary'>These settings change the behavior of this definition on the character builder. These will be applied to the definition in order from top to bottom (priority). <b>Drag a setting to re-order its priority level.</b></p>
-                    <a className='button button--link' onClick={goToSettings}>Add Settings</a>
+                    <div className='separator  separator--small' />
+                    <Button onClick={goToSettings}>Add Settings</Button>
                     <div className='separator  separator--small' />
                     <DefinitionSettings />
                 </div>

@@ -10,7 +10,7 @@
     // Action Creators
     // =====================================
     // --------------------------------
-    setUser: (id, email) => { return { type: 'SET_USER', id, email }},
+    setUser: (id, email, name) => { return { type: 'SET_USER', id, email, name }},
 
     // --------------------------------
     requestUser: () => { return { type: 'REQUEST_USER' }},

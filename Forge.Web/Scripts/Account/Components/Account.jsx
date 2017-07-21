@@ -23,8 +23,8 @@ const __Account = React.createClass({
     },
 
     componentWillMount: function(){
-        const { dispatch, id, email } = this.props;
-        dispatch(actions.setUser(id, email));
+        const { dispatch, id, email, name } = this.props;
+        dispatch(actions.setUser(id, email, name));
     }
 
 });
