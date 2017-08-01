@@ -14,13 +14,13 @@ namespace Forge.Web.Utilities
         {
             var propsJson = JsonConvert.SerializeObject(props ?? new { });
 
-            return new HtmlString($@"
+            return new HtmlString(string.Format(@"
                 <script>
                     ReactDOM.render(
-                        React.createElement({name}, {propsJson}),
-                        document.getElementById('{id}')
+                        React.createElement({0}, {1}),
+                        document.getElementById('{2}')
                     );
-                </script>"
+                </script>", name, propsJson, id)
             );
         }
     }

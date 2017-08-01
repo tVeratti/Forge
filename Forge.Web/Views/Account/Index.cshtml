@@ -1,11 +1,16 @@
 ﻿@{
     ViewBag.Title = "Index";
-    var userModel = new
-    {
-        id = User?.Id,
-        email = User?.Email,
-        name = User?.UserName
-    };
+    var userModel = User != null && User.Id != 0 ?
+        new {
+            id = User.Id,
+            email = User.Email,
+            name = User.UserName
+        }
+        : new {
+            id = (long)0,
+            email = String.Empty,
+            name = String.Empty
+        };
 }
 
 <div id="account"></div>
