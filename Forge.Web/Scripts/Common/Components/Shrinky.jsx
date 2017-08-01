@@ -6,7 +6,7 @@ const Shrinky = React.createClass({
     render: function(){
         const { shrink } = this.state;
         const modifier = shrink ? 'shrink' : 'full';
-        const className = `shrinky skrinky--${modifier}`;
+        const className = `shrinky shrinky--${modifier}`;
 
         // When shrink is true, only the first child will remain visible.
 
@@ -18,8 +18,14 @@ const Shrinky = React.createClass({
     },
 
     // -----------------------------
+    getDefaultProps: function(){
+        return { limit: 100 };
+    },
+
+    // -----------------------------
     getInitialState: function(){
-        return { shrink: document.scrollTop > 100 };
+        const { limit } = this.props;
+        return { shrink: document.body.scrollTop > limit };
     },
 
     // -----------------------------
@@ -29,11 +35,12 @@ const Shrinky = React.createClass({
 
     // -----------------------------
     checkScroll: function(ev){
-        const shrink = document.scrollTop > 100;
+        const { limit } = this.props;
+        const shrink = document.body.scrollTop > limit;
         if (this.state.shrink !== shrink) {
             this.setState({ shrink });
         }
     }
 });
 
-module.exports = Banner;
+module.exports = Shrinky;

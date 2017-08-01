@@ -29,6 +29,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     position: relative;
     display: table;
     width: 100%;
+    margin-top: 170px;
     h3 { padding: 0 0 10px 20px; }
 }
 
@@ -210,9 +211,9 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         // (List & Search)
         &.designer__list-item--selected{
             border-color: $color-secondary-30 !important;
-            background: $color-secondary-50 !important;
+            
             .button{
-                color: white !important;
+                color: $color-secondary-50 !important;
             }
 
             /*&:after{

@@ -237,6 +237,7 @@
     <Content Include="Scripts\Core\Components\Controls\Formula.jsx" />
     <Content Include="Scripts\Core\Components\Controls\Select_Definition.jsx" />
     <Content Include="Scripts\Core\index.js" />
+    <Content Include="Scripts\Designer\Components\Actions.jsx" />
     <Content Include="Scripts\Designer\Components\Dialogs.jsx" />
     <Content Include="Scripts\Designer\Components\List.jsx" />
     <Content Include="Scripts\Designer\Components\Stage.jsx" />
@@ -374,6 +375,7 @@
     <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.woff" />
     <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.woff2" />
     <Content Include="Styles\Components\_account.scss" />
+    <Content Include="Styles\Components\_shrinky.scss" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -38,7 +38,6 @@ const __Stage = React.createClass({
         const className = `designer__stage stage stage--${tab.toLowerCase()}`;
         const stageKey = `${tab}-${index}-${uniqueId}`;
 
-        const menuDisabled = !item;
         //const instructions = this.instructions[tab];
 
         const workspaceNode = this.renderStage();
@@ -51,16 +50,6 @@ const __Stage = React.createClass({
 
         return (
             <div className={className}>
-
-                {/* Actions */}
-                <div className='stage__menu'>
-                    <Button className='button button--transparent stage__back' onClick={this.back} disabled={!itemHistory.length} title='Back' />
-                    <Button className='button button--transparent stage__forward' onClick={this.forward} disabled={!itemHistory.length} title='Back' />
-                    {/* <button className='button button--transparent stage__save-all' onClick={this.saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>*/}
-                    <span className='divider' />
-                    <Button className='button button--transparent stage__save' onClick={this.save} disabled={menuDisabled} title='Save' />
-                    <Button className='button button--transparent stage__delete' onClick={this.delete} disabled={menuDisabled} title='Delete' />
-                </div>
 
                 {/* Workspace */}
                 <div className='stage__workspace' key={stageKey}>
@@ -100,25 +89,7 @@ const __Stage = React.createClass({
         return <span className='emphasis'>{selectedItem.Name}</span>;
     },
 
-    // -----------------------------
-    save: function(){
-        this.props.dispatch(designerActions.saveModel());
-    },
-
-    // -----------------------------
-    saveAll: function(){
-        this.props.dispatch(coreActions.save());
-    },
-
-    // -----------------------------
-    delete: function(){
-        this.props.dispatch(designerActions.delete());
-    },
-
-    // -----------------------------
-    back: function(){
-         this.props.dispatch(designerActions.back());
-    },
+    
 
     // -----------------------------
     getSelectedItem: function(){

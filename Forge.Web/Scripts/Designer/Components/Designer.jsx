@@ -5,8 +5,11 @@ const store =               require('Store.js');
 const designerActions =     require('Designer/Actions.js');
 const coreActions =         require('Core').actions;
 
+const Shrinky =     require('Common/Components/Shrinky.jsx');
+
 const Summary =     require('./Summary.jsx');
 const Tabs =        require('./Tabs.jsx');
+const Actions =     require('./Actions.jsx');
 const Dialogs =     require('./Dialogs.jsx');
 const List =        require('./List.jsx');
 const Stage =       require('./Stage.jsx');
@@ -45,17 +48,23 @@ const __Designer = React.createClass({
         return (
             <div className={className}>
                 <Dialogs />
+
+                {/* Game Information & Navigation */}
+                <Shrinky limit={75}>
+                    <div className='section section--secondary'>
+                        {loading && <div className='loading-bar' />}
+
+                        <Summary />
+                        <Tabs />
+                        <Actions />
+                    
+                    </div>
+                </Shrinky>
+
+                {/* Selection List */}
                 <List />
 
                 <div className='designer__static'>
-                    {/* Game Information & Navigation */}
-                    <div className='section section--secondary'>
-                        {loading && <div className='loading-bar' />}
-                        
-                        <Summary />
-                        <Tabs />
-                    </div>
-
                     {/* Stage & Controls */}
                     <div className='designer__views'>
                         <Stage />
