@@ -16,7 +16,7 @@ const __List = React.createClass({
 		const listNodes = this.renderList();
 		const actionNodes = this.renderActions();
 
-		var className = 					 ' designer__list';
+		var className = 					 ' designer__list stick-to-shrinky';
 		if (!listNodes) 		className += ' designer__list--empty';
 		if (this.state.open) 	className += ' designer__list--open';
 		else 					className += ' designer__list--closed';

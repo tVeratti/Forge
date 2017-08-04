@@ -8,24 +8,22 @@
     transform: translateY(0);
     transition: transform 0.3s ease-in-out;
 
-    h1{ transition: all 0.7s ease-in-out; transform: translateY(0); }
+    h1{
+        transition: all 0.7s ease-in-out;
+        transform: translateY(0);
+    }
+
     .tab { transition: font-size 0.3s ease-in-out; }
 
-    &+.designer__list{
-        transition: top 0.3s ease-in-out;
-        top: 225px;
-    }
 
     &.shrinky--shrink {
         transform: translateY(-75px);
         h1{ opacity: 0; transform: translateY(-10px); }
         .tab {  font-size: 14px; }
-
-        &+.designer__list{
-            top: 148px; 
-        }
-
-        &~.designer__static .designer__views { margin-top: 200px; }
     }
 
+}
+
+.stick-to-shrinky{
+    transition: top 0.3s ease-in-out;
 }

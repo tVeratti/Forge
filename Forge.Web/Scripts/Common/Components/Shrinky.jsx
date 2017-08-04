@@ -33,12 +33,9 @@ const Shrinky = React.createClass({
             // then update their positions to reflect the new "bottom" of the Shrinky.
             const location = this.refs.wrapper.getBoundingClientRect().bottom;
             
-
-
+            const stuckElements = document.getElementsByClassName('stick-to-shrinky');
+            stuckElements.forEach(e => e.style.top = location + 'px');
         }
-
-        const stuckElements = document.getElementsByClassName('stick-to-shrinky');
-        stuckElements.forEach(e => e.style.transform = 'translateY()';)
     },
 
     // -----------------------------
@@ -50,4 +47,4 @@ const Shrinky = React.createClass({
     }
 });
 
-module.exports = Banner;
+module.exports = Shrinky;

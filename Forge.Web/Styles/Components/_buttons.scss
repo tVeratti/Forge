@@ -33,17 +33,17 @@ button,
     overflow: hidden;
 
     color: $color-primary-10;
-    background: $color-secondary-70;
-    @include button-gradient($color-secondary-50, $color-secondary-60);
+    background: $color-link-70;
+    @include button-gradient($color-link-50, $color-link-60);
 
     border: none;
     border-radius: 3px;
     //border: 1px solid $color-secondary-60;
     //text-shadow: 1px 1px 0 rgba(black, 0.3);
 
-    &:hover{  @include button-gradient($color-secondary-30, $color-secondary-60); }
+    &:hover{  @include button-gradient($color-link-30, $color-link-60); }
 
-    &:active{ background: $color-secondary-70; }
+    &:active{ background: $color-link-70; }
         
     &+ button{ margin-left: 5px; }
 
@@ -77,15 +77,15 @@ button,
 
     &.button--link {
         background: none;
-        color: $color-secondary-50;
+        color: $color-link;
         &:visited,
         &:active,
         &:link{
-            color: $color-secondary-50;
+            color: $color-link;
         }
 
         &:hover{
-            color: $color-secondary-60;
+            color: $color-link-60;
         }
     }
 
