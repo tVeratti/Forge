@@ -44,16 +44,13 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     bottom: 0;
     left: 0;
     width: $size-nav-left-width;
-    padding: 10px;
-    background: white;
+    padding-right: 5px;
+    background: $color-primary-10;
     border-right: 1px solid $color-primary-40;
-    height: calc(100% - $size-nav-height);
     z-index: 10;
 
     overflow: visible;
 
-    @include translateX(0);    
-    @include transition(transform, 0.3s);
     //@include soft-shadow();
 
     @media screen and (max-width: 720px){        
@@ -69,64 +66,58 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         &~.designer__static { padding-left: 0 !important; }
         
         display: none;
-        //&~.designer__stage { display: none; }
     }
 
     // --Closed
     &.designer__list--closed {
+        padding-right: 0;
 
         // MOBILE
         @media screen and (max-width: 720px){
-            @include translateX(-156px);
+            
             & ~ .designer__static { padding-left: 44px; }
             & ~ .designer__overlay { display: none; }
 
             // Mini buttons to become stacked
             // vertically on visible sidebar.
-            .designer__mini-buttons{
-                flex-direction: column;
-                align-items: flex-end;
-                margin: -10px -10px 0 0;
-                border: none !important;
-
-                button{
-                    width: 50px;
-                    padding: 20px 10px;
-                    border: none !important;
-                    //color: $color-primary-40 !important;
-                }
-            }
+            
 
             .designer__list-items{ 
-                visibility: hidden;
+                @include translateX(-156px);
+            }
+
+            .designer__list-actions{
+                align-self: flex-end;
             }
 
             .designer__list-actions,
             .designer__list-items {
                 padding-right: 0;
+                margin: 0;
             }
         }
     }
 
     .designer__list-actions{
-        margin-bottom: 10px;
-
-        button {
-            min-height: 40px;
-            width: 100%;
-            margin: 0;
-            margin-bottom: 5px;
-            text-align: center;
-        }
+        position: fixed;
+        width: 44px;
+        height: 100%;
+        margin-right: 5px;
+        background: white;
+        border-right: 1px solid $color-primary-40;
+        z-index: 10;
 
         .designer__mini-buttons{
-            display: flex;
-            border-bottom: 1px solid $color-primary-20;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            flex-direction: column;
+            align-items: flex-end;
+            border: none !important;
 
             button{
-                flex-grow: 1;
+                display: block;
+                width: 50px;
+                padding: 20px 10px;
+                margin: 0;
+                border: none !important;
                 text-align: center;
                 min-width: 0;
                 width: 44px;
@@ -134,10 +125,8 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 margin-bottom: -2px;
                 color: $color-primary-70;              
 
-
                 &:after { float: none; }
                 &:hover{ 
-                    //color: white;
                     color: $color-primary-80;
                 }
 
@@ -158,15 +147,17 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     // __List-Items
     // ---------------------------
     .designer__list-items{
+        padding: 10px 0;
         overflow-y: auto;
-        max-height: calc(100% - 50px);
-        @include transition(transform, 0.6s);
+
+        @include translateX(0);    
+        @include transition(transform, 0.3s);
     }
 
     // __List-Item
     // ---------------------------
     .designer__list-item{
-        border-left: 5px solid $color-primary-10;
+        border-left: 5px solid transparent;
         &:hover{ 
             //background: $color-primary-20; 
             .button{
@@ -185,12 +176,9 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            //color: $color-primary-40;
         }
 
         &.setting--active{ 
-            //opacity: 0.9;
-
             .setting__icon:after{
                 font-family: "Ionicons";
                 content: "\f375";
@@ -201,7 +189,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         &.designer__list-item--unsaved{
             border-color: $color-action-30 !important;
             .button {
-                //font-weight: 700;
                 &:before{ content: "* "; }
             }
         }

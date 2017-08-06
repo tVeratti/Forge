@@ -113,9 +113,9 @@ const __List = React.createClass({
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}
-					<Button className='button button--transparent icon icon--toggle' onClick={toggle} title={toggleText} /> 
+					<Button className='button icon icon--new' onClick={this.new} title='New' />
 				</div>
-				<Button className='button button--tertiary' onClick={this.new}>New</Button>
+				
 			</div>
 		);
 	},

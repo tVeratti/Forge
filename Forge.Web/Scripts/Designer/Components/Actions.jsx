@@ -8,6 +8,7 @@ const Button = require('Common/Components/Button.jsx');
 // Presentation
 // =====================================
 const __Actions = (props) => {
+
     const { dispatch, index, tab, history, core } = props;
     const item = (core[tab] || [])[index];
 
@@ -18,16 +19,22 @@ const __Actions = (props) => {
 
     return (
         <div className='stage__menu'>
-            <Button className='button button--transparent stage__back' onClick={back} disabled={!history.length} title='Back' />
-            <Button className='button button--transparent stage__forward' disabled={!history.length} title='Forward' />
+            <ActionButton title='Back' onClick={back} disabled={!history.length} />
+            <ActionButton title='Forward' disabled={!history.length} />
+
             {/* <button className='button button--transparent stage__save-all' onClick={saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>*/}
             <span className='divider' />
-            <Button className='button button--transparent stage__save' onClick={save} disabled={!item} title='Save' />
-            <Button className='button button--transparent stage__delete' onClick={del} disabled={!item} title='Delete' />
+
+            <ActionButton title='Save' onClick={save} disabled={!item} />
+            <ActionButton title='Delete' onClick={del} disabled={!item} />
         </div>
     );
-
 };
+
+const ActionButton = (props) => {
+    const titleLower = props.title.toLowerCase();
+    return <Button className={`button button--transparent stage__${titleLower}`} {...props} />;
+}
 
 // Container
 // =====================================
