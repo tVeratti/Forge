@@ -16,7 +16,7 @@ const __List = React.createClass({
 		const listNodes = this.renderList();
 		const actionNodes = this.renderActions();
 
-		var className = 					 ' designer__list stick-to-shrinky';
+		var className = 					 ' designer__list';
 		if (!listNodes) 		className += ' designer__list--empty';
 		if (this.state.open) 	className += ' designer__list--open';
 		else 					className += ' designer__list--closed';
@@ -28,7 +28,7 @@ const __List = React.createClass({
 				{actionNodes}
 
 				{/* All Tiles */}
-				<ul className='designer__list-items'>
+				<ul className='designer__list-items stick-to-shrinky'>
 					{listNodes}
 				</ul>
 			</div>
@@ -109,7 +109,7 @@ const __List = React.createClass({
 		});
 
 		return (
-			<div className='designer__list-actions'>
+			<div className='designer__list-actions stick-to-shrinky'>
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}

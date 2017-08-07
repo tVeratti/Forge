@@ -49,9 +49,13 @@ const Shrinky = React.createClass({
         // then update their positions to reflect the new 'bottom' of the Shrinky.
         const location = this.refs.wrapper.getBoundingClientRect().bottom;
         const stuckElements = document.querySelectorAll('.stick-to-shrinky');
-        stuckElements.forEach(e => e.style.top = location + 'px');
+        stuckElements.forEach(e => {
+            e.style.top = location + 'px';
+            e.style.height = `calc(100% - ${location}px)`;
+        });
         this.count += 10;
         if (this.count >= 400) clearInterval(this.interval);
+        console.log('upd')
     }
 });
 
