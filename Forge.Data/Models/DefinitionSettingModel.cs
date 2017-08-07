@@ -14,7 +14,7 @@ namespace Forge.Data.Models
         public int Priority { get; set; }
         public string LifeCycle { get; set; }
 
-        public IEnumerable<IdKeyValuePairModel> Keys { get; set; }
+        public Dictionary<string, IdKeyValuePairModel> Keys { get; set; }
 
         public static explicit operator TableDefinitionSettingModel(DefinitionSettingModel s)
         {

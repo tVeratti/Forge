@@ -933,7 +933,12 @@ var Shrinky = React.createClass({
         return React.createElement(
             'div',
             { className: className, ref: 'wrapper' },
-            this.props.children
+            this.props.children,
+            React.createElement(
+                'div',
+                { className: 'shrinky__stick', ref: 'stick' },
+                this.props.stick
+            )
         );
     },
 
@@ -945,14 +950,20 @@ var Shrinky = React.createClass({
     // -----------------------------
     componentDidMount: function componentDidMount() {
         document.addEventListener('scroll', this.checkScroll);
-        this.updateStuckElements();
+
+        // Stick content to the bottom of the sticky area and
+        // force its position to FIXED.
+        this.refs.stick.children.forEach(function (x) {
+            x.style.position = 'fixed';
+            x.style.top = '100%';
+        });
     },
 
     // -----------------------------
     componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
         if (this.state.shrink !== prevState.shrink) {
-            clearInterval(this.interval);
-            this.interval = setInterval(this.updateStuckElements, 10);
+            //clearInterval(this.interval);
+            //this.interval = setInterval(this.updateStuckElements, 10);
         }
     },
 
@@ -972,12 +983,11 @@ var Shrinky = React.createClass({
         var location = this.refs.wrapper.getBoundingClientRect().bottom;
         var stuckElements = document.querySelectorAll('.stick-to-shrinky');
         stuckElements.forEach(function (e) {
-            e.style.top = location + 'px';
+            //e.style.top = location + 'px';
             e.style.height = 'calc(100% - ' + location + 'px)';
         });
         this.count += 10;
         if (this.count >= 400) clearInterval(this.interval);
-        console.log('upd');
     }
 });
 
@@ -1637,6 +1647,8 @@ module.exports = {
 },{"whatwg-fetch":285}],24:[function(require,module,exports){
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var React = require('react');
@@ -1654,7 +1666,7 @@ var Dictionary = React.createClass({
 		var Keys = this.props.Model.Keys;
 
 
-		var keyNodes = (Keys || []).map(function (v) {
+		var keyNodes = Object.Keys(Keys || {}).map(function (v) {
 			return v.Key;
 		}).join(', ');
 		var listNodes = this.renderList(true);
@@ -1736,9 +1748,9 @@ var Dictionary = React.createClass({
 		var Model = this.props.Model;
 
 
-		var list = Model.Keys || [];
-		var listNodes = list.map(function (x, i) {
-			return _this3.renderPair(x, i, flat);
+		var list = Object.Keys(Model.Keys || {});
+		var listNodes = list.map(function (x) {
+			return _this3.renderPair(x, flat);
 		});
 		return listNodes.length ? React.createElement(
 			'ul',
@@ -1748,19 +1760,19 @@ var Dictionary = React.createClass({
 	},
 
 	// -----------------------------
-	renderPair: function renderPair(item, index, flat) {
-		var allowAdd = this.props.allowAdd;
-		var Key = item.Key,
-		    Value = item.Value,
-		    ControlName = item.ControlName;
+	renderPair: function renderPair(key, flat) {
+		var _props2 = this.props,
+		    allowAdd = _props2.allowAdd,
+		    Model = _props2.Model;
 
+		var item = Model.Keys[key];
 
-		var id = 'k-' + Key;
+		var id = 'k-' + key;
 
 		var valueNode = flat ? React.createElement(
 			'span',
 			{ className: 'dictionary__value' },
-			Value
+			item.Value
 		) : this.renderControl(item, index);
 
 		var removeNode = allowAdd && !flat ? React.createElement(
@@ -1783,32 +1795,36 @@ var Dictionary = React.createClass({
 	},
 
 	// -----------------------------
-	renderControl: function renderControl(item, index) {
-		var onChange = this.changePair.bind(this, index);
+	renderControl: function renderControl(item) {
+		var onChange = this.changePair.bind(this, item.Key);
+		var mockModel = { Keys: { item: item } };
 
 		// Dynamically create the component based on Control name.
-		return React.createElement(controls[item.Control || item.ControlName || 'Text'], { Model: item, onChange: onChange });
+		return React.createElement(controls[item.Control || item.ControlName || 'Text'], { Model: mockModel, onChange: onChange });
 	},
 
 	// -----------------------------
-	changePair: function changePair(index, value) {
+	changePair: function changePair(key, value) {
 		var Keys = this.props.Model.Keys;
 
-		var list = Keys && [].concat(_toConsumableArray(Keys));
+		var dict = Keys && _extends({}, Keys) || {};
 
-		list[index].Value = value;
+		dict[key] = value.Value;
 
-		this.reportChange(list);
+		this.reportChange(dict);
 	},
 
 	// -----------------------------
 	add: function add() {
 		var Keys = this.props.Model.Keys;
+		var _refs = this.refs,
+		    key = _refs.key,
+		    value = _refs.value;
 
-		var list = Keys && [].concat(_toConsumableArray(Keys));
+		var dict = Keys && [].concat(_toConsumableArray(Keys)) || {};
 
-		list.push({ Key: key.value, Value: value.value });
-		this.reportChange(list);
+		dict[key.value] = { Key: key.value, Value: value.value };
+		this.reportChange(dict);
 
 		form.reset();
 	},
@@ -1828,6 +1844,8 @@ module.exports = Dictionary;
 },{"Common/Components/Tooltip.jsx":21,"react":273}],25:[function(require,module,exports){
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var React = require('react');
 
 // =====================================
@@ -1837,9 +1855,11 @@ var Number = React.createClass({
 	// -----------------------------
 	render: function render() {
 		var Model = this.props.Model;
+		var Keys = Model.Keys;
 
 
-		var value = Model.Value;
+		var value = void 0;
+		if (Keys && 'Value' in Keys) value = Keys.Value;
 		if (isNaN(value)) value = 0;
 
 		return React.createElement('input', { id: Model._formId, type: 'number', value: value || '', onChange: this.change });
@@ -1847,11 +1867,15 @@ var Number = React.createClass({
 
 	// -----------------------------
 	change: function change(ev) {
-		var onChange = this.props.onChange;
+		var _props = this.props,
+		    onChange = _props.onChange,
+		    Model = _props.Model;
 		var value = ev.target.value;
 
 
-		onChange && onChange(+value);
+		onChange && onChange(_extends({}, Model.Keys, {
+			Value: +value || 0
+		}));
 	}
 });
 
@@ -1897,6 +1921,8 @@ module.exports = Select_Definition;
 },{"Common/Components/Select.jsx":16,"react":273}],27:[function(require,module,exports){
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var React = require('react');
 
 // =====================================
@@ -1906,20 +1932,26 @@ var Text = React.createClass({
 	// -----------------------------
 	render: function render() {
 		var Model = this.props.Model;
+		var Keys = Model.Keys;
 
 
-		var value = Model.Value || '';
+		var value = void 0;
+		if (Keys && 'Value' in Keys) value = Keys.Value;
 
-		return React.createElement('input', { id: Model._formId, type: 'text', value: value, onChange: this.change });
+		return React.createElement('input', { id: Model._formId, type: 'text', value: value || '', onChange: this.change });
 	},
 
 	// -----------------------------
 	change: function change(ev) {
-		var onChange = this.props.onChange;
+		var _props = this.props,
+		    onChange = _props.onChange,
+		    Model = _props.Model;
 		var value = ev.target.value;
 
 
-		onChange && onChange(value);
+		onChange && onChange(_extends({}, Model.Keys, {
+			Value: value
+		}));
 	}
 });
 
@@ -2347,7 +2379,7 @@ function updateDefinition(state, model) {
         // Get any settings keys which target an 
         // outside definitionId (Target, TargetId).
         var targetKeys = ['Target', 'TargetId'];
-        var target = s.Keys.filter(function (k) {
+        var target = Object.Keys(s.Keys).filter(function (k) {
             return targetKeys.indexOf(k.Key) > -1;
         })[0];
 
@@ -2879,7 +2911,7 @@ var __Designer = React.createClass({
             React.createElement(Dialogs, null),
             React.createElement(
                 Shrinky,
-                { limit: 75 },
+                { limit: 75, stick: React.createElement(List, null) },
                 React.createElement(
                     'div',
                     { className: 'section section--secondary' },
@@ -2889,7 +2921,6 @@ var __Designer = React.createClass({
                     React.createElement(Actions, null)
                 )
             ),
-            React.createElement(List, null),
             React.createElement(
                 'div',
                 { className: 'designer__static' },
@@ -4130,9 +4161,10 @@ var __DefinitionSettings = React.createClass({
 
         var settings = [].concat(_toConsumableArray(model.Settings || []));
 
-        settings.filter(function (s) {
+        var setting = settings.filter(function (s) {
             return s.SettingId === settingId;
-        })[0]['Keys'] = value;
+        })[0];
+        if (setting.Keys) setting.Keys.Value = value;
 
         model.Settings = settings;
 

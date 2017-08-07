@@ -49,20 +49,22 @@ const __Designer = React.createClass({
             <div className={className}>
                 <Dialogs />
 
-                {/* Game Information & Navigation */}
-                <Shrinky limit={75}>
+                {/* Fixed Shrinky
+                    <List /> passed as 'stick' param.
+                    This forces it to be based on the position
+                    of the Shrinky as it changes size/position. */}
+                <Shrinky limit={75} stick={<List />}>
+
                     <div className='section section--secondary'>
                         {loading && <div className='loading-bar' />}
 
+                        {/* Game Information & Navigation */}
                         <Summary />
                         <Tabs />
                         <Actions />
-                    
                     </div>
+                    
                 </Shrinky>
-
-                {/* Selection List */}
-                <List />
 
                 <div className='designer__static'>
                     {/* Stage & Controls */}

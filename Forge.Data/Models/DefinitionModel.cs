@@ -17,7 +17,7 @@ namespace Forge.Data.Models
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
 
-        public IEnumerable<IdKeyValuePairModel> Keys { get; set; }
+        public Dictionary<string, IdKeyValuePairModel> Keys { get; set; }
 
         public IEnumerable<DefinitionTagModel> Tags { get; set; }
         public IEnumerable<DefinitionSettingModel> Settings { get; set; }
@@ -36,7 +36,7 @@ namespace Forge.Data.Models
 
         public IEnumerable<IdKeyValuePairModel> GetSettingsValues()
         {
-            return Settings?.SelectMany(s => s.Keys ?? new List<IdKeyValuePairModel>()) ?? new List<IdKeyValuePairModel>();
+            return Settings?.SelectMany(s => s.Keys.Select(k => k.Value)) ?? new List<IdKeyValuePairModel>();
         }
     }
 

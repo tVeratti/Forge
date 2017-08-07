@@ -8,7 +8,7 @@ const Dictionary = React.createClass({
 	render: function(){
 		const { Keys } = this.props.Model;
 
-		const keyNodes = (Keys || []).map(v => v.Key).join(', ');
+		const keyNodes = Object.Keys(Keys || {}).map(v => v.Key).join(', ');
 		const listNodes = this.renderList(true);
 
 		const dialogNode = this.state.dialog
@@ -76,22 +76,22 @@ const Dictionary = React.createClass({
 	renderList: function(flat){
 		const { Model } = this.props;
 
-		const list = Model.Keys || [];
-		const listNodes = list.map((x, i) => this.renderPair(x, i, flat));
+		const list = Object.Keys(Model.Keys || {});
+		const listNodes = list.map(x => this.renderPair(x, flat));
 		return listNodes.length
 			? <ul className='dictionary__list'>{listNodes}</ul>
 			: 'No Values';
 	},
 
 	// -----------------------------
-	renderPair: function(item, index, flat){
-		const { allowAdd } = this.props;
-		const { Key, Value, ControlName } = item;
+	renderPair: function(key, flat){
+		const { allowAdd, Model } = this.props;
+		const item = Model.Keys[key];
 
-		const id = `k-${Key}`;
+		const id = `k-${key}`;
 
 		const valueNode = flat
-			? <span className='dictionary__value'>{Value}</span>
+			? <span className='dictionary__value'>{item.Value}</span>
 			: this.renderControl(item, index);
 
 		const removeNode = allowAdd && !flat
@@ -108,33 +108,35 @@ const Dictionary = React.createClass({
 	},
 
 	// -----------------------------
-	renderControl: function(item, index){
-		const onChange = this.changePair.bind(this, index);
+	renderControl: function(item){		
+		const onChange = this.changePair.bind(this, item.Key);
+		const mockModel = { Keys: { item }};
 
 		// Dynamically create the component based on Control name.
         return React.createElement(
             controls[item.Control || item.ControlName || 'Text'], 
-            { Model: item, onChange }
+            { Model: mockModel, onChange }
         );
 	},
 
 	// -----------------------------
-	changePair: function(index, value){
+	changePair: function(key, value){
 		const { Keys } = this.props.Model;
-		const list = Keys && [ ...Keys ];
+		const dict = Keys && { ...Keys } || {};
 
-		list[index].Value = value;
+		dict[key] = value.Value;
 
-		this.reportChange(list);
+		this.reportChange(dict);
 	},
 
 	// -----------------------------
 	add: function(){
 		const { Keys } = this.props.Model;
-		const list = Keys && [ ...Keys ];
+		const { key, value } = this.refs;
+		const dict = Keys && [ ...Keys ] || {};
 
-		list.push({ Key: key.value, Value: value.value });
-		this.reportChange(list);
+		dict[key.value] = { Key: key.value, Value: value.value };
+		this.reportChange(dict);
 
 		form.reset();
 	},

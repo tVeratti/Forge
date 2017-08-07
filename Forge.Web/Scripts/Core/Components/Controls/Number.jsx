@@ -5,8 +5,10 @@ const Number = React.createClass({
 	// -----------------------------
 	render: function(){
 		const { Model } = this.props;
-
-		let value = Model.Value;
+		const { Keys } = Model;
+		
+		let value;
+		if (Keys && 'Value' in Keys) value = Keys.Value;
 		if (isNaN(value)) value = 0;
 
 		return (
@@ -16,10 +18,13 @@ const Number = React.createClass({
 
 	// -----------------------------
 	change: function(ev) {
-		const { onChange } = this.props;
+		const { onChange, Model } = this.props;
 		const { value } = ev.target;
 		
-		onChange && onChange(+value);
+		onChange && onChange({
+			...Model.Keys,
+			Value: +value || 0
+		});
 	}
 });
 

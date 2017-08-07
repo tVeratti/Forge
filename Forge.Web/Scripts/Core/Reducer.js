@@ -274,7 +274,7 @@ function updateDefinition(state, model){
         // Get any settings keys which target an 
         // outside definitionId (Target, TargetId).
         const targetKeys = ['Target', 'TargetId'];
-        const target = s.Keys.filter(k => targetKeys.indexOf(k.Key) > -1)[0];
+        const target = Object.Keys(s.Keys).filter(k => targetKeys.indexOf(k.Key) > -1)[0];
 
         if (target){
             // Add the current definition to the tree

@@ -168,7 +168,8 @@ const __DefinitionSettings = React.createClass({
         // Update the value of one individual setting.
         const settings = [ ...(model.Settings || []) ];
 
-        settings.filter(s => s.SettingId === settingId)[0]['Keys'] = value;
+        const setting = settings.filter(s => s.SettingId === settingId)[0];
+        if (setting.Keys) setting.Keys.Value = value;
 
         model.Settings = settings;
 

@@ -11,6 +11,12 @@ const Shrinky = React.createClass({
         return (
             <div className={className} ref='wrapper'>
                 {this.props.children}
+
+                {/* Content that should stick the the bottom of the shrinky.
+                    This will become FIXED and moves up/down with the shrinky. */}
+                <div className='shrinky__stick' ref='stick'>
+                    {this.props.stick}
+                </div>
             </div>
         );
     },
@@ -23,14 +29,20 @@ const Shrinky = React.createClass({
     // -----------------------------
     componentDidMount: function(){
         document.addEventListener('scroll', this.checkScroll);
-        this.updateStuckElements();
+
+        // Stick content to the bottom of the sticky area and
+        // force its position to FIXED.
+        this.refs.stick.children.forEach(x => {
+            x.style.position = 'fixed';
+            x.style.top = '100%';
+        });
     },
 
     // -----------------------------
     componentDidUpdate: function(prevProps, prevState){
         if (this.state.shrink !== prevState.shrink){
-            clearInterval(this.interval);
-            this.interval = setInterval(this.updateStuckElements, 10);
+            //clearInterval(this.interval);
+            //this.interval = setInterval(this.updateStuckElements, 10);
         }
     },
 
@@ -50,12 +62,12 @@ const Shrinky = React.createClass({
         const location = this.refs.wrapper.getBoundingClientRect().bottom;
         const stuckElements = document.querySelectorAll('.stick-to-shrinky');
         stuckElements.forEach(e => {
-            e.style.top = location + 'px';
+            //e.style.top = location + 'px';
             e.style.height = `calc(100% - ${location}px)`;
         });
         this.count += 10;
         if (this.count >= 400) clearInterval(this.interval);
-        console.log('upd')
+
     }
 });
 
