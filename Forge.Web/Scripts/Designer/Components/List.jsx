@@ -29,6 +29,7 @@ const __List = React.createClass({
 
 				{/* All Tiles */}
 				<ul className='designer__list-items'>
+					<h4>{this.state.listTab}</h4>
 					{listNodes}
 				</ul>
 			</div>
@@ -97,12 +98,11 @@ const __List = React.createClass({
 		const toggleText = open ? 'Hide' : 'Show';
 		const toggle = () => this.setState({ open: !open });
 
-		let buttons = ['List', 'Search'];
-		if (tab === CATEGORIES.DEFINITIONS) buttons.push('Settings'); 
+		let buttons = ['List', 'Search', 'Bookmarks', 'Settings'];
 
 		const miniButtons = buttons.map(b => {
 			const onClick = this.changeList.bind(this, b);
-			let className = `button icon icon--${b.toLowerCase()}`;
+			let className = `button button--transparent icon icon--${b.toLowerCase()}`;
 			if (b === listTab) className += ' button--active';
 
 			return <Button key={b} className={className} title={b} onClick={onClick} />;
@@ -113,7 +113,6 @@ const __List = React.createClass({
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}
-					<Button className='button icon icon--new' onClick={this.new} title='New' />
 				</div>
 				
 			</div>

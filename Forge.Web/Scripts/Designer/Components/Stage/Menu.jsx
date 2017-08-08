@@ -35,8 +35,6 @@ const __Menu = React.createClass({
                     <h4>Game Settings</h4>
 
                     <div className='field-group'>
-                        <Field label='Id'>{Game.Id}</Field>
-                        <div className='separator separator--small' />
 
                         <Field label='Name' 
                             id='name'
@@ -52,13 +50,13 @@ const __Menu = React.createClass({
                             defaultValue={1}
                             options={accessTypes} />
 
-                        {/* Genre Tags */}
+                        {/* Genre Tags 
                         <Field label='Genre' 
                             id='genre'
                             defaultValue={1}
                             options={genres}>
                             <TagsControl tags={[]} options={[]} />
-                        </Field>
+                        </Field>*/}
                         
                     </div>
                 </div>

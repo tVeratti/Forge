@@ -60,12 +60,10 @@
 // Common Styles
 // -----------------------------------------
 @mixin button-icon($content){
-    font-family: "Linearicons-Free";
+    font-family: "typicons";
     content: $content;
-    font-size: 20px;
+    font-size: 27px;
     vertical-align: middle;
-    //color: white;
-    //text-shadow: 2px 2px rgba(black, 0.2);
 }
 
 @mixin arrow-up($size, $color){

@@ -35,7 +35,7 @@ const __Settings = React.createClass({
 
             return (
                 <li key={s.Name} className={className}>
-                    <button className='button button--transparent' onClick={clickHandler} disabled={disabled}>
+                    <button className='button button--link' onClick={clickHandler} disabled={disabled}>
                         <span className='setting__icon' />
                         <span>{s.Name}</span>
                     </button>

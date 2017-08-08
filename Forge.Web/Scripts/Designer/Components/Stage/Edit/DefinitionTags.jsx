@@ -1,22 +1,22 @@
 ﻿const React = require('react');
 const { connect} = require('react-redux');
 
-const designerActions =     require('Designer/Actions.js');
-const coreActions =         require('Core/Actions.js').actions;
+const { activateTag } =  require('Designer/Actions.js');
+const coreActions =      require('Core/Actions.js').actions;
 
 // Presentation
 // =====================================
 const __DefinitionTags = React.createClass({
     // -----------------------------
-    render: function () {
-        
+    render: function () {        
         var tagNodes = this.renderTags();
         var addTagNode = this.renderAddTag();
 
         return (
-            <div className='definition__tags field'>
-                <label className='field__label'>{addTagNode}</label>
-                <div className='field__value'><div className='tags'>{tagNodes}</div></div>
+            <div className='definition__tags'>
+                {addTagNode}
+                <div className='separator separator--tiny' />
+                <div className='tags'>{tagNodes}</div>
             </div>
         );
     },
@@ -55,16 +55,16 @@ const __DefinitionTags = React.createClass({
 
             const clickHandler = () => {
                 const newId = tag.Id !== designer.activeTagId ? tag.Id : null;
-                dispatch(designerActions.activateTag(newId));
+                dispatch(activateTag(newId));
             };
 
-            let className = 'button button--secondary definition__tag';
+            let className = 'button button--tag definition__tag';
             if (tag.Id === designer.activeTagId) className += ' definition__tag--active';
 
             return (
                 <button className={className} onClick={clickHandler} key={tag.Id}>
                     <span className='definition__tag-name'>{tag.Name}</span>
-                    <span className='fa fa-remove' onClick={removeTagHandler} />
+                    <span className='icon icon--remove' onClick={removeTagHandler} />
                 </button>
             );
         });

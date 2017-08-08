@@ -21,10 +21,9 @@ const __Actions = (props) => {
         <div className='stage__menu'>
             <ActionButton title='Back' onClick={back} disabled={!history.length} />
             <ActionButton title='Forward' disabled={!history.length} />
-
-            {/* <button className='button button--transparent stage__save-all' onClick={saveAll} disabled={!unsavedCountNode} title='Save All'>{unsavedCountNode}</button>*/}
-            <span className='divider' />
-
+            <ActionButton title='Create' disabled={tab === 'Menu' || tab === 'Preview'} />
+            <ActionButton title='Copy' disabled={!item} />
+            <ActionButton title='Bookmark' disabled={!item} />
             <ActionButton title='Save' onClick={save} disabled={!item} />
             <ActionButton title='Delete' onClick={del} disabled={!item} />
         </div>
@@ -33,7 +32,7 @@ const __Actions = (props) => {
 
 const ActionButton = (props) => {
     const titleLower = props.title.toLowerCase();
-    return <Button className={`button button--link stage__${titleLower}`} {...props} />;
+    return <Button className={`button button--transparent icon icon--${titleLower}`} {...props} />;
 }
 
 // Container

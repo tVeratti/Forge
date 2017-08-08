@@ -37,7 +37,7 @@ button,
     @include button-gradient($color-secondary-50, $color-secondary-60);
 
     border: none;
-    //border-radius: 3px;
+    border-radius: 3px;
     //border: 1px solid $color-secondary-60;
     //text-shadow: 1px 1px 0 rgba(black, 0.3);
 
@@ -63,25 +63,37 @@ button,
         }
     }
 
+    &.button--tertiary-wire{
+        color: $color-tertiary-60;
+        background: none;
+        &:hover{ color: $color-tertiary-70; }
+    }
+
     &.button--action{
         background: $color-action-30;
         &:hover{ background: $color-action-40; }
     }
 
+    &.button--action-wire{
+        color: $color-action-50;
+        background: none;
+        &:hover{ color: $color-action-40; }
+    }
+
     &.button--transparent {
         //border: 2px solid $color-primary-80;
-        color: $color-primary-70;
+        color: $color-secondary-30;
         background: none;
-        &:hover{ color: $color-primary-80; } //border-color: $color-primary-90; }
+        &:hover{ color: $color-secondary-50; } //border-color: $color-primary-90; }
     }
 
     &.button--link {
         background: none;
-        color: $color-link-60;
+        color: $color-link-50;
         &:visited,
         &:active,
         &:link{
-            color: $color-link-60;
+            color: $color-link-50;
         }
 
         &:hover{
@@ -89,10 +101,18 @@ button,
         }
     }
 
+    &.button--tag{
+        background: $color-link-10;
+        color: $color-link-70;
+        &:hover{
+            background: $color-link-20;
+        }
+    }
+
     &:disabled,
     &[disabled]{
         cursor: default;
-        opacity: 0.5;
+        opacity: 0.4;
         pointer-events: none;
     }
 

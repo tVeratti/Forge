@@ -5,14 +5,14 @@
 // MOBILE ( < 720px  )
 // ================================
 .field{
+    display: flex;
+    flex-direction: column;
     width: 100%;
     margin: 20px 0;
     
 
     .field__label{
         display: block;
-        margin: 3px 0;
-        //font-weight: bold;
         vertical-align: middle;
         word-break: break-word;
         font-size: 14px;
@@ -20,14 +20,14 @@
 
     .field__value{
         display: inline-block;
-        width: 100%;
+        width: 70%;
+        padding: 5px 0;
         vertical-align: middle;
         min-height: 30px;
     }
 
     input, select { 
         width: 100%;
-        max-width: 320px;
     }
 }
 
@@ -61,28 +61,38 @@ input {
 // ================================
 @media (min-width: 720px) {
     .field { 
-        display: table;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         width: 100%;
 
-        
 
         .field__label,
         .field__value,
         .field__after {
-            display: table-cell;
+            display: inline-block;
             margin: 0;
-            padding: 5px;
-        }
-
-        .field__label { 
+            padding: 0;
             min-width: 100px;
-            padding: 5px 0;
         }
-    }
 
-    .field-group{
-        display: table;
-        width: 100%;
-        .field{ display: table-row; }
+        .field__label {
+            width: 150px;
+        }
+
+        .field__after{
+            width: 100px;
+        }
+
+        .field__value{
+            padding: 0 5px;
+            max-width: 320px;
+        }
+
+        &.field--embed-after .field__value{
+            max-width: 225px;
+        }
+
+
     }
 }

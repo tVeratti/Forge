@@ -9,8 +9,20 @@
         height: 44px;*/
     }
 
-    &.icon--list{       @include icon("\e872"); }
-    &.icon--settings{   @include icon("\e810"); }
-    &.icon--search{     @include icon("\e86f"); }
-    &.icon--new{        @include icon("\e881"); }
+    &.icon--list{       @include icon("\e062"); }
+    &.icon--settings{   @include icon("\e102"); }
+    &.icon--search{     @include icon("\e14e"); }
+    &.icon--new{        @include icon("\e0cf"); }
+    &.icon--remove{     @include icon("\e121"); }
+    &.icon--back{       @include icon("\e047"); }
+    &.icon--forward{    @include icon("\e049"); }
+    &.icon--save{       @include icon("\e11d"); }
+    &.icon--delete{     @include icon("\e123"); }
+    &.icon--user{       @include icon("\e12c"); }
+    &.icon--menu{       @include icon("\e116"); }
+    &.icon--star{       @include icon("\e105"); }
+    &.icon--create{     @include icon("\e063"); }
+    &.icon--copy{       @include icon("\e10e"); }
+    &.icon--bookmark{   @include icon("\e033"); }
+    &.icon--bookmarks{  @include icon("\e032"); }
 }

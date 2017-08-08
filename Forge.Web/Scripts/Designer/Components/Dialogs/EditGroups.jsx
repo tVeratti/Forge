@@ -3,9 +3,11 @@ const { connect} =      require('react-redux');
 
 const commonActions =   require('Common/Actions.js');
 const coreActions =     require('Core/Actions.js');
+const store =           require('store.js');
 
 const Dialog =          require('Common/Components/Dialog.jsx');
 const Sortable =        require('Common/Components/Sortable.jsx');
+const Button =          require('Common/Components/Button.jsx');
 
 // Presentation
 // =====================================
@@ -14,8 +16,8 @@ const __Groups = React.createClass({
     render: function(){
         const groupNodes = this.renderGroups();
         const buttons = [
-            <button onClick={this.submitGroups}>Save</button>,
-            <button onClick={this.close}>Cancel</button>
+            <button onClick={this.close} className='button button--link'>Cancel</button>,
+            <button onClick={this.submitGroups} className='button button--tertiary'>Save</button>
         ];
 
 
@@ -24,7 +26,7 @@ const __Groups = React.createClass({
                 {/* Add */}
                 <div className='designer__add-group'>
                     <input type='text' ref='name' placeholder='Name' />
-                    <button className='button button--tertiary' onClick={this.addGroup}>Add</button>
+                    <Button onClick={this.addGroup}>Add</Button>
 			    </div>
 
                 <Sortable list={groupNodes} onChange={this.updateOrder}  />

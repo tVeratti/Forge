@@ -38,8 +38,6 @@ const __Stage = React.createClass({
         const className = `designer__stage stage stage--${tab.toLowerCase()}`;
         const stageKey = `${tab}-${index}-${uniqueId}`;
 
-        //const instructions = this.instructions[tab];
-
         const workspaceNode = this.renderStage();
         const headerNode = this.renderHeader();
 

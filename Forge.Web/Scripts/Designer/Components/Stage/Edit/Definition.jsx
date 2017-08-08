@@ -20,13 +20,12 @@ const __EditDefinition = React.createClass({
     // -----------------------------
     render: function(){
         const { designer, core, dispatch } = this.props;
-        const { changeTab, openList, dialogTypes } = designerActions;
+        const { openList, dialogTypes } = designerActions;
         
         const selectedItem = core.Definitions[designer.index];
 
         const update = (prop) => this.updateModel.bind(this, prop);
 
-        const goToTags = () => dispatch(changeTab(CATEGORIES.TAGS));
         const goToSettings = () => dispatch(openList('Settings'));
 
         // Edit Groups
@@ -46,20 +45,20 @@ const __EditDefinition = React.createClass({
                             value={selectedItem.Name}
                             onChange={update('Name')} />
 
-                        <Field label='Group' 
-                            id='group' 
-                            value={selectedItem.GroupId} 
-                            onChange={update('GroupId')}
-                            options={core.Groups}
-                            tooltip='Display group that this will be rendered inside of (Layout).'
-                            after={groupEditnode} />                        
-
                         <Field label='Control' 
                             id='control' 
                             value={selectedItem.ControlId} 
                             onChange={update('ControlId')}
                             tooltip='Control that the user will use to modify the value(s).'
                             options={core.Controls} />
+
+                        <Field label='Group' 
+                            id='group' 
+                            value={selectedItem.GroupId} 
+                            onChange={update('GroupId')}
+                            options={core.Groups}
+                            tooltip='Display group that this will be rendered inside of (Layout).'
+                            after={groupEditnode} />
                     </div>
                 </div>
 
@@ -68,7 +67,6 @@ const __EditDefinition = React.createClass({
                     <h4>Tags</h4>
                     <p className='summary'>Tags can be used to apply global rules, which will add settings with predefined values.</p>
                     <div className='separator  separator--small' />
-                    <Button onClick={goToTags}>Edit Tags</Button>
                     <DefinitionTags />
                     
                 </div>

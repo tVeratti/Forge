@@ -1,4 +1,4 @@
-﻿@import 'Fonts/Linearicons/style.css';
+﻿@import 'Fonts/Typicon/typicons.min.css';
 
 @import 'reset';
 @import 'units';
@@ -24,7 +24,7 @@ html {
     body {
         position: relative;
         padding-top: $size-nav-height;
-        background-color: $color-primary-10;
+        background-color: $color-primary-20;
         //background-image: url(../Content/Images/cubes_dark.png);
     }
 
@@ -65,21 +65,20 @@ b { font-weight: 600; }
 
 ::-webkit-scrollbar-track
 {
-	//border-radius: 10px;
-	background: none;
-    margin-left: 5px;
+	background: white;
 }
 
 ::-webkit-scrollbar
 {
-	width: 10px;
+	width: 12px;
 }
 
 ::-webkit-scrollbar-thumb
 {
-	//border-radius: 10px;
-	background-color: $color-primary-30;
-    //&:hover{ background-color: $color-p-20; }
+	border-radius: 10px;
+    border: 3px solid white;
+	background-color: $color-link-50;
+    &:hover{ background-color: $color-link-30; }
 }
 
 

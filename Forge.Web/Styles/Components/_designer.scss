@@ -51,6 +51,12 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         & ~ .designer__static { padding-left: 44px; }
     }
 
+    h4{
+        font-size: 16px;
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+
     // --Empty
     &.designer__list--empty {
         display: none;
@@ -95,15 +101,14 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 width: 44px;
                 background: transparent;
                 margin-bottom: -2px;
-                color: $color-primary-60;              
+                border-radius: 0;            
 
                 &:after { float: none; }
-                &:hover{ 
-                    color: $color-primary-80;
-                }
 
                 &.button--active{
-                    color: $color-primary-90;
+                    //color: $color-link-70;
+                    background: $color-primary-10;
+                    border-right: 1px solid $color-primary-40 !important;
                     &:after { text-shadow: none; }
                 }
             }
@@ -129,7 +134,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     // __List-Item
     // ---------------------------
     .designer__list-item{
-        border-left: 5px solid transparent;
+        //border-left: 5px solid transparent;
 
         button {
             width: 100%;
@@ -153,14 +158,14 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
         &.designer__list-item--unsaved{
             border-color: $color-action-30 !important;
-            background: $color-action-10;
+            //background: $color-action-10;
         }
         
         // Active List-Item
         // (List & Search)
         &.designer__list-item--selected{
             border-color: $color-primary-40 !important;
-            background: $color-primary-20;
+            background: $color-primary-10;
             
             .button{
                 color: $color-primary-80 !important;
@@ -248,19 +253,21 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
         padding: 5px 10px;
         padding-right: 30px;
         margin: 5px;
-        //background-color: $color-secondary-10;
-        //border-radius: 3px;
         min-height: 30px;
         cursor: pointer;
-        //border-color: $color-secondary-40;
-        .fa-remove {
+        overflow: hidden;
+
+        .icon--remove {
             position: absolute;
             top: 0;
             bottom: 0;
+            right: 0;
             line-height: 30px;
             width: 20px;
             margin-left: 5px;
             cursor: pointer;
+            border-left: 1px solid white;
+            background: $color-primary-20;
 
             &:hover {
                 color: $color-primary-90;

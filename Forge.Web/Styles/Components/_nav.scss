@@ -62,7 +62,7 @@ $nav-arrow-size: 8px;
 
         // Mobile-ONLY
         .toggle {
-            font-family: "Linearicons-Free";
+            //font-family: "Linearicons-Free";
             display: inline-block;
             color: $nav-font-color;
             cursor: pointer;
@@ -82,14 +82,14 @@ $nav-arrow-size: 8px;
             // Toggle Site Menu
             &.nav__menu {
                 float: left;
-                &:after{
+                /*&:after{
                     content: "\e871";
-                }
+                }*/
             }
             // Toggle Account Menu
             &.nav__user {
                 float: right;
-                &:after{ content: "\e82a"; }
+                //&:after{ content: "\e82a"; }
             }
         }
 

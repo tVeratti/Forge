@@ -2,6 +2,8 @@
 const { connect} = require('react-redux');
 const moment = require('moment');
 
+const Button = require('Common/Components/Button.jsx');
+
 // Presentation
 // =====================================
 const __Summary = React.createClass({
@@ -15,7 +17,7 @@ const __Summary = React.createClass({
             <div className='section section--summary designer__summary'>
 
                 {/* Game Information */}
-                <h1>{Game.Name || (loading && 'Loading...') || '\u00A0'}</h1>
+                <h1>{Game.Name || (loading && 'Loading...') || '\u00A0'} </h1>
                 <p><b>{Game.CreatedByUserName}</b> {createdAgo}</p>
 
                 <div className='separator' />

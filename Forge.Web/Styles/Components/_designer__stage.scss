@@ -104,26 +104,29 @@
         }
 
         .definition__rule-tag{
+            
             //color: $color-primary-60;
-             &:after{ content: "\f48d"; }
+             &:after{
+                 content: "\f48d";
+             }
         }
 
         .definition__setting-remove{
+            
              &:after{ content: "\f2d7"; }
              &:hover{ color: $color-red; }
         }
     }
 
     .definition__tag--active { 
-
-        background-color: $color-action-10 !important;
-        color: $color-action-70 !important;
+        background-color: $color-action-20 !important;
+        color: $color-link-50 !important;
     }
 
     .definition__setting--active,
     .definition__nested-rule--active {
         transition: background-color 0.3s ease-in-out;
-        .field__label{ color: $color-action-60; }
+        .field__label{ color: $color-action-70; }
     }
 
     .expandable__header { 
@@ -163,41 +166,28 @@
     align-items: stretch;
     background-color: $color-background-menu-2;
     border-bottom: 1px solid $color-primary-30;
-    padding: 0 10px;
-    //@include soft-shadow();
 
     .button{
         position: relative;
-        line-height: 1.2;
-        padding: 10px;
         min-width: 50px;
-        &:before,
-        &:after { 
-            display: block;
-            font-family: "Linearicons-Free";
-            font-size: 24px;
-        }
+        height: 44px;
     }
+
+    .icon--delete{
+        margin-left: auto;
+        border-radius: 0; 
+        //background: mix($color-red, white, 5%);
+        &:hover{ color: $color-red !important; }
+
+    }
+
+    .icon--save:hover { color: $color-tertiary-50 !important; }
 
     .divider{
         display: inline-block;
         margin: 10px;
         border-right: 1px solid $color-primary-40;
     }
-
-    
-
-    @mixin menu-button($icon, $color){
-        &:before{ content: $icon; }
-        &:hover{ color: $color; }
-    }
-    .stage__back { @include menu-button("\e879", $color-primary-80); } 
-    .stage__forward { @include menu-button("\e87a", $color-primary-80); } 
-    .stage__save { @include menu-button("\e87f", $color-tertiary-40); }
-
-    .stage__save-all { @include menu-button("\f382", $color-tertiary-50); }
-    .stage__delete { @include menu-button("\e880", $color-red); }
-    .stage__fav { @include menu-button("\f3ae", $color-primary-80); }
 
     .stage__unsaved-count{
         position: absolute;

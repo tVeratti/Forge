@@ -306,6 +306,8 @@
     <Content Include="Styles\Fonts\Ionicons\ionicons.svg" />
     <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.svg" />
     <Content Include="Styles\Fonts\Linearicons\style.css" />
+    <Content Include="Styles\Fonts\Typicon\typicons.min.css" />
+    <Content Include="Styles\Fonts\Typicon\typicons.svg" />
     <Content Include="Styles\site.css">
       <DependentUpon>site.scss</DependentUpon>
     </Content>
@@ -371,6 +373,9 @@
     <Content Include="Styles\Fonts\Linearicons\Linearicons-Free.woff2" />
     <Content Include="Styles\Components\_account.scss" />
     <Content Include="Styles\Components\_shrinky.scss" />
+    <Content Include="Styles\Fonts\Typicon\typicons.eot" />
+    <Content Include="Styles\Fonts\Typicon\typicons.ttf" />
+    <Content Include="Styles\Fonts\Typicon\typicons.woff" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

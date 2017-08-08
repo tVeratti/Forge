@@ -3,6 +3,8 @@ const Tooltip = require('./Tooltip.jsx');
 
 // =====================================
 const Field = ({ ...props }) => {
+    let className = 'field';
+
     const change = (ev) => props.onChange(ev.target.value);
 
     const tooltipNode = props.tooltip
@@ -13,6 +15,8 @@ const Field = ({ ...props }) => {
         ? <span className='field__after'>{props.after}</span>
         : undefined;
 
+    if (afterNode) className += ' field--embed-after';
+
     delete props.tooltip;
     delete props.after;
 
@@ -22,7 +26,7 @@ const Field = ({ ...props }) => {
             : <input {...props} onChange={change} />);
 
     return (
-        <div className='field'>
+        <div className={className}>
             <label className='field__label' htmlFor={props.id}>{props.label}</label>
             <span className='field__value'>{controlNode}</span>
             {afterNode}
