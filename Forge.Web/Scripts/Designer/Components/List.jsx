@@ -28,7 +28,7 @@ const __List = React.createClass({
 				{actionNodes}
 
 				{/* All Tiles */}
-				<ul className='designer__list-items stick-to-shrinky'>
+				<ul className='designer__list-items'>
 					{listNodes}
 				</ul>
 			</div>
@@ -81,7 +81,7 @@ const __List = React.createClass({
 
 			return (
 				<li key={key} className={className}>
-					<Button className='button button--transparent' onClick={onClick}>{item.Name}</Button>
+					<Button className='button button--link' onClick={onClick}>{item.Name}</Button>
 				</li>
 			);
 		});
@@ -109,7 +109,7 @@ const __List = React.createClass({
 		});
 
 		return (
-			<div className='designer__list-actions stick-to-shrinky'>
+			<div className='designer__list-actions'>
 				
 				<div className='designer__mini-buttons'>
 					{miniButtons}

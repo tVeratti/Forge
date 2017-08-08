@@ -33,7 +33,7 @@ const __Actions = (props) => {
 
 const ActionButton = (props) => {
     const titleLower = props.title.toLowerCase();
-    return <Button className={`button button--transparent stage__${titleLower}`} {...props} />;
+    return <Button className={`button button--link stage__${titleLower}`} {...props} />;
 }
 
 // Container

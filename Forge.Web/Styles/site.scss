@@ -24,9 +24,8 @@ html {
     body {
         position: relative;
         padding-top: $size-nav-height;
-        background-color: $color-primary-20;
-        background-color: #eee;
-        background-image: url(../Content/Images/cubes_dark.png);
+        background-color: $color-primary-10;
+        //background-image: url(../Content/Images/cubes_dark.png);
     }
 
 }
@@ -78,8 +77,8 @@ b { font-weight: 600; }
 
 ::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	background-color: $color-primary-70;
+	//border-radius: 10px;
+	background-color: $color-primary-30;
     //&:hover{ background-color: $color-p-20; }
 }
 

@@ -56,7 +56,7 @@ const __Rule = React.createClass({
     updateModel: function(prop, value){
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Rules[designer.index];
-        
+        console.log(prop, value)
         model[prop] = value;
 
         dispatch(actions.updateRule(model));

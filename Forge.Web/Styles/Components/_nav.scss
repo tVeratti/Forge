@@ -5,8 +5,8 @@
 // Colors
 // --------------------------------
 $nav-font-color:            $color-primary-20;
-$nav-hover-font-color:      $color-primary-10;
-$nav-slide-background:      $color-primary-10;
+$nav-hover-font-color:      white;
+$nav-slide-background:      $color-link-30;
 
 // Units
 // --------------------------------
@@ -25,7 +25,7 @@ $nav-arrow-size: 8px;
     font-size: $font-size-medium;
     background-color: $color-secondary-50;
     border-bottom: 1px solid $color-secondary-40;
-    //@include linear-gradient-vertical-2($color-secondary-60, 0,$color-secondary-50, 100%);
+    //@include linear-gradient-vertical-2($color-secondary-40, 0,$color-link-70, 100%);
     @include soft-shadow();
 
     &.sticky{
@@ -56,6 +56,8 @@ $nav-arrow-size: 8px;
             .arrow {
                 right: 30px;
             }
+
+            ul { right: 0; }
         }
 
         // Mobile-ONLY
@@ -98,7 +100,7 @@ $nav-arrow-size: 8px;
             width: 100%;
             white-space: nowrap;
             background-color: $nav-slide-background;
-            top: $size-nav-height - 5px;
+            top: $size-nav-height;
             //border-bottom: 1px solid $color-secondary-60;
             //box-shadow: 0 1px 5px rgba(black, 0.4);
 
@@ -122,8 +124,8 @@ $nav-arrow-size: 8px;
                 height: 40px;
                 line-height: 40px;
                 width: 100%;
-                border-bottom: 1px solid $color-primary-30;
-                //&:last-child{ border: none; }
+                border-bottom: 1px solid $color-link-20;
+                &:last-child{ border: none; }
 
                 a {
                     display: inline-block;
@@ -131,11 +133,11 @@ $nav-arrow-size: 8px;
                     width: 100%;
                     line-height: 1;
                     padding: 0 15px;
-                    color: $color-secondary-50;
-                    font-weight: 600;
+                    color: $color-link-10;
+                    //font-weight: 600;
 
                     &:hover {
-                        color: $color-secondary-60;
+                        color: white;
                     }
                 }
             }

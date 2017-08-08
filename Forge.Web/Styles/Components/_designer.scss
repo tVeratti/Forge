@@ -20,6 +20,9 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
 .designer__static{
     padding-left: $size-nav-left-width + 44px;
+    @media screen and (max-width: 720px){
+        padding-left: 44px;
+    }
 }
 
 
@@ -38,31 +41,18 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 // __List
 // ---------------------------
 .designer__list{
-    position: fixed;
-    vertical-align: top;
-    top: $size-nav-height;
-    bottom: 0;
-    left: 0;
-    padding-right: 5px;
-    border-right: 1px solid $color-primary-40;
-    z-index: 10;
-
+    position: absolute;
+    display: flex;
+    flex-direction: row;
     overflow: visible;
-
-    //@include soft-shadow();
 
     @media screen and (max-width: 720px){        
         & ~ .designer__overlay { display: block; }
         & ~ .designer__static { padding-left: 44px; }
     }
-    
-    h3 { border-top-left-radius: 3px; }
 
     // --Empty
-    &.designer__list--empty { 
-        .designer__list-actions{ display: none; }
-        &~.designer__static { padding-left: 0 !important; }
-        
+    &.designer__list--empty {
         display: none;
     }
 
@@ -72,14 +62,6 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
         // MOBILE
         @media screen and (max-width: 720px){
-            
-            & ~ .designer__static { padding-left: 44px; }
-            & ~ .designer__overlay { display: none; }
-
-            // Mini buttons to become stacked
-            // vertically on visible sidebar.
-            
-
             .designer__list-items{ 
                 @include translateX(0);
             }
@@ -87,20 +69,12 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             .designer__list-actions{
                 align-self: flex-end;
             }
-
-            .designer__list-actions,
-            .designer__list-items {
-                padding-right: 0;
-                margin: 0;
-            }
         }
     }
 
     .designer__list-actions{
-        position: fixed;
         width: 44px;
-        height: 100%;
-        margin-right: 5px;
+        height: calc(100vh - 148px);
         background: white;
         border-right: 1px solid $color-primary-40;
         z-index: 10;
@@ -121,7 +95,7 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 width: 44px;
                 background: transparent;
                 margin-bottom: -2px;
-                color: $color-primary-70;              
+                color: $color-primary-60;              
 
                 &:after { float: none; }
                 &:hover{ 
@@ -129,29 +103,23 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
                 }
 
                 &.button--active{
-                    color: $color-primary-80;
+                    color: $color-primary-90;
                     &:after { text-shadow: none; }
                 }
             }
         }
     }
 
-    // Space for scrollbar
-    .designer__list-actions,
-    .designer__list-items {
-        padding-right: 5px;
-    }
-
     // __List-Items
     // ---------------------------
     .designer__list-items{
-        position: fixed;
-        left: -155px;
-        padding: 10px 0;
-        width: $size-nav-left-width;
-        background: $color-primary-10;
-        border-right: 1px solid $color-primary-40;
+        position: absolute;
+        left: -156px;
         height: 100%;
+        padding: 10px 0 30px 0;
+        width: $size-nav-left-width;
+        background: white;
+        border-right: 1px solid $color-primary-40;
         overflow-y: auto;
 
         @include translateX(199px); 
@@ -162,15 +130,8 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
     // ---------------------------
     .designer__list-item{
         border-left: 5px solid transparent;
-        &:hover{ 
-            //background: $color-primary-20; 
-            .button{
-                //color: white !important;
-            }
-        }
 
         button {
-            display: block;
             width: 100%;
             text-align: left;
             height: 30px;
@@ -192,27 +153,19 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
 
         &.designer__list-item--unsaved{
             border-color: $color-action-30 !important;
+            background: $color-action-10;
         }
-
         
         // Active List-Item
         // (List & Search)
         &.designer__list-item--selected{
-            border-color: $color-secondary-30 !important;
+            border-color: $color-primary-40 !important;
+            background: $color-primary-20;
             
             .button{
-                color: $color-secondary-50 !important;
+                color: $color-primary-80 !important;
             }
-
-            /*&:after{
-                position: absolute;
-                top: 0;
-                right: -20px;
-                content: "";
-                @include arrow-right(20px, $bg-list-item--active);
-            }*/
         }
-
     }
 }
 

@@ -29,13 +29,6 @@ const Shrinky = React.createClass({
     // -----------------------------
     componentDidMount: function(){
         document.addEventListener('scroll', this.checkScroll);
-
-        // Stick content to the bottom of the sticky area and
-        // force its position to FIXED.
-        this.refs.stick.children.forEach(x => {
-            x.style.position = 'fixed';
-            x.style.top = '100%';
-        });
     },
 
     // -----------------------------

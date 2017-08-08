@@ -46,8 +46,8 @@ select {
     border: 1px solid $color-primary-60;
     &:hover{ border-color: $color-primary-80; }
     &:focus { 
-        border-color: $color-action-50;
-        @include field-glow($color-action-40);
+        border-color: $color-action-60;
+        @include field-glow($color-action-50);
         outline: none;
     }
 }

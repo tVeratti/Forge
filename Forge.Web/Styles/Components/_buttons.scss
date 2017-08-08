@@ -37,7 +37,7 @@ button,
     @include button-gradient($color-secondary-50, $color-secondary-60);
 
     border: none;
-    border-radius: 3px;
+    //border-radius: 3px;
     //border: 1px solid $color-secondary-60;
     //text-shadow: 1px 1px 0 rgba(black, 0.3);
 
@@ -77,15 +77,15 @@ button,
 
     &.button--link {
         background: none;
-        color: $color-link;
+        color: $color-link-60;
         &:visited,
         &:active,
         &:link{
-            color: $color-link;
+            color: $color-link-60;
         }
 
         &:hover{
-            color: $color-link-60;
+            color: $color-link-80;
         }
     }
 
@@ -99,7 +99,7 @@ button,
     .button__clicky{
         position: absolute;
         display: inline-block;
-        background: rgba($color-secondary-20, 0.7);
+        background: rgba($color-link-30, 0.7);
 	    border-radius: 100%;
 	    transform: scale(0);
     }

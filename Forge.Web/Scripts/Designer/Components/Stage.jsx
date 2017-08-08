@@ -89,8 +89,6 @@ const __Stage = React.createClass({
         return <span className='emphasis'>{selectedItem.Name}</span>;
     },
 
-    
-
     // -----------------------------
     getSelectedItem: function(){
         const { designer, core } = this.props;

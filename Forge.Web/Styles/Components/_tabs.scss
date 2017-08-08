@@ -19,11 +19,11 @@ $border-color: $color-background-menu;
     display: inline-block;
     margin-right: 1px;
     background: none;
-    color: rgba(white, 0.7);
+    color: $color-secondary-10;
     border: none;
     outline: none;
     user-select: none;
-    //text-shadow: 1px 1px rgba(black, 0.3);
+    text-shadow: 1px 1px rgba($color-secondary-80, 0.5);
     font-size: 16px;
 
     label {
@@ -40,7 +40,7 @@ $border-color: $color-background-menu;
 
         // Active Tab
         &:checked + label {
-            color: $color-primary-80;
+            color: $color-secondary-60;
             background: $border-color;
             text-shadow: none;
         }

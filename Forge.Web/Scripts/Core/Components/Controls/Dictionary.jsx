@@ -8,7 +8,7 @@ const Dictionary = React.createClass({
 	render: function(){
 		const { Keys } = this.props.Model;
 
-		const keyNodes = Object.Keys(Keys || {}).map(v => v.Key).join(', ');
+		const keyNodes = Object.keys(Keys || {}).map(v => v.Key).join(', ');
 		const listNodes = this.renderList(true);
 
 		const dialogNode = this.state.dialog
@@ -76,7 +76,7 @@ const Dictionary = React.createClass({
 	renderList: function(flat){
 		const { Model } = this.props;
 
-		const list = Object.Keys(Model.Keys || {});
+		const list = Object.keys(Model.Keys || {});
 		const listNodes = list.map(x => this.renderPair(x, flat));
 		return listNodes.length
 			? <ul className='dictionary__list'>{listNodes}</ul>
