@@ -19,7 +19,7 @@ const Number = React.createClass({
 	// -----------------------------
 	change: function(ev) {
 		const { onChange, Model } = this.props;
-		const { value } = ev.target;
+		let { value } = ev.target;
 		
 		onChange && onChange({
 			...Model.Keys,

@@ -19,6 +19,8 @@ const Nav = React.createClass({
         // Arrow decoration template
         const arrowNode = <span className="arrow" />;
 
+        const locationName = window.location.pathname.split('/')[0];
+
         // RENDER ==========================
         return (
 		    <div>
@@ -28,17 +30,23 @@ const Nav = React.createClass({
 				    <Button className={toggleSiteClassName} onClick={toggleSiteHandler} />
 	                <ul className={siteUlClass}>
 	            	    {arrowNode}
-                        <li><a href="/">Home</a></li>
-					    <li><a href="/Games">Games</a></li>
+                        <li><a href='/'>Home</a></li>
+					    <li><a href='/Games'>Library</a></li>
 	                </ul>
                 </div>
 
+                {/* Breadcrumb */}
+                <div className='nav__location'>
+                    <p>Forge</p>
+                    <p>{locationName}</p>
+                </div>
+
                 {/* Account Navigation Menu */}
-                <div id="nav-account" className="nav-group">
+                <div id='nav-account' className='nav-group'>
                     <Button className={toggleAccountClassName} onClick={toggleAccountHandler} />
                     <ul className={accountUlClass}>
                         {arrowNode}
-                        <li><a href="/Account">{this.props.UserName || 'Log In'}</a></li>
+                        <li><a href='/Account'>{this.props.UserName || 'Log In'}</a></li>
                     </ul>
                 </div>
 
