@@ -776,6 +776,8 @@ var Nav = React.createClass({
         // Arrow decoration template
         var arrowNode = React.createElement('span', { className: 'arrow' });
 
+        var locationName = window.location.pathname.split('/')[0];
+
         // RENDER ==========================
         return React.createElement(
             'div',
@@ -803,9 +805,23 @@ var Nav = React.createClass({
                         React.createElement(
                             'a',
                             { href: '/Games' },
-                            'Games'
+                            'Library'
                         )
                     )
+                )
+            ),
+            React.createElement(
+                'div',
+                { className: 'nav__location' },
+                React.createElement(
+                    'p',
+                    null,
+                    'Forge'
+                ),
+                React.createElement(
+                    'p',
+                    null,
+                    locationName
                 )
             ),
             React.createElement(
@@ -4157,7 +4173,8 @@ var __DefinitionSettings = React.createClass({
         var setting = settings.filter(function (s) {
             return s.SettingId === settingId;
         })[0];
-        if (setting.Keys) setting.Keys.Value = value;
+        setting.Keys |= {};
+        setting.Keys.Value = value;
 
         model.Settings = settings;
 
