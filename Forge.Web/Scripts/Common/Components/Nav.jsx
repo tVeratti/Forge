@@ -19,7 +19,7 @@ const Nav = React.createClass({
         // Arrow decoration template
         const arrowNode = <span className="arrow" />;
 
-        const locationName = window.location.pathname.split('/')[0];
+        const locationName = window.location.pathname.split('/')[1];
 
         // RENDER ==========================
         return (
@@ -37,8 +37,11 @@ const Nav = React.createClass({
 
                 {/* Breadcrumb */}
                 <div className='nav__location'>
-                    <p>Forge</p>
-                    <p>{locationName}</p>
+                    <div className='nav__deco' />
+                    <div className='nav__text'>
+                        <span>Forge</span>
+                        <span>{locationName}</span>
+                    </div>
                 </div>
 
                 {/* Account Navigation Menu */}

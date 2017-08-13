@@ -148,6 +148,10 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             text-overflow: ellipsis;
         }
 
+        &:hover{
+            background: $color-primary-10;
+        }
+
         &.setting--active{ 
             .setting__icon:after{
                 font-family: "Ionicons";

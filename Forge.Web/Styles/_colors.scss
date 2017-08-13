@@ -25,8 +25,8 @@ $color-primary-10: mix($color-primary, white, 20%);
 $color-secondary: #4a5355;//#1088b6;//#31ae39; ////#bd4635;
 $color-secondary-90: mix($color-secondary, black, 30%);
 $color-secondary-80: mix($color-secondary, black, 50%);
-$color-secondary-70: mix($color-secondary, black, 80%);
-$color-secondary-60: mix($color-secondary, black, 90%);
+$color-secondary-70: mix($color-secondary, black, 75%);
+$color-secondary-60: mix($color-secondary, black, 85%);
 $color-secondary-50: $color-secondary;
 $color-secondary-40: mix($color-secondary, white, 90%);
 $color-secondary-30: mix($color-secondary, white, 80%);
@@ -59,8 +59,8 @@ $color-action-10: mix($color-action, white, 30%);
 
 // Link -------------------------------------------
 $color-link: #70aab5;
-$color-link-90: mix($color-link, black, 45%);
-$color-link-80: mix($color-link, black, 50%);
+$color-link-90: mix($color-link, black, 60%);
+$color-link-80: mix($color-link, black, 70%);
 $color-link-70: mix($color-link, black, 80%);
 $color-link-60: mix($color-link, black, 90%);
 $color-link-50: $color-link;

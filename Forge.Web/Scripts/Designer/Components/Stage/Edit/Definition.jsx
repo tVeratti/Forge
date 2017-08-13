@@ -34,6 +34,10 @@ const __EditDefinition = React.createClass({
 
         return (
             <div className='edit edit--definition' ref='wrapper'>
+                <div className='panel'>
+                    {/* Preview */}
+                    <Definition model={selectedItem} />
+                </div>
 
                 {/* General */}
                 <div className='panel'>
@@ -81,8 +85,7 @@ const __EditDefinition = React.createClass({
                     <DefinitionSettings />
                 </div>
 
-                {/* Preview */}
-
+                
             </div>
         )
     },

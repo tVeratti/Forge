@@ -1,6 +1,6 @@
 const React = require('react');
 
-const utilities = require('Core/Utilities.js');
+const { utilities, actions } = require('Core');
 const { dispatch } = require('Store.js');
 
 // =====================================
@@ -22,9 +22,13 @@ const Definition = React.createClass({
     },
 
     // -----------------------------
-    valueChange: function(value) {
-        const { dispatch } = this
-    },
+    valueChange: function(keys) {
+        const { ...model } = this.props.model;
+        model.Keys = keys;
+        console.log(keys)
+
+        dispatch(actions.updateDefinition(model, true));
+    }
 });
 
 module.exports = Definition;

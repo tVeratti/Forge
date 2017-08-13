@@ -4,18 +4,18 @@
 
 // Colors
 // --------------------------------
-$nav-font-color:            $color-primary-20;
-$nav-hover-font-color:      white;
-$nav-slide-background:      $color-link-30;
+$nav-font-color: $color-secondary-10;
+$nav-hover-font-color: white;
+$nav-slide-background: $color-secondary-50;
 
 // Units
 // --------------------------------
-$nav-arrow-size: 8px;
+$nav-arrow-size: 12px;
 
 // MOBILE ( < 720px  )
 // ================================
 #nav {
-    position:fixed;
+    position: fixed;
     display: block;
     top: 0;
     left: 0;
@@ -23,19 +23,11 @@ $nav-arrow-size: 8px;
     height: $size-nav-height;
     z-index: 1000;
     font-size: $font-size-medium;
-    background-color: $color-secondary-50;
+    background-color: $color-secondary-60;
     border-bottom: 1px solid $color-secondary-40;
-    //@include linear-gradient-vertical-2($color-secondary-40, 0,$color-link-70, 100%);
-    @include soft-shadow();
-
-    &.sticky{
-        background-color: $color-primary-80;
-    }
 
     // Content Wrapper
-    & > .container {
-        height: $size-nav-height;
-    }
+    & > .container { height: $size-nav-height; }
 
     .nav-group {
         position: relative;
@@ -44,8 +36,9 @@ $nav-arrow-size: 8px;
         &#nav-site {
             text-align: left;
 
-            .arrow {
-                left: 30px;
+            .arrow { left: 15px; }
+            ul { 
+                left: 10px; 
             }
         }
 
@@ -53,16 +46,13 @@ $nav-arrow-size: 8px;
         &#nav-account {
             text-align: right;
 
-            .arrow {
-                right: 30px;
+            .arrow { right: 15px; }
+            ul { right: 10px;
             }
-
-            ul { right: 0; }
         }
 
         // Mobile-ONLY
         .toggle {
-            //font-family: "Linearicons-Free";
             display: inline-block;
             color: $nav-font-color;
             cursor: pointer;
@@ -72,41 +62,30 @@ $nav-arrow-size: 8px;
             line-height: $size-nav-height;
             height: $size-nav-height;
             font-weight: bold;
-            //text-shadow: 2px 2px rgba(black, 0.2);
             background: none;
             border: none;
 
-            &:hover, &.t-open {
-                color: $nav-hover-font-color;
-            }
+            &:hover, &.t-open { color: $nav-hover-font-color; }
+
             // Toggle Site Menu
-            &.nav__menu {
-                float: left;
-                /*&:after{
-                    content: "\e871";
-                }*/
-            }
+            &.nav__menu { float: left; }
             // Toggle Account Menu
-            &.nav__user {
-                float: right;
-                //&:after{ content: "\e82a"; }
-            }
+            &.nav__user { float: right; }
         }
 
         // Lists of Nav anchors
         ul {
             position: absolute;
+            z-index: 10;
             display: none;
-            width: 100%;
+            width: calc(50% - 10px);
             white-space: nowrap;
             background-color: $nav-slide-background;
-            top: $size-nav-height;
-            //border-bottom: 1px solid $color-secondary-60;
-            //box-shadow: 0 1px 5px rgba(black, 0.4);
+            top: $size-nav-height - 1px;
+            border: 1px solid $color-secondary-40;
+            border-top: none;
 
-            &.open {
-                display: block;
-            }
+            &.open {  display: block; }
 
             // Arrow decoration for drop-down
             .arrow {
@@ -121,26 +100,57 @@ $nav-arrow-size: 8px;
 
             li {
                 display: block;
-                height: 40px;
-                line-height: 40px;
                 width: 100%;
-                border-bottom: 1px solid $color-link-20;
-                &:last-child{ border: none; }
+                
+                //border-bottom: 1px solid $color-link-70;
+
+                //&:last-child { border: none; }
 
                 a {
                     display: inline-block;
                     height: 100%;
                     width: 100%;
-                    line-height: 1;
-                    padding: 0 15px;
-                    color: $color-link-10;
+                    padding: 10px 15px;
+                    color: rgba(white, 0.7);
+                    text-shadow: 1px 1px 0 rgba(black, 0.2);
+                    
                     //font-weight: 600;
-
                     &:hover {
                         color: white;
                     }
                 }
             }
+        }
+    }
+}
+
+$top-color: $color-tertiary-60;
+$bottom-color: $color-link-70;
+.nav__location {
+    position: fixed;
+    z-index: 11;
+    top: 0;
+    left: 50%;
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    height: $size-nav-height;
+    line-height: $size-nav-height;
+
+
+
+    .nav__text {
+        span:nth-child(2) {
+            font-size: 12px;
+            color: $color-secondary-10;
+            margin-top: 5px;
+            margin-left: 10px;
+            text-transform: uppercase;
         }
     }
 }
@@ -170,8 +180,8 @@ $nav-arrow-size: 8px;
                 position: static;
                 display: inline-block;
                 width: auto;
-                background:none;
-                border:none;
+                background: none;
+                border: none;
 
                 .arrow {
                     display: none;
@@ -183,7 +193,10 @@ $nav-arrow-size: 8px;
                     line-height: $size-nav-height;
                     width: auto;
                     border: none;
-                    a { color: $color-primary-10 !important; }
+
+                    a {
+                        color: $color-primary-10 !important;
+                    }
                 }
             }
         }
