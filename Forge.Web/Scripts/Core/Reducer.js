@@ -1,4 +1,4 @@
-﻿const { utilities, lifeCycle, CATEGORIES } = require('Core');
+﻿const { utilities, lifeCycle, CATEGORIES, settings } = require('Core');
 const { sortBy, getRules, sortSettings, contains } = utilities;
 
 const initialState = {
@@ -228,13 +228,13 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
         action.category === CATEGORIES.DEFINITIONS){
         // Base updates on ONLY the actively edited Definition.
         // This will run updates for all dependant Definitions.
-        updateDefinition(state, definitions[action.index]);
+        definitions[action.index] = updateDefinition(state, definitions[action.index]);
         updatedCount = 1;
 
     } else {
         // Update Definitions that are related to the object
         // being modified (All Definitions, Tag, or Rule...)
-        definitions.forEach((model, index) =>{
+        definitions = definitions.map((model, index) =>{
             model.index = index;
 
             if (action.type !== 'RECEIVE_GAME'){
@@ -246,16 +246,16 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
             }
 
             // Build Rules, Settings, Tree
-            updateDefinition(state, model);
             updatedCount++;
+            return updateDefinition(state, model);
         });
     }
 
     // Apply all Settings...
-    definitions.forEach(applySettings.bind(this, stage, state));
+    definitions = definitions.map((d, i) => applySettings(stage, state, d, i));
 
     const elapsedTime = new Date().getTime() - startTime;
-    console.log('end updateAll', elapsedTime, updatedCount);
+    console.log(`updateAll - ${elapsedTime}ms - ${updatedCount} updated`);
 
     return definitions;
 }
@@ -268,6 +268,7 @@ function updateDefinition(state, model){
             ...model.Rules,
             ...model.Settings ])
         .filter(s => !s.overridden);
+    console.log(model)
     
     // Prepare tree references...
     model.MergedSettings.forEach(s => {
@@ -283,6 +284,8 @@ function updateDefinition(state, model){
             state.tree[target.Value].push(model.Id);
         }
     });
+
+    return model;
 }
 
 // --------------------------------
@@ -290,10 +293,12 @@ function updateDefinition(state, model){
 // and update all dependants thereafter.
 function applySettings(stage, state, model, index){
     // Apply all settings that match the current lifecycle
-    //let values = [ ...model.Values ];
-    // model.MergedSettings
-    //     .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
-    //     .forEach(s => values = settings.apply(value, s));
+    let keys = { ...model.Keys };
+    model.MergedSettings
+        .filter(s => lifeCycle.isActive(s.LifeCycle, stage))
+        .forEach(s => keys = settings.apply(keys, s));
+    
+    model.Keys = keys;
     
     // if (arrayChanged(values, model.Values)){
     //     // The value of this Definition has changed,
@@ -301,6 +306,8 @@ function applySettings(stage, state, model, index){
     //     // its value (ValueIf, etc...)
     //     model.dependants.forEach(applySettings);
     // }
+
+    return model;
 }
 
 function arrayChanged(a, b){

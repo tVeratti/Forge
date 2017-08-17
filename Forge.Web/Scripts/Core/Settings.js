@@ -1,35 +1,40 @@
+const store = require('Store.js');
+
 // Definition Settings
 // =====================================
 const settings = {
-	apply: function(value, setting) {
+	apply: function(keys, setting) {
 		const { SettingName, Name } = setting;
-		return this[SettingName || Name](value, setting);
+		return this[SettingName || Name](keys, setting);
 	},
 
 	// --------------------------------
-	Minimum: function(value, setting){
-		if (isNaN(value)) value = 0;
-		return Math.max(+value, +setting.Value);
+	Minimum: function(keys, setting){
+		if (isNaN(keys.Value)) keys.Value = 0;
+		return Math.max(+keys.Value, +setting.Keys.Value);
 	},
 
 	// --------------------------------
-	Maximum: function(value, setting){
-		if (isNaN(value)) value = 0;
-		return Math.min(+value, +setting.Value);
+	Maximum: function(keys, setting){
+		if (isNaN(keys.Value)) keys.Value = 0;
+		keys.Value = Math.min(+keys.Value, setting.Keys.Value);
+		return keys;
 	},
 
 	// --------------------------------
-	Default: function(value, setting){
-		return value || setting.Value;
+	Default: function(keys, setting){
+		keys.Value |= setting.Keys.Value;
+		return keys;
 	},
 
 	// --------------------------------
-	ValueIf: function(value, setting){
+	ValueIf: function(keys, setting){
 		const { Definitions } = store.getState().core;
 		const target = Definitions.filter(d => d.Id === setting.RelatedId)[0];
-		return target && target.Value === setting.RelatedValue
-			? setting.Value
-			: value;
+		keys.Value = target && target.Value === setting.RelatedValue
+			? setting.Keys.Value
+			: keys.Value;
+		return keys;
 	}
 };
 

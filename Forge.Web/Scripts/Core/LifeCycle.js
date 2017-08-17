@@ -1,4 +1,6 @@
-﻿// LifeCycle Management
+﻿const store = require('Store.js');
+
+// LifeCycle Management
 // =====================================
 const lifeCycle = new LifeCycle();
 

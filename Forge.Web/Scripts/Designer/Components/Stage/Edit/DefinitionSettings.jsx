@@ -1,8 +1,9 @@
 ﻿const React = require('react');
 const { connect} = require('react-redux');
 
-const designerActions = require('Designer/Actions.js');
+
 const { actions, utilities } = require('Core');
+const designerActions = require('Designer/Actions.js');
 const controls = require('Core/Components/Controls');
 
 const Sortable = require('Common/Components/Sortable.jsx');
@@ -169,12 +170,10 @@ const __DefinitionSettings = React.createClass({
         const settings = [ ...(model.Settings || []) ];
 
         const setting = settings.filter(s => s.SettingId === settingId)[0];
-        setting.Keys |= {}
-        setting.Keys.Value = value;
-
+        setting.Keys = value;
         model.Settings = settings;
 
-        dispatch(coreActions.updateDefinition(model));
+        dispatch(actions.updateDefinition(model));
     },
 
     // -----------------------------
