@@ -112,7 +112,8 @@ namespace Forge.Data.Services
                 model.Settings.ToList().ForEach(setting =>
                 {
                     setting.Keys = lookupValues.SettingsKeys
-                        .Where(k => k.SettingId == setting.Id);
+                        .Where(k => k.SettingId == setting.Id)
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp);
                 });
 
                 // Rules Values

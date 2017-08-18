@@ -14,6 +14,6 @@ namespace Forge.Data.Models
         public string LifeCycle { get; set; }
         public int Priority { get; set; }
 
-        public IEnumerable<SettingKeyModel> Keys { get; set; }
+        public Dictionary<string, SettingKeyModel> Keys { get; set; }
     }
 }
