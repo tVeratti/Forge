@@ -245,7 +245,7 @@ b {
 
 .icon.icon--remove:after {
   font-family: "typicons";
-  content: "";
+  content: "";
   font-size: 27px;
   vertical-align: middle; }
 
@@ -315,6 +315,12 @@ b {
   font-size: 27px;
   vertical-align: middle; }
 
+.icon.icon--tag:after {
+  font-family: "typicons";
+  content: "";
+  font-size: 27px;
+  vertical-align: middle; }
+
 #nav {
   position: fixed;
   display: block;
@@ -325,7 +331,7 @@ b {
   z-index: 1000;
   font-size: 14px;
   background-color: #3f4748;
-  border-bottom: 1px solid #5c6466; }
+  border-bottom: 1px solid #5a8891; }
   #nav > .container {
     height: 55px; }
   #nav .nav-group {
@@ -368,7 +374,7 @@ b {
       white-space: nowrap;
       background-color: #4a5355;
       top: 54px;
-      border: 1px solid #5c6466;
+      border: 1px solid #5a8891;
       border-top: none; }
       #nav .nav-group ul.open {
         display: block; }
@@ -405,12 +411,12 @@ b {
   transform: translateX(-50%);
   color: white;
   text-align: center;
-  font-size: 20px;
+  font-size: 21px;
   height: 55px;
   line-height: 55px; }
   .nav__location .nav__text span:nth-child(2) {
     font-size: 12px;
-    color: #c9cbcc;
+    color: #b8d5da;
     margin-top: 5px;
     margin-left: 10px;
     text-transform: uppercase; }
@@ -634,7 +640,7 @@ button,
     color: #5a8891; }
     button.button--tag:hover,
     .button.button--tag:hover {
-      background: #b8d5da; }
+      color: #43666d; }
   button:disabled, button[disabled],
   .button:disabled,
   .button[disabled] {
@@ -790,19 +796,22 @@ h5 {
     .stage__workspace .definition__setting .definition__setting-remove,
     .stage__workspace .definition__setting .definition__rule-tag {
       position: absolute;
-      font-family: "Ionicons";
-      right: 0;
+      right: -10px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 22px;
       cursor: pointer !important;
-      padding: 5px 10px; }
-    .stage__workspace .definition__setting .definition__rule-tag:after {
-      content: "\f48d"; }
-    .stage__workspace .definition__setting .definition__setting-remove:after {
-      content: "\f2d7"; }
+      padding: 0; }
+      .stage__workspace .definition__setting .definition__setting-remove:after,
+      .stage__workspace .definition__setting .definition__rule-tag:after {
+        display: inline-block;
+        font-size: 22px !important;
+        min-width: 32px;
+        text-align: center;
+        padding-right: 10px; }
     .stage__workspace .definition__setting .definition__setting-remove:hover {
       color: #d47373; }
+    .stage__workspace .definition__setting .definition__rule-tag:hover {
+      color: #424242; }
   .stage__workspace .definition__tag--active {
     background-color: #fbf2db !important;
     color: #70aab5 !important; }
@@ -1060,13 +1069,14 @@ h5 {
     bottom: 0;
     right: 0;
     line-height: 30px;
-    width: 20px;
+    width: 25px;
     margin-left: 5px;
     cursor: pointer;
-    border-left: 1px solid white;
-    background: #eeeeee; }
+    color: #43666d; }
+    .definition__tags .definition__tag .icon--remove:after {
+      font-size: 20px !important; }
     .definition__tags .definition__tag .icon--remove:hover {
-      color: #424242; }
+      color: #d47373; }
 
 .edit.edit--tag .edit__information .field__label {
   vertical-align: top;
@@ -1206,9 +1216,8 @@ input {
   .sortable .sortable__handle:hover {
     color: #f8e7be; }
   .sortable .sortable__handle:after {
-    font-family: "Ionicons";
-    font-size: 22px;
-    content: "\f397"; }
+    font-family: "typicons";
+    font-size: 18px; }
 
 .sortable.sortable--dragging .sortable__item--dragging {
   opacity: 0.5; }
@@ -1236,10 +1245,10 @@ input {
   vertical-align: middle; }
   .expandable .expandable__button .expandable__icon,
   .expandable .expandable__label .expandable__icon {
-    font-family: "Ionicons";
+    font-family: "typicons";
     min-width: 0;
     padding: 0 10px;
-    color: #b1b1b1;
+    color: #6f6f6f;
     background: none; }
     .expandable .expandable__button .expandable__icon:hover,
     .expandable .expandable__label .expandable__icon:hover {
@@ -1247,10 +1256,10 @@ input {
     .expandable .expandable__button .expandable__icon:after,
     .expandable .expandable__label .expandable__icon:after {
       display: inline-block;
-      content: "\f35f";
+      content: "\e01d";
       transform: rotate(0deg);
       transition: transform 0.3s ease-in-out;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold; }
 
 .expandable.expandable--closed .expandable__button .expandable__icon:after {

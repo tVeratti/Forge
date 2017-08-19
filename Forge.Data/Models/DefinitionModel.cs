@@ -36,7 +36,10 @@ namespace Forge.Data.Models
 
         public IEnumerable<IdKeyValuePairModel> GetSettingsValues()
         {
-            return Settings?.SelectMany(s => s.Keys.Select(k => k.Value)) ?? new List<IdKeyValuePairModel>();
+            return Settings?
+                .Where(s => s.Keys != null)
+                .SelectMany(s => s.Keys?.Select(k => k.Value)) 
+                    ?? new List<IdKeyValuePairModel>();
         }
     }
 

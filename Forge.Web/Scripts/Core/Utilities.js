@@ -45,11 +45,13 @@ const utilities = {
 				}
 			});
 
+		
+
 		return definitionRules.map(rule => {
 			// Check if there's a local setting that overrides this rule,
 			// Or a Rule with a higher Priority...
 			const overridden = !!(
-				definition.Settings.filter(s => s.Id == rule.SettingId)[0]
+				definition.Settings.filter(s => s.SettingId == rule.SettingId)[0]
 				|| definitionRules.filter(s => s.SettingId == rule.SettingId && s.Priority < rule.Priority)[0]
 			);
 

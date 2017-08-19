@@ -94,27 +94,27 @@
         .definition__setting-remove,
         .definition__rule-tag {
             position: absolute;
-            font-family: "Ionicons";
-            right: 0;
+            right: -10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 22px;
             cursor: pointer !important;
-            padding: 5px 10px;
-        }
+            padding: 0;
 
-        .definition__rule-tag{
-            
-            //color: $color-primary-60;
-             &:after{
-                 content: "\f48d";
-             }
+            &:after{ 
+                display: inline-block;
+                font-size: 22px !important;
+                min-width: 32px;
+                text-align: center;
+                padding-right: 10px;
+            }
         }
 
         .definition__setting-remove{
-            
-             &:after{ content: "\f2d7"; }
-             &:hover{ color: $color-red; }
+            &:hover{ color: $color-red; }
+        }
+
+        .definition__rule-tag{
+            &:hover{ color: $color-primary-90; }
         }
     }
 
@@ -181,7 +181,7 @@
 
     }
 
-    .icon--save:hover { color: $color-tertiary-50 !important; }
+    .icon--save:hover { color: $color-tertiary-50 !important; }                                         
 
     .divider{
         display: inline-block;

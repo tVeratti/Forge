@@ -237,13 +237,13 @@ function updateAll(state, action, stage = lifeCycle.stages.update){
         definitions = definitions.map((model, index) =>{
             model.index = index;
 
-            if (action.type !== 'RECEIVE_GAME'){
-                // Only update if this Definition contains the modified Tag or Rule.
-                switch(action.category) {
-                    case CATEGORIES.TAGS:   if (!contains(model.Tags.map(t => t.Id), action.model.Id)) return; break;
-                    case CATEGORIES.RULES:  if (!contains(model.Rules.map(r => r.Id), action.model.Id)) return; break;
-                }
-            }
+            // if (action.type !== 'RECEIVE_GAME'){
+            //     // Only update if this Definition contains the modified Tag or Rule.
+            //     switch(action.category) {
+            //         case CATEGORIES.TAGS:   if (!contains(model.Tags.map(t => t.Id), action.model.Id)) return model;
+            //         case CATEGORIES.RULES:  if (!contains(model.Rules.map(r => r.Id), action.model.Id)) return model;
+            //     }
+            // }
 
             // Build Rules, Settings, Tree
             updatedCount++;
@@ -268,7 +268,6 @@ function updateDefinition(state, model){
             ...model.Rules,
             ...model.Settings ])
         .filter(s => !s.overridden);
-    console.log(model)
     
     // Prepare tree references...
     model.MergedSettings.forEach(s => {
@@ -284,7 +283,6 @@ function updateDefinition(state, model){
             state.tree[target.Value].push(model.Id);
         }
     });
-
     return model;
 }
 

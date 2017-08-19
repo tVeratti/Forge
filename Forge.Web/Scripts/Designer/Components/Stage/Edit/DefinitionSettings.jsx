@@ -7,6 +7,8 @@ const designerActions = require('Designer/Actions.js');
 const controls = require('Core/Components/Controls');
 
 const Sortable = require('Common/Components/Sortable.jsx');
+const Field = require('Common/Components/Field.jsx');
+const Expandable = require('Common/Components/Expandable.jsx');
 
 // Presentation
 // =====================================
@@ -40,22 +42,21 @@ const __DefinitionSettings = React.createClass({
         let afterNode;
         if (activeTagId && activeTagId === setting.TagId) className += ' definition__setting--active';
         if (setting.TagId) className += ' definition__rule';
-        else afterNode = <span className='definition__setting-remove' onClick={removeHandler} />;
+        else afterNode = <span className='definition__setting-remove icon icon--remove' onClick={removeHandler} />;
 
         if (!afterNode) {
             const tagActivate = () => this.props.dispatch(designerActions.activateTag(setting.TagId));
-            afterNode = <span className='definition__rule-tag' title={'Tagged Rule'} onClick={tagActivate} />
+            afterNode = <span className='definition__rule-tag icon icon--tag' title={'Tagged Rule'} onClick={tagActivate} />
         }
 
-
         const controlNode = setting.TagId
-            ? setting.Value
+            ? setting.Keys.Value
             : this.renderControl(setting, index);
 
         // This is the main control node that can modify the setting value.
         const primaryNodes = (
             <div className='field'>
-                <label className='field__label'>{setting.Name}</label>
+                <label className='field__label'>{setting.SettingName || setting.Name}</label>
                 <span className='field__value'>{controlNode}</span>
                 {afterNode}
             </div>

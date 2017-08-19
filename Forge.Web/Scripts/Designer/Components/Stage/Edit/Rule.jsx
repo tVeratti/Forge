@@ -16,7 +16,7 @@ const __Rule = React.createClass({
         const update = (prop) => this.updateModel.bind(this, prop);
         const setting = core.Settings.filter(s => s.Id == selectedItem.SettingId)[0];
         const controlNode = setting
-            ? utilities.renderControl(setting, update('Keys'))
+            ? utilities.renderControl({ ...selectedItem, ControlName: setting.ControlName }, update('Keys'))
             : 'Choose a Setting type';
 
         return (
@@ -56,8 +56,9 @@ const __Rule = React.createClass({
     updateModel: function(prop, value){
         const { designer, core, dispatch } = this.props;
         const { ...model } = core.Rules[designer.index];
-        console.log(prop, value)
         model[prop] = value;
+
+        if (prop === 'SettingId') model.SettingName = core.Settings.filter(s => s.Id == value)[0].Name;
 
         dispatch(actions.updateRule(model));
     }

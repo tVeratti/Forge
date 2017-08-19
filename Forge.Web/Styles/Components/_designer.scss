@@ -267,14 +267,15 @@ $width-toggle-total: ($width-settings - ($width-toggle + 10px));
             bottom: 0;
             right: 0;
             line-height: 30px;
-            width: 20px;
+            width: 25px;
             margin-left: 5px;
             cursor: pointer;
-            border-left: 1px solid white;
-            background: $color-primary-20;
+            color: $color-link-90;
+            //background: $color-link-20;
+            &:after{ font-size: 20px !important; }
 
             &:hover {
-                color: $color-primary-90;
+                color: $color-red;
             }
         }
     }

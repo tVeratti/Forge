@@ -120,7 +120,8 @@ namespace Forge.Data.Services
                 model.Rules.ToList().ForEach(rule =>
                 {
                     rule.Keys = lookupValues.RulesValues
-                        .Where(rv => rv.Id == rule.Id);
+                        .Where(rv => rv.Id == rule.Id)
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp);
                 });
 
                 model.Definitions = model.Definitions.Select(definition => 

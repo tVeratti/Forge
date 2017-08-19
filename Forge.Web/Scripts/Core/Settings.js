@@ -11,19 +11,30 @@ const settings = {
 	// --------------------------------
 	Minimum: function(keys, setting){
 		if (isNaN(keys.Value)) keys.Value = 0;
-		return Math.max(+keys.Value, +setting.Keys.Value);
+
+		keys.Value = Math.max(
+			+keys.Value, 
+			+(setting.Keys.Value || 0)
+		);
+
+		return keys;
 	},
 
 	// --------------------------------
 	Maximum: function(keys, setting){
 		if (isNaN(keys.Value)) keys.Value = 0;
-		keys.Value = Math.min(+keys.Value, setting.Keys.Value);
+
+		keys.Value = Math.min(
+			+keys.Value, 
+			+(setting.Keys.Value || 0)
+		);
+		
 		return keys;
 	},
 
 	// --------------------------------
 	Default: function(keys, setting){
-		keys.Value |= setting.Keys.Value;
+		keys.Value = keys.Value || setting.Keys.Value;
 		return keys;
 	},
 

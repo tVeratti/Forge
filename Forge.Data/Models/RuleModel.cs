@@ -20,7 +20,7 @@ namespace Forge.Data.Models
         public long ModifiedById { get; set; }
         public DateTime ModifiedDate { get; set; }
 
-        public IEnumerable<IdKeyValuePairModel> Keys { get; set; }
+        public Dictionary<string, IdKeyValuePairModel> Keys { get; set; }
 
         public static explicit operator TableRuleModel(RuleModel t)
         {

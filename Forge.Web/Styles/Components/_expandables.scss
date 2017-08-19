@@ -21,10 +21,10 @@
         vertical-align: middle;
 
         .expandable__icon {
-            font-family: "Ionicons";
+            font-family: "typicons";
             min-width: 0;
             padding: 0 10px;
-            color: $color-primary-70;
+            color: $color-primary-80;
             background: none;
 
             &:hover{
@@ -33,10 +33,10 @@
 
             &:after {
                 display: inline-block;
-                content: "\f35f";
+                content: "\e01d";
                 transform: rotate(0deg);
                 transition: transform 0.3s ease-in-out;
-                font-size: 20px;
+                font-size: 22px;
                 font-weight: bold;
             }
         }

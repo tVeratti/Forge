@@ -24,7 +24,8 @@ $nav-arrow-size: 12px;
     z-index: 1000;
     font-size: $font-size-medium;
     background-color: $color-secondary-60;
-    border-bottom: 1px solid $color-secondary-40;
+    border-bottom: 1px solid $color-link-70;
+    
 
     // Content Wrapper
     & > .container { height: $size-nav-height; }
@@ -65,7 +66,9 @@ $nav-arrow-size: 12px;
             background: none;
             border: none;
 
-            &:hover, &.t-open { color: $nav-hover-font-color; }
+            &:hover, &.t-open {
+                color: $nav-hover-font-color;
+            }
 
             // Toggle Site Menu
             &.nav__menu { float: left; }
@@ -82,7 +85,7 @@ $nav-arrow-size: 12px;
             white-space: nowrap;
             background-color: $nav-slide-background;
             top: $size-nav-height - 1px;
-            border: 1px solid $color-secondary-40;
+            border: 1px solid $color-link-70;
             border-top: none;
 
             &.open {  display: block; }
@@ -138,16 +141,17 @@ $bottom-color: $color-link-70;
     transform: translateX(-50%);
     color: white;
     text-align: center;
-    font-size: 20px;
+    font-size: 21px;
     height: $size-nav-height;
     line-height: $size-nav-height;
 
 
 
     .nav__text {
+        //span:nth-child(1) { text-shadow: 0 0 15px $color-action-10;}
         span:nth-child(2) {
             font-size: 12px;
-            color: $color-secondary-10;
+            color: $color-link-20;
             margin-top: 5px;
             margin-left: 10px;
             text-transform: uppercase;

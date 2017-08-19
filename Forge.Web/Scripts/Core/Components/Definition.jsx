@@ -25,8 +25,6 @@ const Definition = React.createClass({
     valueChange: function(keys) {
         const { ...model } = this.props.model;
         model.Keys = keys;
-        console.log(keys)
-
         dispatch(actions.updateDefinition(model, true));
     }
 });

@@ -10,9 +10,10 @@ const Number = React.createClass({
 		let value;
 		if (Keys && 'Value' in Keys) value = Keys.Value;
 		if (isNaN(value)) value = 0;
+		if (value === undefined) value = 0;
 
 		return (
-			<input id={Model._formId} type='number' value={value || ''} onChange={this.change} />
+			<input id={Model._formId} type='number' value={value} onChange={this.change} />
 		);
 	},
 
