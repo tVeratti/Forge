@@ -331,7 +331,7 @@ b {
   z-index: 1000;
   font-size: 14px;
   background-color: #3f4748;
-  border-bottom: 1px solid #5a8891; }
+  border-bottom: 1px solid #5c6466; }
   #nav > .container {
     height: 55px; }
   #nav .nav-group {
@@ -374,7 +374,7 @@ b {
       white-space: nowrap;
       background-color: #4a5355;
       top: 54px;
-      border: 1px solid #5a8891;
+      border: 1px solid #5c6466;
       border-top: none; }
       #nav .nav-group ul.open {
         display: block; }
@@ -416,9 +416,9 @@ b {
   line-height: 55px; }
   .nav__location .nav__text span:nth-child(2) {
     font-size: 12px;
-    color: #b8d5da;
+    color: #a5a9aa;
     margin-top: 5px;
-    margin-left: 10px;
+    margin-left: 5px;
     text-transform: uppercase; }
 
 @media (min-width: 720px) {
