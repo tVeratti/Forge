@@ -24,7 +24,8 @@ $nav-arrow-size: 12px;
     z-index: 1000;
     font-size: $font-size-medium;
     background-color: $color-secondary-60;
-    border-bottom: 1px solid $color-secondary-40;
+    border-bottom: 1px solid mix($color-link-80, $color-secondary-40, 50%);
+    box-shadow: 0 1px 1px rgba(black, 0.2);
     
 
     // Content Wrapper
@@ -64,16 +65,24 @@ $nav-arrow-size: 12px;
             height: $size-nav-height;
             font-weight: bold;
             background: none;
-            border: none;
+            border: 1px solid $color-secondary-50;
+            border-bottom-color: $color-secondary-40;
+            border-radius: 0;
 
             &:hover, &.t-open {
                 color: $nav-hover-font-color;
             }
 
             // Toggle Site Menu
-            &.nav__menu { float: left; }
+            &.nav__menu { 
+                float: left; 
+                box-shadow: 1px 0 1px rgba(black, 0.2);
+            }
             // Toggle Account Menu
-            &.nav__user { float: right; }
+            &.nav__user { 
+                float: right; 
+                box-shadow: -1px 0 2px rgba(black, 0.2);
+            }
         }
 
         // Lists of Nav anchors

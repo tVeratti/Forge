@@ -120,7 +120,7 @@ table {
   text-align: left; }
 
 .section--secondary {
-  background-color: #3f4748;
+  background-color: #383e40;
   background-image: url(../Content/Images/cubes.png); }
 
 .section--summary {
@@ -331,7 +331,8 @@ b {
   z-index: 1000;
   font-size: 14px;
   background-color: #3f4748;
-  border-bottom: 1px solid #5c6466; }
+  border-bottom: 1px solid #556e73;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
   #nav > .container {
     height: 55px; }
   #nav .nav-group {
@@ -359,13 +360,17 @@ b {
       height: 55px;
       font-weight: bold;
       background: none;
-      border: none; }
+      border: 1px solid #4a5355;
+      border-bottom-color: #5c6466;
+      border-radius: 0; }
       #nav .nav-group .toggle:hover, #nav .nav-group .toggle.t-open {
         color: white; }
       #nav .nav-group .toggle.nav__menu {
-        float: left; }
+        float: left;
+        box-shadow: 1px 0 1px rgba(0, 0, 0, 0.2); }
       #nav .nav-group .toggle.nav__user {
-        float: right; }
+        float: right;
+        box-shadow: -1px 0 2px rgba(0, 0, 0, 0.2); }
     #nav .nav-group ul {
       position: absolute;
       z-index: 10;
